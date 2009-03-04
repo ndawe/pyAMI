@@ -1,0 +1,25 @@
+# datasets commands
+amiGetDatasetInfo
+amiListDatasets
+amiListDatasetsbyTask
+# nomenclature commands
+amiAddDataType
+amiAddPhysicsList
+amiAddProductionStep
+amiAddProject
+amiAddSubDataType
+amiAddSubProject
+amiGetSetConfigurationTag
+amiListConfigTagFields
+amiListConfigurationTag
+amiListDataTypes
+amiListNomenclatures
+amiListProductionSteps
+amiListProjects
+amiListSubDataTypes
+amiListSubProjects
+amiUpdateDataType
+amiUpdateProductionStep
+amiUpdateProject
+amiUpdateSubDataType
+amiUpdateSubProject
