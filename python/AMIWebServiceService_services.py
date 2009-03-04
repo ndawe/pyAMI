@@ -39,7 +39,8 @@ class AMIWebServiceSoapBindingSOAP:
         if not kw.has_key("port"):
             kw["port"] = int(netloc[1])
         if not kw.has_key("url"):
-            kw["url"] =  urlparse.urlparse(addr)[2]
+                 # kw["url"] =  urlparse.urlparse(addr)[2]
+            kw["url"] =  addr 
         self.binding = client.Binding(**kw)
 
 
