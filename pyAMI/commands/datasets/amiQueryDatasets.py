@@ -1,6 +1,11 @@
 import sys
 import datetime
-from pyAMI.pyAMI import *
+# The following is a mic mac until I change the package 
+# structure in my public area to make it compatible with CMT
+try :
+  from pyAMI.pyAMI import *
+except: 
+  from pyAMI import *  
 
 class amiQueryDatasets:
     """
@@ -19,7 +24,7 @@ class amiQueryDatasets:
       
       respectively.
       
-      put a leading "%" character to search for substrings
+      Put a leading "%" character to search for substrings
       amiQueryDatasets version=%r76
       maps to 
       version like '%r76%'
@@ -32,36 +37,45 @@ class amiQueryDatasets:
 
     """ 
     _predicate = ""  
+    #lastModified > to_date('2009-01-01 00:00:00','yyyy-mm-dd hh24:mi:ss')
+    _isoDateFormat="yyyy-mm-dd hh24:mi:ss"
     def __init__(self):
         self._predicate = ""
-    	return    def getPredicate( self):
+        self._isoDateFormat="yyyy-mm-dd hh24:mi:ss"
+        return
+    def getPredicate( self):
         return self._predicate[self._predicate.find("(1=1)")+9:]
         
     def command(self , argv, limit="0,10"):
-		if len(argv) == 0:
-			raise AMI_Error("You must provide some search parameters")
-		
-		if(len(argv) > 0  and argv[0] == "-help"):
-			print amiQueryDatasets.__doc__
-			return 
-		
-		argument = []
-		argument.append("SearchQuery")
-		argument.append("entity=dataset")
-		self._predicate = "(1=1)"
-		for arg in argv:
-			egalindex = arg.find("=")
-			paramName = arg[0:egalindex]
-			paramValue = arg[egalindex + 1:] + "%"
-			self._predicate = self._predicate + " AND " + paramName + " like '" + paramValue + "'"
-        	
-		argument.append("glite=SELECT logicalDatasetName WHERE amiStatus='VALID' AND " + self._predicate + " LIMIT " + limit)
+        if len(argv) == 0:
+            raise AMI_Error("You must provide some search parameters")
+        
+        if(len(argv) > 0  and argv[0] == "-help"):
+            print amiQueryDatasets.__doc__
+            return 
+        
+        argument = []
+        argument.append("SearchQuery")
+        argument.append("entity=dataset")
+        self._predicate = "(1=1)"
+        for arg in argv:
+            egalindex = arg.find("=")
+            paramName = arg[0:egalindex]
+            paramValue = arg[egalindex + 1:]
+            if(paramName=="lastModified"):
+                self._predicate = self._predicate + " AND "+"dataset.lastModified > to_date('2009-03-01 00:00:00','yyyy-mm-dd hh24:mi:ss')"
+                #self._predicate = self._predicate + " AND  lastModified > to_date('"+paramValue+"','"+self._isoDateFormat+"')"
+            else:
+                paramValue = paramValue + "%"
+                self._predicate = self._predicate + " AND " + paramName + " like '" + paramValue + "'"
+            
+        argument.append("glite=SELECT logicalDatasetName WHERE amiStatus='VALID' AND " + self._predicate + " LIMIT " + limit)
 
-		argument.append("project=Atlas_Production")
-		argument.append("processingStep=Atlas_Production")
-		argument.append("mode=defaultField")
-		
-		return argument
+        argument.append("project=Atlas_Production")
+        argument.append("processingStep=Atlas_Production")
+        argument.append("mode=defaultField")
+        
+        return argument
 
 
 
@@ -83,7 +97,7 @@ def main(argv):
     while (not finished):
         result = amiclient.execute(query.command(argv, str(startLimit) + "," + str(amountToDo)))
         
-        dom = result.getAMIdom()		
+        dom = result.getAMIdom()        
         rowsets = dom.getElementsByTagName('rowset')
         infos = dom.getElementsByTagName('info')   
         for info in infos:
@@ -104,38 +118,37 @@ def main(argv):
         finished = (int(numDone) >= int(numToDo))
      
         if(not finished):
-				startLimit = startLimit + amountToDo
-				
+                startLimit = startLimit + amountToDo
+                
         if (numDone >0):
             numFound = 0
             for rowset in rowsets:
-    			rows = rowset.getElementsByTagName('row') 
-    			for row in rows:			   
-    				fields = row.getElementsByTagName('field') 
-    				for field in fields:
-    					fieldname = field.attributes['name'].value
-    					if (fieldname.lower() == 'logicaldatasetname'):
-    						value = field.firstChild.nodeValue
-    						datasetsToList.append(value)
-    						numFound = numFound + 1
-	
+                rows = rowset.getElementsByTagName('row') 
+                for row in rows:               
+                    fields = row.getElementsByTagName('field') 
+                    for field in fields:
+                        fieldname = field.attributes['name'].value
+                        if (fieldname.lower() == 'logicaldatasetname'):
+                            value = field.firstChild.nodeValue
+                            datasetsToList.append(value)
+                            numFound = numFound + 1
+    
 
     now = datetime.datetime.now()
     print "Request Time : " + now.strftime("%Y-%m-%d %H:%M")+ "\nRequest : "+ query.getPredicate()
-			
+            
     print str(numToDo) + " datasets found for this query"
     if (numDone >0):
         datasetsToList.sort()
         for dsn in datasetsToList:
             print dsn
    except Exception, msg:
-    	 
-		print msg
+         
+        print msg
 
 
 if __name__ == '__main__':
-	main(sys.argv[1:])		
-
+    main(sys.argv[1:])        
 
 
 
