@@ -18,14 +18,14 @@ class amiQueryDatasets:
       
       will map to the SQL predicates
       
-      AtlasRelease like '15%' AND dataType like 'AOD%' AND version like '%r651%'
+      AtlasRelease like '15' AND dataType like 'AOD' AND version like '%r651'
       and
-      dataType like 'AOD%' AND projectName like 'data08_cosmag%' AND runNumber like '90345%'
+      dataType like 'AOD' AND projectName like 'data08_cosmag' AND runNumber like '90345'
       
       respectively.
       
-      Put a leading "%" character to search for substrings
-      amiQueryDatasets version=%r76
+      Use the "%" character to search for substrings
+      amiQueryDatasets version=%r76%
       maps to 
       version like '%r76%'
       
@@ -66,7 +66,7 @@ class amiQueryDatasets:
                 self._predicate = self._predicate + " AND "+"dataset.lastModified > to_date('2009-03-01 00:00:00','yyyy-mm-dd hh24:mi:ss')"
                 #self._predicate = self._predicate + " AND  lastModified > to_date('"+paramValue+"','"+self._isoDateFormat+"')"
             else:
-                paramValue = paramValue + "%"
+                #paramValue = paramValue + "%"
                 self._predicate = self._predicate + " AND " + paramName + " like '" + paramValue + "'"
             
         argument.append("glite=SELECT logicalDatasetName WHERE amiStatus='VALID' AND " + self._predicate + " LIMIT " + limit)
