@@ -45,7 +45,7 @@ try:
 	
 	# this is the path to the wrappers. sys.path[0] returns the
 	# place from where the script is being run (the share directory).
-	path = sys.path[0]+'/../python/commands'
+	path = sys.path[0]+'/../pyAMI/commands'
 	print 'Looking for commands in '+ path
 
 except:
