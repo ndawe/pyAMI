@@ -38,10 +38,10 @@ class amiQueryDatasets:
     """ 
     _predicate = ""  
     #lastModified > to_date('2009-01-01 00:00:00','yyyy-mm-dd hh24:mi:ss')
-    _isoDateFormat="yyyy-mm-dd hh24:mi:ss"
+    
     def __init__(self):
         self._predicate = ""
-        self._isoDateFormat="yyyy-mm-dd hh24:mi:ss"
+        #self._isoDateFormat="yyyy-mm-dd hh24:mi:ss"
         return
     def getPredicate( self):
         return self._predicate[self._predicate.find("(1=1)")+9:]
@@ -63,8 +63,8 @@ class amiQueryDatasets:
             paramName = arg[0:egalindex]
             paramValue = arg[egalindex + 1:]
             if(paramName=="lastModified"):
-                self._predicate = self._predicate + " AND "+"dataset.lastModified > to_date('2009-03-01 00:00:00','yyyy-mm-dd hh24:mi:ss')"
-                #self._predicate = self._predicate + " AND  lastModified > to_date('"+paramValue+"','"+self._isoDateFormat+"')"
+                #self._predicate = self._predicate + " AND "+"lastModified > to_date('2009-03-01 00:00:00','yyyy-mm-dd hh24:mi:ss')"
+                self._predicate = self._predicate + " AND  lastModified >'"+paramValue+"'"
             else:
                 #paramValue = paramValue + "%"
                 self._predicate = self._predicate + " AND " + paramName + " like '" + paramValue + "'"
