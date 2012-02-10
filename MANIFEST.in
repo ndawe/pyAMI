@@ -1,0 +1,6 @@
+include *.py
+include LICENSE
+include README
+include README.rst
+include scripts/*
+recursive-include examples *.py
