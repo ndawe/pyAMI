@@ -1,0 +1,17 @@
+*.egg
+*.tar
+*.tar.gz
+*.egg-info
+*.pyc
+*.d
+*.so
+*~
+*.root
+*.log
+*.png
+*.jpg
+*.eps
+.nfs*
+build
+dist
+*.swp
