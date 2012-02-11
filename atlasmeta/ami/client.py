@@ -12,7 +12,7 @@ import urlparse
 from atlasmeta.ami.webservices import *
 from atlasmeta.ami.exceptions import *
 from atlasmeta.ami.exceptions import _AMI_Error_Base
-from atlasmeta.ami.endpoint import AMIEndPoint
+from atlasmeta.ami import endpoint
 from atlasmeta.ami.config import AMIConfig
 from xml.dom import minidom, Node
 
@@ -33,23 +33,23 @@ def tutorial():
     """
 
 
-def set_endpoint_type(argv):
+def set_endpoint_type(args):
 
-    for i in range (0, len(argv)):
-        curArg = argv[i]
-        curVal = ""
-        if curArg.startswith('-'):
-            curArg = curArg[1:]
-            if curArg.startswith('-'):
-                curArg = curArg[1:]
-        if curArg.find('=') > 0:
-            curVal = curArg[curArg.find('=') + 1:]
-            curVal = curVal.replace('=', '\=')
-            curArg = curArg[0:curArg.find('=')]
-        if curArg == 'replica':
-            argv.pop(i)
-            AMIEndPoint.setType('replica')
-            break
+    for i, arg in enumerate(args):
+        value = ""
+        # this can be done in a better way with regex
+        if arg.startswith('-'):
+            arg = arg[1:]
+            if arg.startswith('-'):
+                arg = arg[1:]
+        if '=' in arg:
+            value = arg[arg.find('=') + 1:]
+            value = value.replace('=', '\=')
+            arg = arg[0:arg.find('=')]
+        if arg == 'replica':
+            args.pop(i)
+            endpoint.TYPE = 'replica'
+            return
 
 
 class AMIResult(object):
@@ -180,7 +180,7 @@ class AMIResult(object):
             if not USE_LXML:
                 raise ValueError("lxml must be installed to "
                                  "perform XSLT transformations")
-            xslt_url = urlparse.urljoin(AMIEndPoint.getXSLURL(), self.XSLT[format])
+            xslt_url = urlparse.urljoin(endpoint.get_XSL_URL(), self.XSLT[format])
             xslt_root = etree.XML(urllib.urlopen(xslt_url).read())
             transform = etree.XSLT(xslt_root)
             doc = etree.fromstring(self.dom.toxml())
@@ -392,7 +392,7 @@ class AMIClient(object):
         kw = {}
         self._ami = self._loc.getAMISecureWebService(url=None, **kw)
 
-    def set_cert_auth(self , transdict=None):
+    def set_cert_auth(self, transdict=None):
 
         kw = {}
         if transdict is None:
