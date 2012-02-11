@@ -6,12 +6,13 @@ import argparse
 from atlasmeta.ami.query import *
 from atlasmeta.ami.schema import *
 from atlasmeta.ami.auth import create_auth_config
-import datetime
+from atlasmeta.ami.defaults import YEAR, PROJECT, STREAM, TYPE
 
 
-parser = argparse.ArgumentParser()
+parser = argparse.ArgumentParser(
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter)
 parser.add_argument('-v', '--verbose', action='store_true', default=False)
-parser.add_argument('-d', '--debug', dest='verbose', action='store_true', default=False)
+parser.add_argument('-d', '--debug', action='store_true', default=False)
 subparsers = parser.add_subparsers()
 
 """
@@ -27,95 +28,103 @@ List
 parser_list = subparsers.add_parser('list')
 subparsers_list = parser_list.add_subparsers()
 
-def search_query_args(parser, entity):
+def search_query_args(parser, entity, include_pattern=True):
     
     for option in entity.fields.keys():
-        parser.add_argument('--%s' % option.replace('_','-'), default=None)
+        option = '--%s' % option.replace('_','-')
+        if not parser._get_option_tuples(option):
+            parser.add_argument(option, default=None)
     if entity.foreign is not None:
         for name, foreign_entity in entity.foreign.items():
             for field in foreign_entity.fields.keys():
-                option = '%s.%s' % (name, field)
-                parser.add_argument('--%s' % option.replace('_','-'), default=None)
-    parser.add_argument('-o', '--order', default=None, help="order results by this field")
-    parser.add_argument('-l', '--limit', type=int, default=None, help="limit number of results")
-    parser.add_argument('-f', '--fields', default=None, help="extra fields (comma-separated) to display in output")
-    parser.add_argument('--show-archived', action='store_true', default=False, help="search in archived catalogues as well")
-    parser.add_argument('pattern', help="matches must contain this pattern (glob with %%)")
+                option = '--%s' % (('%s.%s' % (name, field)).replace('_','-'))
+                if not parser._get_option_tuples(option):
+                    parser.add_argument(option, default=None)
+    parser.add_argument('-o', '--order', default=None,
+                        help="order results by this field")
+    parser.add_argument('-l', '--limit', type=int, default=None,
+                        help="limit number of results")
+    parser.add_argument('-f', '--fields', default=None,
+                        help="extra fields (comma-separated) to display in output")
+    parser.add_argument('--show-archived', action='store_true',
+                        default=False, help="search in archived catalogues as well")
+    if include_pattern:
+        parser.add_argument('pattern', help="matches must contain this pattern (glob with %%)")
     parser.set_defaults(flatten=True)
     parser.set_defaults(op=get_datasets)
     parser.set_defaults(pr=print_table)
 
 parser_list_datasets = subparsers_list.add_parser('datasets',
-    description="List datasets matching a given pattern"
-)
-search_query_args(parser_list_datasets, DATASET)
+    description="List datasets matching a given pattern")
+search_query_args(parser_list_datasets, DATASET_TABLE)
 parser_list_datasets.add_argument('--parent-type', default=None)
 parser_list_datasets.set_defaults(op=get_datasets)
 
 parser_list_types = subparsers_list.add_parser('types',
-    description="List ATLAS data types"
-)
-search_query_args(parser_list_types, TYPE)
+    description="List ATLAS data types")
+search_query_args(parser_list_types, TYPE_TABLE)
 parser_list_types.set_defaults(op=get_types)
 
 parser_list_subtypes = subparsers_list.add_parser('subtypes',
-    description="List ATLAS data subtypes"
-)
-search_query_args(parser_list_subtypes, SUBTYPE)
+    description="List ATLAS data subtypes")
+search_query_args(parser_list_subtypes, SUBTYPE_TABLE)
 parser_list_subtypes.set_defaults(op=get_subtypes)
 
 parser_list_nomens = subparsers_list.add_parser('nomenclatures',
-    description="List ATLAS nomenclatures"
-)
-search_query_args(parser_list_nomens, NOMENCLATURE)
+    description="List ATLAS nomenclatures")
+search_query_args(parser_list_nomens, NOMENCLATURE_TABLE)
 parser_list_nomens.set_defaults(op=get_nomenclatures)
 
 parser_list_prodsteps = subparsers_list.add_parser('prodsteps',
-    description="List ATLAS production steps"
-)
-search_query_args(parser_list_prodsteps, PRODSTEP)
+    description="List ATLAS production steps")
+search_query_args(parser_list_prodsteps, PRODSTEP_TABLE)
 parser_list_prodsteps.set_defaults(op=get_prodsteps)
 
 parser_list_projects = subparsers_list.add_parser('projects',
-    description="List ATLAS projects"
-)
-search_query_args(parser_list_projects, PROJECT)
+    description="List ATLAS projects")
+search_query_args(parser_list_projects, PROJECT_TABLE)
 parser_list_projects.set_defaults(op=get_projects)
 
 parser_list_subprojects = subparsers_list.add_parser('subprojects',
-    description="List ATLAS subprojects"
-)
-search_query_args(parser_list_subprojects, SUBPROJECT)
+    description="List ATLAS subprojects")
+search_query_args(parser_list_subprojects, SUBPROJECT_TABLE)
 parser_list_subprojects.set_defaults(op=get_subprojects)
 
 parser_list_data_datasets = subparsers_list.add_parser('data',
-    description="List data datasets"
-)
-parser_list_data_datasets.add_argument('-p', '--project', default='data11_7TeV')
+    description="List data datasets",
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser_list_data_datasets.add_argument('-p', '--project', default=PROJECT,
+                                       help='data project name')
 parser_list_data_datasets.add_argument('--parent-type', default=None)
-parser_list_data_datasets.add_argument('-s', '--stream', default='physics_JetTauEtmiss')
-parser_list_data_datasets.add_argument('-t', '--type', default='AOD')
-parser_list_data_datasets.add_argument('-f', '--fields', default=None, help="extra fields (comma-separated) to display in output")
+parser_list_data_datasets.add_argument('-s', '--stream', default=STREAM,
+                                       help='data stream')
+parser_list_data_datasets.add_argument('-t', '--type', default=TYPE,
+                                       help='data type')
 parser_list_data_datasets.add_argument('--periods', default=None)
-parser_list_data_datasets.add_argument('-l', '--latest', action='store_true',
+parser_list_data_datasets.add_argument('--grl', default=None,
+                                       help='only show runs in the specified good runs list')
+parser_list_data_datasets.add_argument('--latest', action='store_true',
                                        help="only show latest version of datasets", default=False)
-parser_list_data_datasets.add_argument('tag_pattern', metavar='PATTERN', help="match tags with pattern (glob with %%)", default=None, nargs='?')
+parser_list_data_datasets.add_argument('tag_pattern', metavar='PATTERN',
+                                       help="match tags with pattern (glob with %%)", default=None, nargs='?')
+search_query_args(parser_list_data_datasets, DATASET_TABLE, include_pattern=False)
 parser_list_data_datasets.set_defaults(flatten=True)
 parser_list_data_datasets.set_defaults(op=get_data_datasets)
 parser_list_data_datasets.set_defaults(pr=print_table)
 
 parser_list_periods = subparsers_list.add_parser('periods',
-    description="List periods at a specified detail level for a given year"
-)
-parser_list_periods.add_argument('-y', '--year', type=int, default=datetime.date.today().year)
+    description="List periods at a specified detail level for a given year",
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser_list_periods.add_argument('-y', '--year', type=int, default=YEAR)
 parser_list_periods.add_argument('-l', '--level', type=int, default=2, help="1 (high), 2 (default), or 3 (low)")
 parser_list_periods.set_defaults(op=get_periods)
 parser_list_periods.set_defaults(pr=str)
 
 parser_list_runs = subparsers_list.add_parser('runs',
-    description="List runs in a data period for a given year"
-)
-parser_list_runs.add_argument('-y', '--year', type=int, default=datetime.date.today().year)
+    description="List runs in a data period for a given year",
+    formatter_class=argparse.ArgumentDefaultsHelpFormatter)
+parser_list_runs.add_argument('-y', '--year', type=int, default=YEAR,
+                              help='year')
 parser_list_runs.add_argument('periods', help="period name(s) i.e. M1 M2", nargs='*')
 parser_list_runs.set_defaults(op=get_runs)
 parser_list_runs.set_defaults(pr=str)
@@ -129,13 +138,17 @@ class HelpAction(argparse.Action):
 
 
 parser_list_files = subparsers_list.add_parser('files', add_help=False,
-    description="List files in dataset or container"
-)
+    description="List files in dataset or container")
 parser_list_files.add_argument('--help', action=HelpAction)
 parser_list_files.add_argument('--limit', type=int, default=None, help="limit number of results")
-parser_list_files.add_argument('-c', '--total', action='store_true', default=False, help="produce a grand total")
-parser_list_files.add_argument('-h', '--human-readable', dest='human_readable', action='store_true', default=False, help="print sizes in human readable format")
-parser_list_files.add_argument('-l', dest='long', action='store_true', default=False, help="display verbose output")
+parser_list_files.add_argument('-c', '--total',
+                               action='store_true', default=False,
+                               help="produce a grand total")
+parser_list_files.add_argument('-h', '--human-readable', dest='human_readable',
+                               action='store_true', default=False,
+                               help="print sizes in human readable format")
+parser_list_files.add_argument('-l', dest='long', action='store_true',
+                               default=False, help="display verbose output")
 parser_list_files.add_argument('dataset', help="either a dataset container name or a TID dataset name")
 parser_list_files.set_defaults(op=list_files)
 parser_list_files.set_defaults(pr=None)
@@ -147,23 +160,20 @@ parser_dataset = subparsers.add_parser('dataset')
 subparsers_dataset = parser_dataset.add_subparsers()
 
 parser_dataset_prov = subparsers_dataset.add_parser('prov',
-    description="List the provenance for a dataset"
-)
+    description="List the provenance for a dataset")
 parser_dataset_prov.add_argument('--type', default=None)
 parser_dataset_prov.add_argument('dataset', help="full name of dataset")
 parser_dataset_prov.set_defaults(op=get_provenance)
 parser_dataset_prov.set_defaults(pr=print_provenance)
 
 parser_dataset_info = subparsers_dataset.add_parser('info',
-    description="Display dataset metadata"
-)
+    description="Display dataset metadata")
 parser_dataset_info.add_argument('dataset', help="full name of dataset")
 parser_dataset_info.set_defaults(op=get_dataset_info)
 parser_dataset_info.set_defaults(pr=str)
 
 parser_dataset_evtinfo = subparsers_dataset.add_parser('evtinfo',
-    description="Display metadata of parent event generator dataset"
-)
+    description="Display metadata of parent event generator dataset")
 parser_dataset_evtinfo.add_argument('dataset', help="full name of dataset")
 parser_dataset_evtinfo.set_defaults(op=get_event_info)
 parser_dataset_evtinfo.set_defaults(pr=str)
@@ -212,7 +222,7 @@ parser_update.set_defaults(op=None)
 
 args = parser.parse_args()
 
-from atlasmeta.ami.client import AMI, AMIResult
+from atlasmeta.ami.client import AMIClient, AMIResult
 from atlasmeta.ami.auth import AMI_CONFIG, create_auth_config
 import sys
 import os
@@ -220,31 +230,37 @@ import os
 try:
     if args.op == create_auth_config:
         create_auth_config()
-        sys.exit(0)
-    amiclient = AMI(verbose=args.verbose)
-    if not os.path.exists(AMI_CONFIG):
-        create_auth_config()
-    amiclient.read_config(AMI_CONFIG)
-    cmd_args = dict(args._get_kwargs())
-    del cmd_args['op']
-    del cmd_args['pr']
-    del cmd_args['verbose']
-    if 'help' in cmd_args:
-        del cmd_args['help']
-    result = args.op(amiclient, **cmd_args)
-    if isinstance(result, AMIResult):
-        print result.get_dom().toxml()
-    elif args.pr and result:
-        if args.pr == print_table:
-            args.pr(result)
-        elif isinstance(result, (list, tuple)):
-            for thing in result:
-                rep = args.pr(thing)
-                if rep:
+    else:
+        amiclient = AMIClient(verbose=args.verbose)
+        if not os.path.exists(AMI_CONFIG):
+            create_auth_config()
+        amiclient.read_config(AMI_CONFIG)
+        cmd_args = dict(args._get_kwargs())
+        del cmd_args['op']
+        del cmd_args['pr']
+        del cmd_args['verbose']
+        del cmd_args['debug']
+        if 'help' in cmd_args:
+            del cmd_args['help']
+        result = args.op(amiclient, **cmd_args)
+        if isinstance(result, AMIResult):
+            print result.output(format='text')
+        elif args.pr and result:
+            if args.pr == print_table:
+                args.pr(result)
+            elif isinstance(result, (list, tuple)):
+                for thing in result:
+                    rep = args.pr(thing)
+                    if rep:
+                        print rep
+            else:
+                rep = args.pr(result)
+                if rep is not None:
                     print rep
-        else:
-            rep = args.pr(result)
-            if rep is not None:
-                print rep
 except Exception, e:
-    sys.exit("%s: %s" % (e.__class__.__name__, e))
+    if args.debug:
+        # If in debug mode show full stack trace
+        import traceback
+        traceback.print_exception(*sys.exc_info())
+    else:
+        sys.exit("%s: %s" % (e.__class__.__name__, e))

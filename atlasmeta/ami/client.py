@@ -1,17 +1,26 @@
 
-import sys, os
-from .webservices import *
-from .exceptions import *
+import sys
+import os
 from cStringIO import StringIO
-#from xml.sax import make_parser, saxutils, xmlreader
 import re
 from sys import stdout
-from .config import AMIConfig
-from xml.dom import minidom, Node
-#from Ft.Xml.Xslt import Transform
 import cPickle as pickle
-from .endpoint import AMIEndPoint
 import base64
+import urllib
+import urlparse
+
+from atlasmeta.ami.webservices import *
+from atlasmeta.ami.exceptions import *
+from atlasmeta.ami.exceptions import _AMI_Error_Base
+from atlasmeta.ami.endpoint import AMIEndPoint
+from atlasmeta.ami.config import AMIConfig
+from xml.dom import minidom, Node
+
+USE_LXML = True
+try:
+    from lxml import etree
+except ImportError:
+    USE_LXML = False
 
 
 def tutorial():
@@ -26,9 +35,7 @@ def tutorial():
 
 def set_endpoint_type(argv):
 
-    #print 'function parse'
     for i in range (0, len(argv)):
-        #print argv[i]
         curArg = argv[i]
         curVal = ""
         if curArg.startswith('-'):
@@ -39,33 +46,32 @@ def set_endpoint_type(argv):
             curVal = curArg[curArg.find('=') + 1:]
             curVal = curVal.replace('=', '\=')
             curArg = curArg[0:curArg.find('=')]
-
-        #print 'arg:'+curArg
-        #print 'val:'+curVal
         if curArg == 'replica':
             argv.pop(i)
             AMIEndPoint.setType('replica')
             break
 
 
-class AMIResult:
+class AMIResult(object):
     """
     Python class representing the XML reply from the AMI Web Service.
     The default transformation produces text.
     """
-    _xslt = 'text'
 
-    def __init__(self , dom):
+    XSLT = {
+        'csv':       'AMIXmlToCsv.xsl',
+        'htmltable': 'AMIXmlToHtmlTable.xsl',
+        'html':      'AMIXmlToHtml.xsl',
+        'text':      'AMIXmlToText.xsl',
+        'verbose':   'AMIXmlToTextVerbose.xsl',
+    }
 
-        self._dom = dom
+    def __init__(self, dom):
 
-    def get_dom(self):
-
-        return self._dom
-
-    def setxslt(self , xslt):
-
-        self._xslt = xslt
+        self.dom = dom
+        self.errors = dom.getElementsByTagName('error')
+        self.infos = dom.getElementsByTagName('info')
+        self.rowsets = dom.getElementsByTagName('rowset')
 
     def write_gpickle(self, filenameBase):
 
@@ -79,18 +85,15 @@ class AMIResult:
             print "WARNING: Could not write gpickle report to file %s" % filename
             return False
         else:
-            self.__changed = False
-            pickle.dump(self. get_dict(), errorFile, 0) # text format
+            pickle.dump(self.get_dict(), errorFile, 0)
             errorFile.close()
             return True
 
     def get_dict(self):
 
         resultDict = {}
-
-        rowsets = self._dom.getElementsByTagName('rowset')
         cptRowset = 0
-        for rowset in rowsets:
+        for rowset in self.rowsets:
             cptRowset = cptRowset + 1
             rowsetDict = {}
             rowsetLabel = "rowset_" + str(cptRowset)
@@ -117,15 +120,11 @@ class AMIResult:
                     rowDict.update({fieldLabel:value})
                 rowsetDict.update({rowLabel:rowDict})
             resultDict.update({rowsetLabel:rowsetDict})
-
         return resultDict
 
-    def list_rowsets(self):
+    def rows(self):
 
-        infos = self._dom.getElementsByTagName('info')
-        errors = self._dom.getElementsByTagName('error')
-        rowsets = self._dom.getElementsByTagName('rowset')
-        for rowset in rowsets:
+        for rowset in self.rowsets:
             rowsetLabel = "#rowset:"
             if "type" in rowset.attributes.keys():
                 rowsetLabel = rowsetLabel + rowset.attributes['type'].value
@@ -153,8 +152,7 @@ class AMIResult:
 
     def iterrows(self):
 
-        rowsets = self._dom.getElementsByTagName('rowset')
-        for rowset in rowsets:
+        for rowset in self.rowsets:
             rows = rowset.getElementsByTagName('row')
             for row in rows:
                 fields = row.getElementsByTagName('field')
@@ -167,53 +165,39 @@ class AMIResult:
                         field_dict[name] = 'NULL'
                 yield field_dict
 
-    def transform(self , xslt=None):
+    def output(self, format='xml'):
 
-        if 'gpickle' not in xslt.lower():
-            """
-            f = StringIO(self._dom.toxml())
-            if xslt is None:
-                return None
-            """
-            return self._dom.toxml()
-            """
-            else:
-                result = Transform(f, self.set_transform(xslt))
-                return result
-            """
-        else:
+        format = format.lower()
+        if format == 'xml':
+            return self.dom.toxml()
+        if format.endswith('gpickle'):
             outputfile = "output.gpickle"
-            if(xslt.lower() != 'gpickle'):
-                outputfile = xslt
+            if format != 'gpickle':
+                outputfile = format
             self.write_gpickle(outputfile)
-            return "result printed in " + outputfile + " gpickle file "
-
-    def output(self):
-
-        return self.transform(self._xslt)
-
-    def set_transform(self, xslt=None):
-
-        amiurl = AMIEndPoint.getXSLURL()
-        if xslt is None:
             return None
-        elif xslt.lower() == 'csv':
-            return amiurl + 'AMIXmlToCsv.xsl'
-        elif xslt.lower() == 'htmltable':
-            return amiurl + 'AMIXmlToHtmlTable.xsl'
-        elif xslt.lower() == 'html':
-            return amiurl + 'AMIXmlToHtml.xsl'
-        elif xslt.lower() == 'text':
-            return amiurl + 'AMIXmlToText.xsl'
-        elif xslt.lower() == 'verbose':
-            return amiurl + 'AMIXmlToTextVerbose.xsl'
-        elif xslt.lower() == 'xml':
-            return 'xml'
+        elif format in self.XSLT:
+            if not USE_LXML:
+                raise ValueError("lxml must be installed to "
+                                 "perform XSLT transformations")
+            xslt_url = urlparse.urljoin(AMIEndPoint.getXSLURL(), self.XSLT[format])
+            xslt_root = etree.XML(urllib.urlopen(xslt_url).read())
+            transform = etree.XSLT(xslt_root)
+            doc = etree.fromstring(self.dom.toxml())
+            return transform(doc)
         else:
-            return xslt
+            raise ValueError("Format '%s' is not a valid "
+                             "AMIResult format" % format)
 
 
-class AMI_WS_Client:
+class AMIClient(object):
+    """
+    This is the generic way of sending a command to the AMI server.
+    The first argument must be the name of the server command.
+    The other arguments follow as argumentName=argumentValue pairs.
+    For complete help see the PyAMI User guide
+    http://ami.in2p3.fr/opencms/opencms/AMI/www/Client/pyAMIUserGuide.pdf
+    """
     """
     AMI Web Service Client for Python. Most methods defined in this
     class mirror the methods recognised by the AMI Web Service.
@@ -223,9 +207,6 @@ class AMI_WS_Client:
 
     NB: atlasmeta expects XML format when it tries to parse replies from the AMI Web Service.
     """
-
-    _xslt = 'text'
-    _transdict = None
 
     def __init__(self, user=None, password=None, cert_auth=False, transdict=None, verbose=False):
         """
@@ -243,6 +224,9 @@ class AMI_WS_Client:
         """
         self.verbose = verbose
         self.config = AMIConfig()
+        self._transdict = None
+        self._client = None
+        self._authMethod = None # could be x509 or password
 
         if user is not None:
             self.config.set('AMI', 'AMIUser', user)
@@ -252,6 +236,7 @@ class AMI_WS_Client:
 
         self._loc = AMISecureWebServiceServiceLocator()
         if cert_auth:
+            self._authMethod = "x509"
             ssl = self._loc.getAMISecureWebServiceAddress().startswith('https')
             if not ssl:
                 self._transdict = None
@@ -268,6 +253,97 @@ class AMI_WS_Client:
             kw = {'transdict':None}
 
         self._ami = self._loc.getAMISecureWebService(url=None, **kw)
+
+    def auth(self, user, password):
+
+        self._authMethod = "password"
+        self.reset_cert_auth()
+        self.authenticate(user, password)
+
+    def cert_auth(self, transdict=None):
+
+        self._authMethod = "x509"
+        self.set_cert_auth(transdict)
+
+    def write_config(self, fp):
+
+        self.config.write(fp)
+
+    def read_config(self, fpname):
+
+        self.config.read(fpname)
+
+    def execute(self, argv):
+
+        if len(argv) == 0:
+            raise AMI_Error("You must provide a command. Try 'amiCommand help'.")
+        if (argv[0] == 'help') or (argv[0] == '-help'):
+            raise AMI_Error(tutorial())
+        if self.verbose:
+            print "query:"
+            print ' '.join(argv)
+        if len(argv) == 1 and argv[0] == "UploadProxy":
+            self.upload_proxy()
+            f = StringIO("<?xml version=\"1.0\" ?><AMIMessage><info>Proxy uploaded</info></AMIMessage>");
+            doc = minidom.parse(f)
+            result = AMIResult(doc)
+            result.set_xslt("text")
+        else:
+            # here we filter out those commands which have a locally generated help.
+            if(argv[0] == "help"):
+                raise AMI_Error("")
+            arguments = self.parse_args(argv)
+            reply = self.exec_command(arguments)
+            result = self._parse_reply(reply)
+        if self.verbose:
+            print "reply:"
+            print result.output(format='text')
+        return result
+
+    def set_user_credentials(self, argv):
+
+        password = "None"
+        user = "None"
+        remove = []
+        for i in range (0, len(argv)):
+            #print argv[i]
+            curArg = argv[i]
+            save = curArg
+            curVal = ""
+            if curArg.startswith('-'):
+                curArg = curArg[1:]
+                if curArg.startswith('-'):
+                    curArg = curArg[1:]
+            if curArg.find('=') > 0:
+                curVal = curArg[curArg.find('=') + 1:]
+                curVal = curVal.replace('=', '\=')
+                curArg = curArg[0:curArg.find('=')]
+            if curArg == 'AMIPass':
+                remove.append(save)
+                password=curVal
+            if curArg == 'AMIUser':
+                remove.append(save)
+                user=curVal
+        if ((user != "None") and (password != "None")):
+            self.authenticate(user, password)
+        out = []
+        for item in argv:
+            if ( not remove.__contains__(item)):
+                out.append(item)
+        return out
+
+    def check_auth(self):
+
+        try:
+            argv = []
+            argv.append("GetLevelInfo")
+            argv.append("levelName=motherDatabase")
+            argv.append("output=xml")
+            result = self.execute(argv)
+            msg = result.output()
+            return msg[msg.find('amiLogin="') + 10:msg.find('" database')]
+        except Exception, error:
+            return None
 
     def reset_cert_auth(self):
 
@@ -351,7 +427,7 @@ class AMI_WS_Client:
     def _check_format(self, argDict):
 
         try:
-            if argDict[ 'format' ] != 'XML':
+            if argDict['format'] != 'XML':
                 raise AMI_Info("pyAMI supports the XML format only.")
         except KeyError:
             pass
@@ -365,7 +441,7 @@ class AMI_WS_Client:
     def exec_command(self, _parameters):
         """
         This method is called internally by other methods to assemble parameters
-        in the format recognised by the exec_command_arrary() method supplied by the AMI Web Service.
+        in the format recognised by the execAMICommand_array() method supplied by the AMI Web Service.
         """
         self._check_format(_parameters)
         if 'command' not in _parameters:
@@ -380,36 +456,26 @@ class AMI_WS_Client:
                 if x == 'AMIPass':
                     value = base64.b64decode(value)
                 request._args.append('-' + x + '=' + value)
-                #print x, _parameters[x]
         try:
-            """
-            if self.verbose:
-                print ' '.join(request._args)
-            """
             reply = self._ami.execAMICommand_array(request)
         except Exception, msg:
             error = str(msg)
-            if error.find('<?') < 0 :
-                error = "<?xml version=\"1.0\" ?><AMIMessage><error>" + error + "</error></AMIMessage>"
-            f = StringIO(error[error.find('<?'):error.find('</AMIMessage>') + 13])
             try:
+                if '<?' not in error:
+                    error = '<?xml version="1.0" ?><AMIMessage><error>%s</error></AMIMessage>' % error
+                f = StringIO(error[error.find('<?'):error.find('</AMIMessage>') + 13])
                 doc = minidom.parse(f)
-                self._result = AMIResult(doc)
-                self._result.setxslt(self._xslt)
-                outputmsg = self._result.output()
+                result = AMIResult(doc, raise_on_error=False)
+                outputmsg = result.output()
             except Exception:
                 raise AMI_Error("cannot parse error : " + error)
             raise AMI_Error(outputmsg)
-        else:
-            return reply
-        #return self._ami.execAMICommand_array( request )
+        return reply
 
     def upload_proxy(self):
 
-        #try:
         if self._transdict is None:
             raise AMI_Error("No proxy file to upload.")
-
         proxy_fname = self._transdict['cert_file']
         args = {}
         proxFile = open(proxy_fname, 'r')
@@ -419,22 +485,15 @@ class AMI_WS_Client:
         request = upload_proxyRequest(**args)
         self._ami.upload_proxy(request)._upload_proxyReturn
         return "Proxy successfully uploaded"
-        #except Exception, msg:
-        #return msg
 
-    def get_results(self):
-
-        return self._result
-
-    def _parse_data(self, xmlReply):
+    def _parse_reply(self, reply):
         """
         This method makes a dom object and then applies a transformation
         """
-        f = StringIO(xmlReply._execAMICommand_arrayReturn.encode('utf-8'))
+        f = StringIO(reply._execAMICommand_arrayReturn.encode('utf-8'))
         doc = minidom.parse(f)
-        self._result = AMIResult(doc)
-        self._result.setxslt(self._xslt)
-        return self._result
+        result = AMIResult(doc)
+        return result
 
     def parse_args(self , argv):
 
@@ -455,128 +514,9 @@ class AMI_WS_Client:
                 curArg = curArg[0:curArg.find('=')]
             #print 'arg:'+curArg
             #print 'val:'+curVal
-            if curArg == 'output':
-                self._xslt = curVal
-            else:
+            if curArg != 'output':
                 arguments.update({curArg:curVal})
         return arguments
-
-
-class AMI:
-    """
-    This is the generic way of sending a command to the AMI server.
-    The first argument must be the name of the server command.
-    The other arguments follow as argumentName=argumentValue pairs.
-    For complete help see the PyAMI User guide
-    http://ami.in2p3.fr/opencms/opencms/AMI/www/Client/pyAMIUserGuide.pdf
-    """
-
-    _client = None
-    _authMethod = None # could be x509 or password
-
-    def __init__(self, cert_auth=True, transdict=None, verbose=False):
-
-        if (cert_auth):
-            self._authMethod = "x509"
-        self._client = AMI_WS_Client("", "", cert_auth, transdict, verbose=verbose)
-        self.verbose = verbose
-
-    def auth(self, user, password):
-
-        self._authMethod = "password"
-        self._client.reset_cert_auth()
-        self._client.authenticate(user, password)
-
-    def cert_auth(self, transdict=None):
-
-        self._authMethod = "x509"
-        self._client.set_cert_auth(transdict)
-
-    def write_config(self, fp):
-
-        self._client.config.write(fp)
-
-    def read_config(self, fpname):
-
-        self._client.config.read(fpname)
-
-    def execute(self, argv):
-
-        if len(argv) == 0:
-            raise AMI_Error("You must provide a command. Try 'amiCommand help'.")
-        if (argv[0] == 'help') or (argv[0] == '-help'):
-            raise AMI_Error(tutorial())
-        if self.verbose:
-            print "query:"
-            print ' '.join(argv)
-        if len(argv) == 1 and argv[0] == "UploadProxy":
-            self.upload_proxy()
-            f = StringIO("<?xml version=\"1.0\" ?><AMIMessage><info>Proxy uploaded</info></AMIMessage>");
-            doc = minidom.parse(f)
-            xmlResults = AMIResult(doc)
-            xmlResults.setxslt("text")
-        else:
-            # here we filter out those commands which have a locally generated help.
-            if(argv[0] == "help"):
-                raise AMI_Error("")
-            arguments = self._client.parse_args(argv)
-            amiReply = self._client.exec_command(arguments)
-            #print amiReply._execAMICommand_arrayReturn.encode('utf-8')
-            xmlResults = self._client._parse_data(amiReply)
-        if self.verbose:
-            print "reply:"
-            print xmlResults._dom.toxml()
-        return xmlResults
-
-    def upload_proxy(self):
-
-        return self._client.upload_proxy()
-
-    def set_user_credentials(self,argv):
-
-        password="None"
-        user="None"
-        remove = []
-        for i in range (0, len(argv)):
-            #print argv[i]
-            curArg = argv[i]
-            save = curArg
-            curVal = ""
-            if curArg.startswith('-'):
-                curArg = curArg[1:]
-                if curArg.startswith('-'):
-                    curArg = curArg[1:]
-            if curArg.find('=') > 0:
-                curVal = curArg[curArg.find('=') + 1:]
-                curVal = curVal.replace('=', '\=')
-                curArg = curArg[0:curArg.find('=')]
-            if curArg == 'AMIPass':
-                remove.append(save)
-                password=curVal
-            if curArg == 'AMIUser':
-                remove.append(save)
-                user=curVal
-        if ((user!="None")and(password!="None")):
-            self._client.authenticate(user, password)
-        out = []
-        for item in argv:
-            if ( not remove.__contains__(item)):
-                out.append(item)
-        return out
-
-    def check_auth(self):
-
-        try:
-            argv = []
-            argv.append("GetLevelInfo")
-            argv.append("levelName=motherDatabase")
-            argv.append("output=xml")
-            result = self.execute(argv)
-            msg = result.output()
-            return msg[msg.find('amiLogin="') + 10:msg.find('" database')]
-        except Exception, error:
-            return None
-
 
 """
 The code lines in this main method show how to
@@ -681,5 +621,5 @@ They could be copied from here to a command wrapper
     #Or obtain the DOM object which will allow you
     # to go directly to an element of the result
     #
-    dom=result.get_dom()
+    dom=result.dom
 """

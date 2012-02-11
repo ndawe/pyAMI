@@ -4,7 +4,7 @@ class Table(object):
     pass
 
 
-class PRODSTEP(Table):
+class PRODSTEP_TABLE(Table):
 
     fields = {
         'name': 'productionStepName',
@@ -18,7 +18,7 @@ class PRODSTEP(Table):
     foreign = None
 
 
-class FILE(Table):
+class FILE_TABLE(Table):
 
     fields = {
         'lfn': 'LFN',
@@ -32,7 +32,7 @@ class FILE(Table):
     foreign = None
 
 
-class DATASET(Table):
+class DATASET_TABLE(Table):
 
     fields = {
         'ami_status': 'amiStatus',
@@ -68,16 +68,22 @@ class DATASET(Table):
         'created': 'created',
         'created_by': 'createdBy',
         'creation_comment': 'creationComment',
+        'stream': 'streamName',
+        'in_container': 'inContainer',
+        'run': 'runNumber',
+        'period': 'period',
+        'beam': 'beamType',
+        'conditions_tag': 'conditionsTag',
     }
 
     primary = 'logicalDatasetName'
 
     foreign = {
-        'files': FILE
+        'files': FILE_TABLE
     }
 
 
-class NOMENCLATURE(Table):
+class NOMENCLATURE_TABLE(Table):
 
     fields = {
         'template': 'nomenclatureTemplate',
@@ -92,7 +98,7 @@ class NOMENCLATURE(Table):
     foreign = None
 
 
-class PROJECT(Table):
+class PROJECT_TABLE(Table):
 
     fields = {
         'tag': 'projectTag',
@@ -106,11 +112,11 @@ class PROJECT(Table):
     primary = 'projectTag'
 
     foreign = {
-        'nomenclature': NOMENCLATURE
+        'nomenclature': NOMENCLATURE_TABLE
     }
 
 
-class SUBPROJECT(Table):
+class SUBPROJECT_TABLE(Table):
 
     fields = {
         'tag': 'subProjectTag',
@@ -124,11 +130,11 @@ class SUBPROJECT(Table):
     primary = 'subProjectTag'
 
     foreign = {
-        'nomenclature': NOMENCLATURE
+        'nomenclature': NOMENCLATURE_TABLE
     }
 
 
-class TYPE(Table):
+class TYPE_TABLE(Table):
 
     fields = {
         'type': 'dataType',
@@ -142,7 +148,7 @@ class TYPE(Table):
     foreign = None
 
 
-class SUBTYPE(Table):
+class SUBTYPE_TABLE(Table):
 
     fields = {
         'type': 'subDataType',
@@ -157,11 +163,11 @@ class SUBTYPE(Table):
 
 
 TABLES = {
-    'data_type': TYPE,
-    'subData_type': SUBTYPE,
-    'projects': PROJECT,
-    'subProjects': SUBPROJECT,
-    'dataset': DATASET,
-    'nomenclature': NOMENCLATURE,
-    'productionStep': PRODSTEP
+    'data_type': TYPE_TABLE,
+    'subData_type': SUBTYPE_TABLE,
+    'projects': PROJECT_TABLE,
+    'subProjects': SUBPROJECT_TABLE,
+    'dataset': DATASET_TABLE,
+    'nomenclature': NOMENCLATURE_TABLE,
+    'productionStep': PRODSTEP_TABLE,
 }

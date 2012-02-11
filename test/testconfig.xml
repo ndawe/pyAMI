@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE unifiedTestConfiguration SYSTEM "http://www.hep.ucl.ac.uk/atlas/AtlasTesting/DTD/unifiedTestConfiguration.dtd">
+<unifiedTestConfiguration>
+    <rtt  xmlns="http://www.hep.ucl.ac.uk/atlas/AtlasTesting/rtt">
+        <rttContactPerson>pyAMI Team (tagcollector@NOSPAMlpsc.in2p3.fr)</rttContactPerson>
+        <mailto>tagcollector@NOSPAMlpsc.in2p3.fr</mailto>
+        <jobList>
+            <jobTransform userJobId="pyAMITest">
+                <jobTransformJobName>pyAMITest</jobTransformJobName>
+                <jobTransformCmd>python pyAMITest.py > pyAMITest.out</jobTransformCmd>
+                <group>pyAMIRTT</group>
+            </jobTransform>
+        </jobList>
+        <jobGroups>
+            <jobGroup name="pyAMIRTT" parent="Transform">
+                <keepFilePattern>pyAMITest*.out</keepFilePattern>
+                <auxFilePattern>pyAMITest*.py</auxFilePattern>
+            </jobGroup>
+        </jobGroups>
+    </rtt>
+</unifiedTestConfiguration>

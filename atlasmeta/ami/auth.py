@@ -1,5 +1,5 @@
-from ..userdata import DATA_ROOT
-from .config import AMIConfig
+from atlasmeta.userdata import DATA_ROOT
+from atlasmeta.ami.config import AMIConfig
 from getpass import getpass
 import base64
 import os

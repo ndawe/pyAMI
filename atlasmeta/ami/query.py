@@ -1,14 +1,12 @@
 # Author: Noel Dawe
 
 from __future__ import division
-import datetime
 import re
 import sys
-from .objects import DatasetInfo, RunPeriod
-from .schema import *
+from atlasmeta.ami.objects import DatasetInfo, RunPeriod
+from atlasmeta.ami.schema import *
+from atlasmeta.ami.defaults import YEAR, STREAM, TYPE, PROJECT
 
-
-YEAR = datetime.date.today().year % 1000
 
 DATA_PATTERN = re.compile('^(?P<project>\w+).(?P<run>[0-9]+).(?P<stream>[a-zA-Z_\-0-9]+).(recon|merge).(?P<type>[a-zA-Z_\-0-9]+).(?P<version>\w+)$')
 
@@ -28,6 +26,8 @@ def __clean_dataset(dataset):
     *dataset*: str
         dataset name
     """
+    if dataset is None:
+        return None
     return dataset.rstrip('/')
 
 
@@ -93,9 +93,9 @@ def print_table(table, sep='  ', stream=None):
     # reorganize data by columns
     cols = zip(*table)
     # compute column widths by taking maximum length of values per column
-    col_widths = [ max(len(value) for value in col) for col in cols ]
+    col_widths = [ max(len(value) for value in col) for col in cols[:-1] ]
     # create a suitable format string
-    format = sep.join(['%%-%ds' % width for width in col_widths ])
+    format = sep.join(['%%-%ds' % width for width in col_widths ] + ['%s'])
     # print each row using the computed format
     for row in table:
         print >> stream, format % tuple(row)
@@ -103,6 +103,8 @@ def print_table(table, sep='  ', stream=None):
 
 def search_query(client,
                  entity,
+                 cmd='SearchQuery',
+                 cmd_args=None,
                  pattern=None,
                  order=None,
                  limit=None,
@@ -123,6 +125,9 @@ def search_query(client,
     if primary_field not in query_fields:
         query_fields.append(primary_field)
     query_fields_str = ', '.join(query_fields)
+
+    if cmd_args is None:
+        cmd_args = {}
 
     if pattern is None:
         pattern = '%'
@@ -152,7 +157,7 @@ def search_query(client,
     else:
         limit = ''
 
-    args = ["SearchQuery",
+    args = [cmd,
             "entity=%s" % entity,
             "glite=SELECT "
                 + query_fields_str
@@ -162,6 +167,8 @@ def search_query(client,
             "project=%s" % project_name,
             "processingStep=%s" % processing_step_name,
             "mode=%s" % mode]
+    for item in cmd_args.items():
+        args.append("%s=%s" % item)
     if show_archived:
         args.append('showArchived=true')
 
@@ -313,16 +320,18 @@ def get_datasets(client,
     """
     if 'ami_status' not in kwargs:
         kwargs['ami_status'] = 'VALID'
+    cmd_args = {}
+    if parent_type is not None and 'parent_type' not in kwargs:
+        cmd_args['parentType'] = parent_type
     pattern = __clean_dataset(pattern)
-    query_fields, datasets = search_query(client=client, entity='dataset', pattern=pattern,
-                                          order=order, limit=limit, fields=fields, show_archived=show_archived, **kwargs)
-    if parent_type is not None:
-        _datasets = []
-        for dataset in datasets:
-            provenance = get_provenance(client, dataset['logicalDatasetName'], type=parent_type)
-            if provenance:
-                _datasets.append(dataset)
-        datasets = _datasets
+    query_fields, datasets = search_query(client=client,
+                                          cmd='DatasetSearchQuery',
+                                          cmd_args=cmd_args,
+                                          entity='dataset',
+                                          pattern=pattern,
+                                          order=order, limit=limit,
+                                          fields=fields,
+                                          show_archived=show_archived, **kwargs)
     if flatten:
         datasets = flatten_results(datasets, query_fields)
     return datasets
@@ -367,7 +376,10 @@ def get_all_periods(client):
             continue
         year = int(projectName[4:6])
         period_letter = m.group('periodletter')
-        period_number = int(m.group('periodnumber')) if m.group('periodnumber') else 0
+        if m.group('periodnumber'):
+            period_number = int(m.group('periodnumber'))
+        else:
+            period_number = 0
         if len(period_letter) != 1:
             pc = 0
         else:
@@ -411,7 +423,7 @@ def get_provenance(client, dataset, type=None, **kwargs):
     if kwargs:
         args += ['%s=%s' % item for item in kwargs.items()]
     result = client.execute(args)
-    dom = result.get_dom()
+    dom = result.dom
     graph = dom.getElementsByTagName('graph')
     dictOfLists = {}
     for line in graph:
@@ -455,7 +467,7 @@ def get_dataset_info(client, dataset, **kwargs):
         args += ['%s=%s' % item for item in kwargs.items()]
     dataset_info = DatasetInfo(dataset=dataset)
     result = client.execute(args)
-    dom = result.get_dom()
+    dom = result.dom
     # get the rowsets
     rowsets = dom.getElementsByTagName('rowset')
     for rowset in rowsets:
@@ -568,13 +580,15 @@ def get_dataset_xsec_effic(client, dataset, **kwargs):
 def get_data_datasets(client,
                       tag_pattern=None,
                       periods=None,
-                      project=('data%i_7TeV' % YEAR),
-                      stream='physics_JetTauEtmiss',
-                      type='AOD',
+                      project=PROJECT,
+                      stream=STREAM,
+                      type=TYPE,
                       parent_type=None,
+                      grl=None,
                       fields=None,
                       latest=False,
-                      flatten=False
+                      flatten=False,
+                      **kwargs
                      ):
     """
     *client*: AMIClient
@@ -600,10 +614,10 @@ def get_data_datasets(client,
     Returns a list of dicts if flatten==False
     else list of tuples with elements in same order as fields
     """
-    pattern = '%'.join([project, stream, type])
-    if tag_pattern is not None:
-        pattern += '%%%s' % tag_pattern
-    datasets = get_datasets(client, pattern, fields=fields)
+    datasets = get_datasets(client, tag_pattern, fields=fields,
+                            project=project, stream=stream, type=type,
+                            parent_type=parent_type,
+                            **kwargs)
     if periods is not None:
         runs = get_runs(client, periods=periods)
         ds_keep = []
@@ -614,13 +628,23 @@ def get_data_datasets(client,
                 if int(match.group('run')) in runs:
                     ds_keep.append(ds)
         datasets = ds_keep
-    if parent_type is not None:
-        _datasets = []
-        for dataset in datasets:
-            provenance = get_provenance(client, dataset['logicalDatasetName'], type=parent_type)
-            if provenance:
-                _datasets.append(dataset)
-        datasets = _datasets
+    if grl is not None:
+        # need to be compatible with Python 2.4
+        # so no ElementTree here...
+        from xml.dom import minidom
+        doc = minidom.parse(grl)
+        run_nodes = doc.getElementsByTagName('Run')
+        runs = []
+        for node in run_nodes:
+            runs.append(int(node.childNodes[0].data))
+        ds_keep = []
+        for ds in datasets:
+            name = ds['logicalDatasetName']
+            match = re.match(DATA_PATTERN, name)
+            if match:
+                if int(match.group('run')) in runs:
+                    ds_keep.append(ds)
+        datasets = ds_keep
     if latest:
         if type.startswith('NTUP'):
             VERSION_PATTERN = NTUP_VERSION_PATTERN
@@ -664,7 +688,7 @@ def get_data_datasets(client,
         datasets = ds_unique.values()
     datasets.sort(key=lambda ds: ds['logicalDatasetName'])
     if flatten:
-        fields = parse_fields(fields, DATASET)
+        fields = parse_fields(fields, DATASET_TABLE)
         fields.append('logicalDatasetName')
         return flatten_results(datasets, fields)
     return datasets
@@ -745,6 +769,7 @@ def humanize_bytes(bytes, precision=1):
 
     Assumes `from __future__ import division`.
 
+    >>> from atlasmeta.ami.query import humanize_bytes
     >>> humanize_bytes(1)
     '1 byte'
     >>> humanize_bytes(1024)
@@ -820,7 +845,7 @@ def list_files(client, dataset, limit=None, total=False, human_readable=False, l
             print >> stream, file['LFN']
 
 
-def print_dict(d, stream=None):
+def print_dict(d, sep=' ', stream=None):
     """
     *d* : dict
         dictionary to print
@@ -831,7 +856,5 @@ def print_dict(d, stream=None):
     """
     if stream is None:
         stream = sys.stdout
-    table = []
-    for name, value in d.items():
-        table.append([name, ':', value])
+    table = [[name, ':', value] for name, value in d.items()]
     print_table(table, sep=' ', stream=stream)
