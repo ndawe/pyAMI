@@ -344,14 +344,13 @@ class AMIClient(object):
         doc = minidom.parse(f)
         return AMIResult(doc)
 
-    def set_user_credentials(self, argv):
+    def set_user_credentials(self, args):
 
         password = "None"
         user = "None"
         remove = []
-        for i in range (0, len(argv)):
-            #print argv[i]
-            curArg = argv[i]
+        for arg in args:
+            curArg = arg
             save = curArg
             curVal = ""
             if curArg.startswith('-'):
@@ -371,19 +370,18 @@ class AMIClient(object):
         if ((user != "None") and (password != "None")):
             self.authenticate(user, password)
         out = []
-        for item in argv:
-            if ( not remove.__contains__(item)):
-                out.append(item)
+        for arg in args:
+            if ( not remove.__contains__(arg)):
+                out.append(arg)
         return out
 
     def check_auth(self):
 
         try:
-            argv = []
-            argv.append("GetLevelInfo")
-            argv.append("levelName=motherDatabase")
-            argv.append("output=xml")
-            result = self.execute(argv)
+            args = ["GetLevelInfo",
+                    "levelName=motherDatabase",
+                    "output=xml"]
+            result = self.execute(args)
             msg = result.output()
             return msg[msg.find('amiLogin="') + 10:msg.find('" database')]
         except Exception, error:
@@ -407,10 +405,7 @@ class AMIClient(object):
         """
         Returns `True` if user is authenticated, `False` otherwise.
         """
-        if self.config.get('AMI', 'AMIPass') and self.config.get('AMI', 'AMIUser'):
-            return True
-        else:
-            return False
+        return self.config.get('AMI', 'AMIPass') and self.config.get('AMI', 'AMIUser')
 
     def authenticate(self, user, password):
         """
