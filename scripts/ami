@@ -19,7 +19,6 @@ subparsers = parser.add_subparsers()
 Authorize
 """
 parser_auth = subparsers.add_parser('auth')
-parser_auth.set_defaults(pr=None)
 parser_auth.set_defaults(op=create_auth_config)
 
 """

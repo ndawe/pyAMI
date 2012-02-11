@@ -273,32 +273,76 @@ class AMIClient(object):
 
         self.config.read(fpname)
 
-    def execute(self, argv):
+    def execute(self, args):
 
-        if len(argv) == 0:
-            raise AMI_Error("You must provide a command. Try 'amiCommand help'.")
-        if (argv[0] == 'help') or (argv[0] == '-help'):
-            raise AMI_Error(tutorial())
         if self.verbose:
             print "query:"
-            print ' '.join(argv)
-        if len(argv) == 1 and argv[0] == "UploadProxy":
+            print ' '.join(args)
+        if len(args) == 1 and args[0] == "UploadProxy":
             self.upload_proxy()
             f = StringIO("<?xml version=\"1.0\" ?><AMIMessage><info>Proxy uploaded</info></AMIMessage>");
             doc = minidom.parse(f)
             result = AMIResult(doc)
-            result.set_xslt("text")
         else:
-            # here we filter out those commands which have a locally generated help.
-            if(argv[0] == "help"):
-                raise AMI_Error("")
-            arguments = self.parse_args(argv)
-            reply = self.exec_command(arguments)
+            args = self._parse_args(args)
+            self._check_format(args)
+            if 'command' not in args:
+                raise AMI_Error("You must provide a command")
+            args = self.config.include(args)
+            request = execAMICommand_arrayRequest()
+            request._args = []
+            for name, value in args.items():
+                if not (name == "AMIUser" and value == "") and \
+                   not (name == "AMIPass" and value == "") :
+                    if name == 'AMIPass':
+                        value = base64.b64decode(value)
+                    request._args.append('-%s=%s' % (name, value))
+            try:
+                reply = self._ami.execAMICommand_array(request)
+            except Exception, msg:
+                error = str(msg)
+                try:
+                    if '<?' not in error:
+                        error = '<?xml version="1.0" ?><AMIMessage><error>%s</error></AMIMessage>' % error
+                    f = StringIO(error[error.find('<?'):error.find('</AMIMessage>') + 13])
+                    doc = minidom.parse(f)
+                    result = AMIResult(doc, raise_on_error=False)
+                    outputmsg = result.output()
+                except Exception:
+                    raise AMI_Error("cannot parse error : " + error)
+                raise AMI_Error(outputmsg)
             result = self._parse_reply(reply)
         if self.verbose:
             print "reply:"
             print result.output(format='text')
         return result
+
+    def _parse_args(self, args):
+
+        arguments = {}
+        arguments.update({'command':args[0]})
+        for i in range (1, len(args)):
+            curArg = args[i]
+            curVal = ""
+            if curArg.startswith('-'):
+                curArg = curArg[1:]
+                if curArg.startswith('-'):
+                    curArg = curArg[1:]
+            if curArg.find('=') > 0:
+                curVal = curArg[curArg.find('=') + 1:]
+                curVal = curVal.replace('=', '\=')
+                curArg = curArg[0:curArg.find('=')]
+            if curArg != 'output':
+                arguments.update({curArg:curVal})
+        return arguments
+
+    def _parse_reply(self, reply):
+        """
+        This method makes a dom object and then applies a transformation
+        """
+        f = StringIO(reply._execAMICommand_arrayReturn.encode('utf-8'))
+        doc = minidom.parse(f)
+        return AMIResult(doc)
 
     def set_user_credentials(self, argv):
 
@@ -438,40 +482,6 @@ class AMIClient(object):
         """
         self.config.reset()
 
-    def exec_command(self, _parameters):
-        """
-        This method is called internally by other methods to assemble parameters
-        in the format recognised by the execAMICommand_array() method supplied by the AMI Web Service.
-        """
-        self._check_format(_parameters)
-        if 'command' not in _parameters:
-            raise AMI_Error("You must provide a command")
-        _parameters = self.config.include(_parameters)
-        request = execAMICommand_arrayRequest()
-        request._args = []
-        for x in _parameters:
-            if not(x == "AMIUser" and _parameters[x] == "") and \
-               not(x == "AMIPass" and _parameters[x] == "") :
-                value = _parameters[x]
-                if x == 'AMIPass':
-                    value = base64.b64decode(value)
-                request._args.append('-' + x + '=' + value)
-        try:
-            reply = self._ami.execAMICommand_array(request)
-        except Exception, msg:
-            error = str(msg)
-            try:
-                if '<?' not in error:
-                    error = '<?xml version="1.0" ?><AMIMessage><error>%s</error></AMIMessage>' % error
-                f = StringIO(error[error.find('<?'):error.find('</AMIMessage>') + 13])
-                doc = minidom.parse(f)
-                result = AMIResult(doc, raise_on_error=False)
-                outputmsg = result.output()
-            except Exception:
-                raise AMI_Error("cannot parse error : " + error)
-            raise AMI_Error(outputmsg)
-        return reply
-
     def upload_proxy(self):
 
         if self._transdict is None:
@@ -486,37 +496,6 @@ class AMIClient(object):
         self._ami.upload_proxy(request)._upload_proxyReturn
         return "Proxy successfully uploaded"
 
-    def _parse_reply(self, reply):
-        """
-        This method makes a dom object and then applies a transformation
-        """
-        f = StringIO(reply._execAMICommand_arrayReturn.encode('utf-8'))
-        doc = minidom.parse(f)
-        result = AMIResult(doc)
-        return result
-
-    def parse_args(self , argv):
-
-        arguments = {}
-        arguments.update({'command':argv[0]})
-        #print 'function parse'
-        for i in range (1, len(argv)):
-        #print argv[i]
-            curArg = argv[i]
-            curVal = ""
-            if curArg.startswith('-'):
-                curArg = curArg[1:]
-                if curArg.startswith('-'):
-                    curArg = curArg[1:]
-            if curArg.find('=') > 0:
-                curVal = curArg[curArg.find('=') + 1:]
-                curVal = curVal.replace('=', '\=')
-                curArg = curArg[0:curArg.find('=')]
-            #print 'arg:'+curArg
-            #print 'val:'+curVal
-            if curArg != 'output':
-                arguments.update({curArg:curVal})
-        return arguments
 
 """
 The code lines in this main method show how to
