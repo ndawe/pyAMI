@@ -1,7 +1,7 @@
 #!/bin/bash
 
-AFS_PATH=/afs/cern.ch/atlas/software/tools/atlasmeta
+PYAMI_AFS_PATH=/afs/cern.ch/atlas/software/tools/atlasmeta
 source setup.sh
-cp setup.sh $AFS_PATH
-export ATLASMETA_USE_DISTRIBUTE=1
-python setup.py install --prefix=$AFS_PATH
+cp setup.sh $PYAMI_AFS_PATH
+export PYAMI_USE_DISTRIBUTE=1
+python setup.py install --prefix=$PYAMI_AFS_PATH
