@@ -1,11 +1,11 @@
 .. -*- mode: rst -*-
 
-For more information see `atlasmeta <http://cern.ch/noel.dawe/projects/atlasmeta>`_
+For more information see `pyAMI <http://cern.ch/noel.dawe/projects/pyAMI>`_
 
 About
 -----
 
-atlasmeta is a fork of `pyAMI <http://ccami01.in2p3.fr:8080/opencms/opencms/AMI/www/Tutorial/pyAMI.html>`_
+pyAMI is a fork of `pyAMI <http://ccami01.in2p3.fr:8080/opencms/opencms/AMI/www/Tutorial/pyAMI.html>`_
 with a cleaner codebase, enhanced API, and improved command-line functionality.
 All commands are simply subcommands of ``ami``.
 
@@ -34,17 +34,17 @@ display dataset metadata::
    ami dataset info dataset.name
 
 and query projects, data types, dataset provenance, etc.
-``atlasmeta`` also provides an API allowing you to perform all of the same queries
+``pyAMI`` also provides an API allowing you to perform all of the same queries
 from within your own Python program.
 
 
 On LXPLUS at CERN
 -----------------
 
-atlasmeta is installed centrally on LXPLUS at CERN. To begin using atlasmeta
+pyAMI is installed centrally on LXPLUS at CERN. To begin using pyAMI
 simply::
 
-    source /afs/cern.ch/atlas/software/tools/atlasmeta/setup.sh
+    source /afs/cern.ch/atlas/software/tools/pyAMI/setup.sh
 
 then authenticate yourself if you haven't already (see below).
 
@@ -59,20 +59,20 @@ At least Python 2.4, `ZSI <http://pypi.python.org/pypi/ZSI/>`_, and `argparse <h
 Install
 -------
 
-Get the latest tarball here: `http://cern.ch/noel.dawe/downloads/atlasmeta <http://cern.ch/noel.dawe/downloads/atlasmeta>`_
+Get the latest tarball here: `http://cern.ch/noel.dawe/downloads/pyAMI <http://cern.ch/noel.dawe/downloads/pyAMI>`_
 
 Untar and install (replace X appropriately)::
 
-   tar -zxvf atlasmeta-X.tar.gz
-   cd atlasmeta-X
+   tar -zxvf pyAMI-X.tar.gz
+   cd pyAMI-X
 
-By default, atlasmeta uses distutils to install but you may optionally use
+By default, pyAMI uses distutils to install but you may optionally use
 distribute by setting the environment variable::
 
-   export ATLASMETA_USE_DISTRIBUTE=1
+   export PYAMI_USE_DISTRIBUTE=1
 
 One advantage of using distribute is that all dependencies are automatically
-downloaded and installed for you. To install atlasmeta into your home directory
+downloaded and installed for you. To install pyAMI into your home directory
 with newer Python (>2.4) versions::
 
    python setup.py install --user
@@ -95,5 +95,5 @@ Authenticate yourself::
    ami auth
 
 This will prompt you for your AMI username and password.
-You will only need to do this once since your credentials are stored in ~/.atlasmeta/ami.conf
+You will only need to do this once since your credentials are stored in ~/.pyAMI/ami.conf
 for later use. If your credentials change just run ``ami auth`` again.

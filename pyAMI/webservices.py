@@ -11,7 +11,7 @@ from ZSI.generate.pyclass import pyclass_type
 from ZSI.TCcompound import ComplexType, Struct
 from ZSI import client
 import urlparse, types
-from atlasmeta.ami import endpoint
+from pyAMI import endpoint
 ##############################
 # targetNamespace
 # https://ccami01.in2p3.fr:8443/AMI/services/AMIWebService

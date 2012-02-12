@@ -3,9 +3,9 @@
 from __future__ import division
 import re
 import sys
-from atlasmeta.ami.objects import DatasetInfo, RunPeriod
-from atlasmeta.ami.schema import *
-from atlasmeta.ami.defaults import YEAR, STREAM, TYPE, PROJECT
+from pyAMI.objects import DatasetInfo, RunPeriod
+from pyAMI.schema import *
+from pyAMI.defaults import YEAR, STREAM, TYPE, PROJECT
 
 
 DATA_PATTERN = re.compile('^(?P<project>\w+).(?P<run>[0-9]+).(?P<stream>[a-zA-Z_\-0-9]+).(recon|merge).(?P<type>[a-zA-Z_\-0-9]+).(?P<version>\w+)$')
@@ -50,7 +50,7 @@ def parse_fields(fields, table):
     *fields*: [tuple | list | str ]
         field names. If a string, then comma separated
 
-    *table*: atlasmeta.ami.schema.Table
+    *table*: pyAMI.ami.schema.Table
         the schema table containing these fields
     """
     query_fields = []
@@ -769,7 +769,7 @@ def humanize_bytes(bytes, precision=1):
 
     Assumes `from __future__ import division`.
 
-    >>> from atlasmeta.ami.query import humanize_bytes
+    >>> from pyAMI.query import humanize_bytes
     >>> humanize_bytes(1)
     '1 byte'
     >>> humanize_bytes(1024)

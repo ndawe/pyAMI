@@ -3,10 +3,10 @@
 # Author: Noel Dawe
 
 import argparse
-from atlasmeta.ami.query import *
-from atlasmeta.ami.schema import *
-from atlasmeta.ami.auth import create_auth_config
-from atlasmeta.ami.defaults import YEAR, PROJECT, STREAM, TYPE
+from pyAMI.query import *
+from pyAMI.schema import *
+from pyAMI.auth import create_auth_config
+from pyAMI.defaults import YEAR, PROJECT, STREAM, TYPE
 
 
 parser = argparse.ArgumentParser(
@@ -221,8 +221,8 @@ parser_update.set_defaults(op=None)
 
 args = parser.parse_args()
 
-from atlasmeta.ami.client import AMIClient, AMIResult
-from atlasmeta.ami.auth import AMI_CONFIG, create_auth_config
+from pyAMI.client import AMIClient, AMIResult
+from pyAMI.auth import AMI_CONFIG, create_auth_config
 import sys
 import os
 

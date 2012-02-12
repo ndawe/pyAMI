@@ -9,11 +9,11 @@ import base64
 import urllib
 import urlparse
 
-from atlasmeta.ami.webservices import *
-from atlasmeta.ami.exceptions import *
-from atlasmeta.ami.exceptions import _AMI_Error_Base
-from atlasmeta.ami import endpoint
-from atlasmeta.ami.config import AMIConfig
+from pyAMI.webservices import *
+from pyAMI.exceptions import *
+from pyAMI.exceptions import _AMI_Error_Base
+from pyAMI import endpoint
+from pyAMI.config import AMIConfig
 from xml.dom import minidom, Node
 
 USE_LXML = True
@@ -201,11 +201,11 @@ class AMIClient(object):
     """
     AMI Web Service Client for Python. Most methods defined in this
     class mirror the methods recognised by the AMI Web Service.
-    Mandatory parameters are enforced and atlasmeta will complain if
+    Mandatory parameters are enforced and pyAMI will complain if
     they are left out. All other parameters not recognised
-    by atlasmeta will be passed on to the AMI Web Service.
+    by pyAMI will be passed on to the AMI Web Service.
 
-    NB: atlasmeta expects XML format when it tries to parse replies from the AMI Web Service.
+    NB: pyAMI expects XML format when it tries to parse replies from the AMI Web Service.
     """
 
     def __init__(self, user=None, password=None, cert_auth=False, transdict=None, verbose=False):

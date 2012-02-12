@@ -5,11 +5,11 @@ Created on 22 sept. 2010
 @author: lambert
 '''
 import sys
-from atlasmeta.ami import *
+from pyAMI import *
 
 def main(argv):
     try:
-        amiclient = AMI()
+        amiclient = AMIClient()
         #amiclient.auth(user, password)
 
         argv = []
@@ -27,7 +27,7 @@ def main(argv):
         #print the default output of the command result
         # The default output=text, but others can be set using argument output.
         print 'Test xml/xsl -> txt\n'
-        print result.output()
+        print result.output(fornat='text')
 
         #print 'Test xml -> dom -> dict\n'
         #print result.getDict();

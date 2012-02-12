@@ -1,6 +1,6 @@
-from atlasmeta.ami.client import AMIClient
-from atlasmeta.ami.query import get_runs
-from atlasmeta.ami.auth import AMI_CONFIG, create_auth_config
+from pyAMI.client import AMIClient
+from pyAMI.query import get_runs
+from pyAMI.auth import AMI_CONFIG, create_auth_config
 import os
 
 client = AMIClient()

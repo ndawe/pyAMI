@@ -4,7 +4,7 @@ import os
 
 kw = {}
 use_distribute = False
-if os.getenv('ATLASMETA_USE_DISTRIBUTE') in ('1', 'true'):
+if os.getenv('PYAMI_USE_DISTRIBUTE') in ('1', 'true'):
     use_distribute = True
 if use_distribute:
     from distribute_setup import use_setuptools
@@ -15,18 +15,17 @@ if use_distribute:
 else:
     from distutils.core import setup
     import sys
-    packages = ['atlasmeta',
-                'atlasmeta/ami']
+    packages = ['pyAMI']
     if sys.version_info >= (2, 5):
         kw['requires'] = ['ZSI', 'argparse', 'lxml']
 
 from glob import glob
 
-execfile('atlasmeta/info.py')
+execfile('pyAMI/info.py')
 
-setup(name='atlasmeta',
+setup(name='pyAMI',
       version=__VERSION__,
-      description='ATLAS metadata',
+      description='ATLAS Metadata Interface',
       long_description=open('README.rst').read(),
       author='Noel Dawe',
       author_email='noel.dawe@cern.ch',
