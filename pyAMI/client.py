@@ -223,21 +223,21 @@ class AMIClient(object):
             :Default: None
         """
         self.verbose = verbose
-        self.config = AMIConfig()
+        self._config = AMIConfig()
         self._transdict = None
         self._client = None
-        self._authMethod = None # could be x509 or password
+        self._auth_method = None # could be x509 or password
 
         if user is not None:
-            self.config.set('AMI', 'AMIUser', user)
+            self._config.set('AMI', 'AMIUser', user)
 
         if password is not None:
-            self.config.set('AMI', 'AMIPass', password)
+            self._config.set('AMI', 'AMIPass', password)
 
-        self._loc = AMISecureWebServiceServiceLocator()
+        self._locator = AMISecureWebServiceServiceLocator()
         if cert_auth:
-            self._authMethod = "x509"
-            ssl = self._loc.getAMISecureWebServiceAddress().startswith('https')
+            self._auth_method = "x509"
+            ssl = self._locator.getAMISecureWebServiceAddress().startswith('https')
             if not ssl:
                 self._transdict = None
             else:
@@ -252,26 +252,26 @@ class AMIClient(object):
             #kw = {'transdict':None, 'transport':amiHttpLib.HTTPSConnection}
             kw = {'transdict':None}
 
-        self._ami = self._loc.getAMISecureWebService(url=None, **kw)
+        self._ami = self._locator.getAMISecureWebService(url=None, **kw)
 
     def auth(self, user, password):
 
-        self._authMethod = "password"
+        self._auth_method = "password"
         self.reset_cert_auth()
         self.authenticate(user, password)
 
     def cert_auth(self, transdict=None):
 
-        self._authMethod = "x509"
+        self._auth_method = "x509"
         self.set_cert_auth(transdict)
 
     def write_config(self, fp):
 
-        self.config.write(fp)
+        self._config.write(fp)
 
     def read_config(self, fpname):
 
-        self.config.read(fpname)
+        self._config.read(fpname)
 
     def execute(self, args):
 
@@ -288,7 +288,7 @@ class AMIClient(object):
             self._check_format(args)
             if 'command' not in args:
                 raise AMI_Error("You must provide a command")
-            args = self.config.include(args)
+            args = self._config.include(args)
             request = execAMICommand_arrayRequest()
             request._args = []
             for name, value in args.items():
@@ -321,19 +321,18 @@ class AMIClient(object):
 
         arguments = {}
         arguments.update({'command':args[0]})
-        for i in range (1, len(args)):
-            curArg = args[i]
-            curVal = ""
-            if curArg.startswith('-'):
-                curArg = curArg[1:]
-                if curArg.startswith('-'):
-                    curArg = curArg[1:]
-            if curArg.find('=') > 0:
-                curVal = curArg[curArg.find('=') + 1:]
-                curVal = curVal.replace('=', '\=')
-                curArg = curArg[0:curArg.find('=')]
-            if curArg != 'output':
-                arguments.update({curArg:curVal})
+        for arg in args[1:]:
+            value = ""
+            if arg.startswith('-'):
+                arg = arg[1:]
+                if arg.startswith('-'):
+                    arg = arg[1:]
+            if arg.find('=') > 0:
+                value = arg[arg.find('=') + 1:]
+                value = value.replace('=', '\=')
+                arg = arg[0:arg.find('=')]
+            if arg != 'output':
+                arguments.update({arg:value})
         return arguments
 
     def _parse_reply(self, reply):
@@ -350,28 +349,27 @@ class AMIClient(object):
         user = "None"
         remove = []
         for arg in args:
-            curArg = arg
-            save = curArg
-            curVal = ""
-            if curArg.startswith('-'):
-                curArg = curArg[1:]
-                if curArg.startswith('-'):
-                    curArg = curArg[1:]
-            if curArg.find('=') > 0:
-                curVal = curArg[curArg.find('=') + 1:]
-                curVal = curVal.replace('=', '\=')
-                curArg = curArg[0:curArg.find('=')]
-            if curArg == 'AMIPass':
+            save = arg
+            value = ""
+            if arg.startswith('-'):
+                arg = arg[1:]
+                if arg.startswith('-'):
+                    arg = arg[1:]
+            if arg.find('=') > 0:
+                value = arg[arg.find('=') + 1:]
+                value = value.replace('=', '\=')
+                arg = arg[0:arg.find('=')]
+            if arg == 'AMIPass':
                 remove.append(save)
-                password=curVal
-            if curArg == 'AMIUser':
+                password=value
+            if arg == 'AMIUser':
                 remove.append(save)
-                user=curVal
-        if ((user != "None") and (password != "None")):
+                user=value
+        if (user != "None") and (password != "None"):
             self.authenticate(user, password)
         out = []
         for arg in args:
-            if ( not remove.__contains__(arg)):
+            if arg not in remove:
                 out.append(arg)
         return out
 
@@ -390,7 +388,7 @@ class AMIClient(object):
     def reset_cert_auth(self):
 
         kw = {}
-        self._ami = self._loc.getAMISecureWebService(url=None, **kw)
+        self._ami = self._locator.getAMISecureWebService(url=None, **kw)
 
     def set_cert_auth(self, transdict=None):
 
@@ -399,20 +397,20 @@ class AMIClient(object):
             kw = {'transdict':self.setup_identity()}
         else:
             kw = {'transdict':transdict}
-        self._ami = self._loc.getAMISecureWebService(url=None, **kw)
+        self._ami = self._locator.getAMISecureWebService(url=None, **kw)
 
     def is_authenticated(self):
         """
         Returns `True` if user is authenticated, `False` otherwise.
         """
-        return self.config.get('AMI', 'AMIPass') and self.config.get('AMI', 'AMIUser')
+        return self._config.get('AMI', 'AMIPass') and self._config.get('AMI', 'AMIUser')
 
     def authenticate(self, user, password):
         """
         Sets User ID and password with *user* and *password* parameters respectively.
         """
-        self.config.set('AMI', 'AMIUser', user)
-        self.config.set('AMI', 'AMIPass', password)
+        self._config.set('AMI', 'AMIUser', user)
+        self._config.set('AMI', 'AMIPass', password)
 
     def setup_identity(self):
 
@@ -475,7 +473,7 @@ class AMIClient(object):
         """
         Resets parameter values in the pyAMI.cfg to default values.
         """
-        self.config.reset()
+        self._config.reset()
 
     def upload_proxy(self):
 
