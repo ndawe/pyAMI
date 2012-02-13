@@ -1,6 +1,25 @@
-git-svn clone:
 
-git svn clone https://lpsc.in2p3.fr/svn/AMI/ \
---trunk=trunk/AMIWebServiceClient/pyAMI/ \
---branches=branches/AMIWebServiceClient/pyAMI/branches/ \
---tags=tags/AMIWebServiceClient/pyAMI/tags/ --prefix=svn/ pyAMI
+Create a source distribution
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+First enable building with distribute:
+
+    export PYAMI_USE_DISTRIBUTE=1
+
+Set the version number in pyAMI/info.py and make sure
+all required files are included in MANIFEST.in. Then run:
+
+    python setup.py sdist
+
+The new .tar.gz and .egg can now be found in dist/
+
+
+Using git
+~~~~~~~~~
+
+To clone the repository with git-svn:
+
+    git svn clone https://lpsc.in2p3.fr/svn/AMI/ \
+    --trunk=trunk/AMIWebServiceClient/pyAMI/ \
+    --branches=branches/AMIWebServiceClient/pyAMI/branches/ \
+    --tags=tags/AMIWebServiceClient/pyAMI/tags/ --prefix=svn/ pyAMI
