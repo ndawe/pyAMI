@@ -65,6 +65,8 @@ class AMIResult(object):
         'text':      'AMIXmlToText.xsl',
         'verbose':   'AMIXmlToTextVerbose.xsl',
     }
+    
+    _xslt = None
 
     def __init__(self, dom):
 
@@ -72,6 +74,9 @@ class AMIResult(object):
         self.errors = dom.getElementsByTagName('error')
         self.infos = dom.getElementsByTagName('info')
         self.rowsets = dom.getElementsByTagName('rowset')
+        
+    def setxslt(self , xslt):
+        self._xslt = xslt  
 
     def write_gpickle(self, filenameBase):
 
@@ -165,7 +170,13 @@ class AMIResult(object):
                         field_dict[name] = 'NULL'
                 yield field_dict
 
-    def output(self, format='xml'):
+    def output(self, format=None):
+        
+        if format is None:
+            if self._xslt is not None:
+                format = self._xslt
+            else:
+                format = 'text'
 
         format = format.lower()
         if format == 'xml':
@@ -207,7 +218,9 @@ class AMIClient(object):
 
     NB: pyAMI expects XML format when it tries to parse replies from the AMI Web Service.
     """
-
+    
+    _xslt = None
+    
     def __init__(self, user=None, password=None, cert_auth=False, transdict=None, verbose=False):
         """
         Parameters
@@ -283,6 +296,7 @@ class AMIClient(object):
             f = StringIO("<?xml version=\"1.0\" ?><AMIMessage><info>Proxy uploaded</info></AMIMessage>");
             doc = minidom.parse(f)
             result = AMIResult(doc)
+            result.setxslt("text")
         else:
             args = self._parse_args(args)
             self._check_format(args)
@@ -306,8 +320,8 @@ class AMIClient(object):
                         error = '<?xml version="1.0" ?><AMIMessage><error>%s</error></AMIMessage>' % error
                     f = StringIO(error[error.find('<?'):error.find('</AMIMessage>') + 13])
                     doc = minidom.parse(f)
-                    result = AMIResult(doc, raise_on_error=False)
-                    outputmsg = result.output()
+                    result = AMIResult(doc)
+                    outputmsg = str(result.output())
                 except Exception:
                     raise AMI_Error("cannot parse error : " + error)
                 raise AMI_Error(outputmsg)
@@ -331,9 +345,14 @@ class AMIClient(object):
                 value = arg[arg.find('=') + 1:]
                 value = value.replace('=', '\=')
                 arg = arg[0:arg.find('=')]
-            if arg != 'output':
+            #if arg != 'output':
+            #    arguments.update({arg:value})
+            if arg == 'output':
+                self._xslt = value
+            else:
                 arguments.update({arg:value})
         return arguments
+       
 
     def _parse_reply(self, reply):
         """
@@ -341,7 +360,10 @@ class AMIClient(object):
         """
         f = StringIO(reply._execAMICommand_arrayReturn.encode('utf-8'))
         doc = minidom.parse(f)
-        return AMIResult(doc)
+        self._result = AMIResult(doc)
+        self._result.setxslt(self._xslt)
+        return self._result
+        #return AMIResult(doc)
 
     def set_user_credentials(self, args):
 
@@ -361,10 +383,10 @@ class AMIClient(object):
                 arg = arg[0:arg.find('=')]
             if arg == 'AMIPass':
                 remove.append(save)
-                password=value
+                password = value
             if arg == 'AMIUser':
                 remove.append(save)
-                user=value
+                user = value
         if (user != "None") and (password != "None"):
             self.authenticate(user, password)
         out = []
@@ -418,7 +440,7 @@ class AMIClient(object):
             if hasattr(os, "geteuid"):
                 user_id = os.geteuid()
             else:
-                user_id=-1
+                user_id = -1
         except:
             ## In case client aren't running on linux system
             user_id = -1
