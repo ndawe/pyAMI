@@ -9,12 +9,17 @@ import base64
 import urllib
 import urlparse
 
+
+
 from pyAMI.webservices import *
 from pyAMI.exceptions import *
 from pyAMI.exceptions import _AMI_Error_Base
 from pyAMI import endpoint
 from pyAMI.config import AMIConfig
+from pyAMI.userdata import DATA_ROOT
 from xml.dom import minidom, Node
+
+AMI_CONFIG = os.path.join(DATA_ROOT, 'ami.cfg')
 
 USE_LXML = True
 try:
@@ -221,7 +226,8 @@ class AMIClient(object):
     
     _xslt = None
     
-    def __init__(self, user=None, password=None, cert_auth=False, transdict=None, verbose=False):
+    #def __init__(self, user=None, password=None, cert_auth=False, transdict=None, verbose=False):
+    def __init__(self, verbose=False):
         """
         Parameters
         ----------
@@ -237,47 +243,149 @@ class AMIClient(object):
         """
         self.verbose = verbose
         self._config = AMIConfig()
+        self._locator = AMISecureWebServiceServiceLocator()#AMI web service locator
         self._transdict = None
-        self._client = None
-        self._auth_method = None # could be x509 or password
+        #self._client = None not used ...
+        #self._auth_method = None # could be x509 or password not used...
+        self._ami = None # AMI Secure Web Service instance
 
-        if user is not None:
-            self._config.set('AMI', 'AMIUser', user)
-
-        if password is not None:
-            self._config.set('AMI', 'AMIPass', password)
-
-        self._locator = AMISecureWebServiceServiceLocator()
-        if cert_auth:
-            self._auth_method = "x509"
-            ssl = self._locator.getAMISecureWebServiceAddress().startswith('https')
-            if not ssl:
-                self._transdict = None
-            else:
-                if transdict is None:
-                    self._transdict = self.setup_identity()
-                else:
-                    self._transdict = transdict
-
-            kw = {'transdict':self._transdict}
-        else:
-            # for SSLv3 SSLv23 problems use amiHttpLib.HTTPSConnection
-            #kw = {'transdict':None, 'transport':amiHttpLib.HTTPSConnection}
-            kw = {'transdict':None}
-
-        self._ami = self._locator.getAMISecureWebService(url=None, **kw)
+    """
+    User/password authentication
+    ----------------------------
+    """
 
     def auth(self, user, password):
 
-        self._auth_method = "password"
+        #self._auth_method = "password"
         self.reset_cert_auth()
         self.authenticate(user, password)
+        
+    def is_authenticated(self):
+        """
+		Returns `True` if user is authenticated, `False` otherwise.
+		"""
+        return (self._config.get('AMI', 'AMIPass') != '') and (self._config.get('AMI', 'AMIUser') != '')
 
-    def cert_auth(self, transdict=None):
+    def authenticate(self, user, password):
+        """
+		Sets User ID and password with *user* and *password* parameters respectively.
+		"""
+        self._config.set('AMI', 'AMIUser', user)
+        self._config.set('AMI', 'AMIPass', base64.b64encode(password))
+        
+    """
+	Certificate authentication
+	--------------------------
+	"""
 
-        self._auth_method = "x509"
-        self.set_cert_auth(transdict)
+    #def cert_auth(self, transdict=None):
 
+        #self._auth_method = "x509"
+    #   self.set_cert_auth(transdict)
+
+    def reset_cert_auth(self):
+        kw = {}
+        self._ami = self._locator.getAMISecureWebService(url=None, **kw)
+
+    def set_cert_auth(self):
+        kw = {'transdict':self.setup_identity()}
+        self._ami = self._locator.getAMISecureWebService(url=None, **kw)
+        
+   
+    def setup_identity(self):
+
+        try:
+            if hasattr(os, "geteuid"):
+                user_id = os.geteuid()
+            else:
+                user_id = -1
+        except:
+            ## In case client aren't running on linux system
+            user_id = -1
+        options = {}
+        #options['capath']= "/etc/grid-security/certificates"
+
+        if user_id == 0:
+            ## we are running as root, use host certificate
+            options['cert_file'] = "/etc/grid-security/hostcert.pem"
+            options['key_file'] = "/etc/grid-security/hostkey.pem"
+        else:
+            proxy_fname = "/tmp/x509up_u%d" % user_id
+            ## look for a proxy in X509_USER_PROXY env variable
+            if os.environ.has_key("X509_USER_PROXY") and os.path.exists(os.environ['X509_USER_PROXY']):
+                options['cert_file'] = os.environ['X509_USER_PROXY']
+                options['key_file'] = os.environ['X509_USER_PROXY']
+            ## look for a proxy
+            elif os.path.exists(proxy_fname):
+                options['cert_file'] = proxy_fname
+                options['key_file'] = proxy_fname
+            ## no configured environnement, using https with no client authentication
+            else:
+                options = None
+        return options
+       
+    """
+    Authentication from AMICommand arguments
+    ----------------------------------------
+    """
+    def set_user_credentials(self, args):
+
+        password = "None"
+        user = "None"
+        remove = []
+        for arg in args:
+            save = arg
+            value = ""
+            if arg.startswith('-'):
+                arg = arg[1:]
+                if arg.startswith('-'):
+                    arg = arg[1:]
+            if arg.find('=') > 0:
+                value = arg[arg.find('=') + 1:]
+                value = value.replace('=', '\=')
+                arg = arg[0:arg.find('=')]
+            if arg == 'AMIPass':
+                remove.append(save)
+                password = value
+            if arg == 'AMIUser':
+                remove.append(save)
+                user = value
+        if (user != "None") and (password != "None"):
+            self.authenticate(user, password)
+        out = []
+        for arg in args:
+            if arg not in remove:
+                out.append(arg)
+        return out    
+    
+    
+    """
+    Authentication checking
+    -----------------------
+    """
+    def check_auth(self):
+
+        try:
+            args = ["GetLevelInfo",
+                    "levelName=motherDatabase",
+                    "output=xml"]
+            result = self.execute(args)
+            msg = result.output()
+            return msg[msg.find('amiLogin="') + 10:msg.find('" database')]
+        except Exception, error:
+            return None
+
+
+    def _check_authentication(self):
+
+        if not self.is_authenticated():
+            raise AMI_Error("AMIUser and AMIPass must be defined!")    
+    
+    
+    """
+    AMIConfig settings
+    ------------------
+    """  
     def write_config(self, fp):
 
         self._config.write(fp)
@@ -285,8 +393,33 @@ class AMIClient(object):
     def read_config(self, fpname):
 
         self._config.read(fpname)
-
+        
+    def reset_config(self):
+        """
+        Resets parameter values in the pyAMI.cfg to default values.
+        """
+        self._config.reset()
+    
+    """
+    Execute methods
+    --------------
+    Here we check authentication methods:
+    	- Argument AMIUser and AMIPass from command line
+    	- Config file
+    	- VOMS proxy
+    """
     def execute(self, args):
+
+        args = self.set_user_credentials(args)
+        if not self.is_authenticated():
+            if os.path.exists(AMI_CONFIG):
+                self.read_config(AMI_CONFIG)
+                self.reset_cert_auth()
+            elif not self.is_authenticated():
+                    self.set_cert_auth()    
+        else:
+            self.reset_cert_auth()
+                
 
         if self.verbose:
             print "query:"
@@ -316,6 +449,8 @@ class AMIClient(object):
             except Exception, msg:
                 error = str(msg)
                 try:
+                    if 'alert certificate expired' in error:
+                        error = 'No password or config file found, expecting VOMS proxy...\nCannot find a valid VOMS proxy, please renew it with voms-proxy-init.'
                     if '<?' not in error:
                         error = '<?xml version="1.0" ?><AMIMessage><error>%s</error></AMIMessage>' % error
                     f = StringIO(error[error.find('<?'):error.find('</AMIMessage>') + 13])
@@ -365,123 +500,6 @@ class AMIClient(object):
         return self._result
         #return AMIResult(doc)
 
-    def set_user_credentials(self, args):
-
-        password = "None"
-        user = "None"
-        remove = []
-        for arg in args:
-            save = arg
-            value = ""
-            if arg.startswith('-'):
-                arg = arg[1:]
-                if arg.startswith('-'):
-                    arg = arg[1:]
-            if arg.find('=') > 0:
-                value = arg[arg.find('=') + 1:]
-                value = value.replace('=', '\=')
-                arg = arg[0:arg.find('=')]
-            if arg == 'AMIPass':
-                remove.append(save)
-                password = value
-            if arg == 'AMIUser':
-                remove.append(save)
-                user = value
-        if (user != "None") and (password != "None"):
-            self.authenticate(user, password)
-        out = []
-        for arg in args:
-            if arg not in remove:
-                out.append(arg)
-        return out
-
-    def check_auth(self):
-
-        try:
-            args = ["GetLevelInfo",
-                    "levelName=motherDatabase",
-                    "output=xml"]
-            result = self.execute(args)
-            msg = result.output()
-            return msg[msg.find('amiLogin="') + 10:msg.find('" database')]
-        except Exception, error:
-            return None
-
-    def reset_cert_auth(self):
-
-        kw = {}
-        self._ami = self._locator.getAMISecureWebService(url=None, **kw)
-
-    def set_cert_auth(self, transdict=None):
-
-        kw = {}
-        if transdict is None:
-            kw = {'transdict':self.setup_identity()}
-        else:
-            kw = {'transdict':transdict}
-        self._ami = self._locator.getAMISecureWebService(url=None, **kw)
-
-    def is_authenticated(self):
-        """
-        Returns `True` if user is authenticated, `False` otherwise.
-        """
-        return self._config.get('AMI', 'AMIPass') and self._config.get('AMI', 'AMIUser')
-
-    def authenticate(self, user, password):
-        """
-        Sets User ID and password with *user* and *password* parameters respectively.
-        """
-        self._config.set('AMI', 'AMIUser', user)
-        self._config.set('AMI', 'AMIPass', password)
-
-    def setup_identity(self):
-
-        try:
-            if hasattr(os, "geteuid"):
-                user_id = os.geteuid()
-            else:
-                user_id = -1
-        except:
-            ## In case client aren't running on linux system
-            user_id = -1
-        options = {}
-        #options['capath']= "/etc/grid-security/certificates"
-
-        if user_id == 0:
-            ## we are running as root, use host certificate
-            options['cert_file'] = "/etc/grid-security/hostcert.pem"
-            options['key_file'] = "/etc/grid-security/hostkey.pem"
-        else:
-            proxy_fname = "/tmp/x509up_u%d" % user_id
-            ## look for a proxy in X509_USER_PROXY env variable
-            if os.environ.has_key("X509_USER_PROXY") and os.path.exists(os.environ['X509_USER_PROXY']):
-                options['cert_file'] = os.environ['X509_USER_PROXY']
-                options['key_file'] = os.environ['X509_USER_PROXY']
-            ## look for a proxy
-            elif os.path.exists(proxy_fname):
-                options['cert_file'] = proxy_fname
-                options['key_file'] = proxy_fname
-                # use common certificate
-                """
-                elif os.environ.has_key("X509_cert_file") and os.path.exists(os.environ['X509_cert_file']) :
-                         options['cert_file'] = os.environ['X509_cert_file']
-                         options['key_file'] = os.environ['X509_key_file']
-                """
-                # look in the .globus directory
-                """
-                elif os.environ.has_key("HOME") and os.path.exists(os.path.join(os.environ['HOME'],".globus", "usercert.pem"))and os.path.exists(os.path.join(os.environ['HOME'],".globus", "userkey.pem")):
-                       options['cert_file'] = os.path.join(os.environ['HOME'],".globus", "usercert.pem")
-                         options['key_file'] = os.path.join(os.environ['HOME'],".globus", "userkey.pem")
-                """
-                ## no configured environnement, using https with no client authentication
-            else:
-                options = None
-        return options
-
-    def _check_authentication(self):
-
-        if not self.is_authenticated():
-            raise AMI_Error("AMIUser and AMIPass must be defined!")
 
     def _check_format(self, argDict):
 
@@ -491,11 +509,7 @@ class AMIClient(object):
         except KeyError:
             pass
 
-    def reset_config(self):
-        """
-        Resets parameter values in the pyAMI.cfg to default values.
-        """
-        self._config.reset()
+
 
     def upload_proxy(self):
 

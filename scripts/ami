@@ -244,9 +244,9 @@ try:
         create_auth_config()
     else:
         amiclient = AMIClient(verbose=args.verbose)
-        if not os.path.exists(AMI_CONFIG):
-            create_auth_config()
-        amiclient.read_config(AMI_CONFIG)
+        #if not os.path.exists(AMI_CONFIG):
+        #    create_auth_config()
+        #amiclient.read_config(AMI_CONFIG)
         cmd_args = dict(args._get_kwargs())
         del cmd_args['op']
         del cmd_args['pr']
