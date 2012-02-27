@@ -224,7 +224,7 @@ default -> raw ami command
 """
 from pyAMI.client import AMIClient
 
-parser_command = subparsers.add_parser('command', description="A raw ami command to execute")
+parser_command = subparsers.add_parser('cmd', description="A raw ami command to execute")
 parser_command.add_argument('amiCommand', nargs=1, help="An AMI command (mandatory)")
 parser_command.add_argument('args', nargs=argparse.REMAINDER, help="Some arguments (optional)")
 parser_command.set_defaults(op=AMIClient.execute)
