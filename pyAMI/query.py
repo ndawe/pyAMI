@@ -68,7 +68,7 @@ def validate_field(field, table):
     try:
         if field in table.fields.values():
             return field
-        name = field.replace('-','_')
+        name = field.replace('-', '_')
         if '.' in name:
             foreign_name, foreign_field = name.split('.')
             try:
@@ -143,7 +143,16 @@ def search_query(client,
         for name, value in kwargs.items():
             if value is not None:
                 name = validate_field(name, table)
-                constraints += " AND %s='%s'" % (name, value)
+                """
+                    Case of multiple values for a given field -> search with OR
+                """
+                if isinstance(value, list) or isinstance(value, tuple):
+                    constraints += " AND (%s='%s'" % (name, value[0])
+                    for val in value[1:]:
+                        constraints += " OR %s='%s'" % (name, val)
+                    constraints += " )"
+                else:
+                    constraints += " AND %s='%s'" % (name, value)
 
     if order is None:
         order_field = primary_field
@@ -355,7 +364,7 @@ def get_periods(client, year=YEAR, level=2):
     if year > 2000:
         year %= 1000
     cmd += [ '-projectName=data%02i%%' % year]
-    if level in [1,2,3]:
+    if level in [1, 2, 3]:
         cmd += [ '-periodLevel=%i' % level ]
     result = client.execute(cmd)
     rows = [RunPeriod(project=e['projectName'], year=year, name=str(e['period']), level=level) \
@@ -383,8 +392,8 @@ def get_all_periods(client):
         if len(period_letter) != 1:
             pc = 0
         else:
-            pc = 10000*year + 100*(ord(period_letter.upper())-65) + period_number
-        all_periods += [ ((year, period, pc), projectName+".period" + period) ]
+            pc = 10000 * year + 100 * (ord(period_letter.upper()) - 65) + period_number
+        all_periods += [ ((year, period, pc), projectName + ".period" + period) ]
     all_periods.sort()
     return all_periods
 
@@ -614,20 +623,16 @@ def get_data_datasets(client,
     Returns a list of dicts if flatten==False
     else list of tuples with elements in same order as fields
     """
-    datasets = get_datasets(client, tag_pattern, fields=fields,
-                            project=project, stream=stream, type=type,
-                            parent_type=parent_type,
-                            **kwargs)
+    
+    """
+        Transmit period(s) as kwargs in order to do only one query
+    """
     if periods is not None:
-        runs = get_runs(client, periods=periods)
-        ds_keep = []
-        for ds in datasets:
-            name = ds['logicalDatasetName']
-            match = re.match(DATA_PATTERN, name)
-            if match:
-                if int(match.group('run')) in runs:
-                    ds_keep.append(ds)
-        datasets = ds_keep
+        if isinstance(periods, basestring):
+            periods = periods.split(',')
+        kwargs['period'] = periods
+        kwargs['prod_step'] = ('recon', 'merge')
+        
     if grl is not None:
         # need to be compatible with Python 2.4
         # so no ElementTree here...
@@ -637,14 +642,19 @@ def get_data_datasets(client,
         runs = []
         for node in run_nodes:
             runs.append(int(node.childNodes[0].data))
-        ds_keep = []
-        for ds in datasets:
-            name = ds['logicalDatasetName']
-            match = re.match(DATA_PATTERN, name)
-            if match:
-                if int(match.group('run')) in runs:
-                    ds_keep.append(ds)
-        datasets = ds_keep
+        kwargs['run'] = runs
+        kwargs['prod_step'] = ('recon', 'merge')
+        
+    if latest:
+        kwargs['prod_step'] = ('recon', 'merge')
+        
+    
+            
+    datasets = get_datasets(client, tag_pattern, fields=fields,
+                            project=project, stream=stream, type=type,
+                            parent_type=parent_type,
+                            **kwargs)
+
     if latest:
         if type.startswith('NTUP'):
             VERSION_PATTERN = NTUP_VERSION_PATTERN
@@ -686,7 +696,10 @@ def get_data_datasets(client,
                              int(new_version.group('lb')) >= int(curr_version.group('lb')))):
                             ds_unique[run] = ds
         datasets = ds_unique.values()
-    datasets.sort(key=lambda ds: ds['logicalDatasetName'])
+    """
+        useless as by default for dataset it is ordered with primary field
+    """
+    #datasets.sort(key=lambda ds: ds['logicalDatasetName'])
     if flatten:
         fields = parse_fields(fields, DATASET_TABLE)
         fields.append('logicalDatasetName')
@@ -788,11 +801,11 @@ def humanize_bytes(bytes, precision=1):
     '1.3 GB'
     """
     abbrevs = (
-        (1<<50L, 'PB'),
-        (1<<40L, 'TB'),
-        (1<<30L, 'GB'),
-        (1<<20L, 'MB'),
-        (1<<10L, 'kB'),
+        (1 << 50L, 'PB'),
+        (1 << 40L, 'TB'),
+        (1 << 30L, 'GB'),
+        (1 << 20L, 'MB'),
+        (1 << 10L, 'kB'),
         (1, 'bytes')
     )
     if bytes == 1:

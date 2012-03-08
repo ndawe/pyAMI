@@ -53,7 +53,7 @@ class DATASET_TABLE(Table):
         #'modified-before': 'lastModified<',
         'physics_short': 'physicsShort',
         'history': 'productionHistory',
-        'prod_step': 'productionStep',
+        'prod_step': 'prodStep',
         'requested_by': 'requestedBy',
         'name': 'logicalDatasetName',
         'responsible': 'physicistResponsible',
