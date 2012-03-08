@@ -654,37 +654,7 @@ def get_data_datasets(client,
                             project=project, stream=stream, type=type,
                             parent_type=parent_type,
                             **kwargs)
-    """
-    if periods is not None:
-        runs = get_runs(client, periods=periods)
-        ds_keep = []
-        for ds in datasets:
-            name = ds['logicalDatasetName']
-            match = re.match(DATA_PATTERN, name)
-            if match:
-                if int(match.group('run')) in runs:
-                    ds_keep.append(ds)
-        datasets = ds_keep
-    """
-    """
-    if grl is not None:
-        # need to be compatible with Python 2.4
-        # so no ElementTree here...
-        from xml.dom import minidom
-        doc = minidom.parse(grl)
-        run_nodes = doc.getElementsByTagName('Run')
-        runs = []
-        for node in run_nodes:
-            runs.append(int(node.childNodes[0].data))
-        ds_keep = []
-        for ds in datasets:
-            name = ds['logicalDatasetName']
-            match = re.match(DATA_PATTERN, name)
-            if match:
-                if int(match.group('run')) in runs:
-                    ds_keep.append(ds)
-        datasets = ds_keep
-    """
+
     if latest:
         if type.startswith('NTUP'):
             VERSION_PATTERN = NTUP_VERSION_PATTERN
