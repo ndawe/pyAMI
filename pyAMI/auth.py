@@ -7,6 +7,10 @@ import os
 
 AMI_CONFIG = os.path.join(DATA_ROOT, 'ami.cfg')
 
+if os.path.isfile(AMI_CONFIG):
+    # only allow user to read and write
+    os.chmod(AMI_CONFIG, 0600)
+
 
 def create_auth_config():
 
@@ -16,3 +20,5 @@ def create_auth_config():
     f = open(AMI_CONFIG, 'w')
     config.write(f)
     f.close()
+    # only allow user to read and write
+    os.chmod(AMI_CONFIG, 0600)
