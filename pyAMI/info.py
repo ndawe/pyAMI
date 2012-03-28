@@ -1,4 +1,4 @@
-__VERSION__ = '4.0.0'
-__URL__ = 'http://ndawe.github.com/atlasmeta'
-__GITURL__ = 'https://github.com/ndawe/atlasmeta/'
-__DOWNLOAD_URL__ = 'https://github.com/downloads/ndawe/atlasmeta/atlasmeta-%s.tar.gz' % __VERSION__
+VERSION = '4.0.0'
+AUTHOR_EMAIL = 'atlas-bookkeeping@cern.ch'
+URL = 'https://end.web.cern.ch/end/projects/atlasmeta/'
+DOWNLOAD_URL = 'https://end.web.cern.ch/end/downloads/atlasmeta/atlasmeta-%s.tar.gz' % VERSION
