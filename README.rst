@@ -46,7 +46,7 @@ On LXPLUS at CERN
 pyAMI is installed centrally on LXPLUS at CERN. To begin using pyAMI
 simply::
 
-    source /afs/cern.ch/atlas/software/tools/pyAMI/setup.sh
+    source /afs/cern.ch/atlas/software/tools/atlasmeta/setup.sh
 
 then authenticate yourself if you haven't already (see below).
 
