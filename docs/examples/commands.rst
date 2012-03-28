@@ -2,7 +2,7 @@
 Command Examples
 ================
 
-atlasmeta provides the command ``ami`` under which various subcommands may be issued:
+pyAMI provides the command ``ami`` under which various subcommands may be issued:
 
 .. command-output:: ami --help
 

@@ -5,8 +5,10 @@ For more information see `pyAMI <http://cern.ch/noel.dawe/projects/pyAMI>`_
 About
 -----
 
-pyAMI is a fork of `pyAMI <http://ccami01.in2p3.fr:8080/opencms/opencms/AMI/www/Tutorial/pyAMI.html>`_
-with a cleaner codebase, enhanced API, and improved command-line functionality.
+This is a prerelease of the new and improved pyAMI 
+(formerly known as atlasmeta, a fork of the original
+`pyAMI <http://ccami01.in2p3.fr:8080/opencms/opencms/AMI/www/Tutorial/pyAMI.html>`_)
+This new version offers a cleaner codebase, enhanced API, and improved command-line functionality.
 All commands are simply subcommands of ``ami``.
 
 List AOD datasets matching a pattern::
@@ -89,8 +91,13 @@ in your .bashrc)::
 
 Authentication
 --------------
-   
-Authenticate yourself::
+
+VOMS authentication is supported::
+
+   voms-proxy-init -voms atlas
+
+The alternative option (if gLite is not available)
+is to send your username and password along with each AMI command::
 
    ami auth
 

@@ -1,7 +1,7 @@
 :orphan:
 
-atlasmeta
-=========
+pyAMI
+=====
 
 .. include:: ../README.rst
    :start-line: 7

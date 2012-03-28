@@ -1,11 +1,7 @@
-=============
-API Reference
-=============
-
-:Release: |version|
-:Date: |today|
+pyAMI
+=====
 
 .. toctree::
    :maxdepth: 4
 
-   atlasmeta
+   pyAMI

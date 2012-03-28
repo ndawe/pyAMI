@@ -1,10 +1,10 @@
-ami Package
-===========
+pyAMI Package
+=============
 
 :mod:`auth` Module
 ------------------
 
-.. automodule:: atlasmeta.ami.auth
+.. automodule:: pyAMI.auth
     :members:
     :undoc-members:
     :show-inheritance:
@@ -12,7 +12,7 @@ ami Package
 :mod:`client` Module
 --------------------
 
-.. automodule:: atlasmeta.ami.client
+.. automodule:: pyAMI.client
     :members:
     :undoc-members:
     :show-inheritance:
@@ -20,7 +20,15 @@ ami Package
 :mod:`config` Module
 --------------------
 
-.. automodule:: atlasmeta.ami.config
+.. automodule:: pyAMI.config
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`defaults` Module
+----------------------
+
+.. automodule:: pyAMI.defaults
     :members:
     :undoc-members:
     :show-inheritance:
@@ -28,7 +36,7 @@ ami Package
 :mod:`endpoint` Module
 ----------------------
 
-.. automodule:: atlasmeta.ami.endpoint
+.. automodule:: pyAMI.endpoint
     :members:
     :undoc-members:
     :show-inheritance:
@@ -36,7 +44,15 @@ ami Package
 :mod:`exceptions` Module
 ------------------------
 
-.. automodule:: atlasmeta.ami.exceptions
+.. automodule:: pyAMI.exceptions
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`info` Module
+------------------
+
+.. automodule:: pyAMI.info
     :members:
     :undoc-members:
     :show-inheritance:
@@ -44,7 +60,7 @@ ami Package
 :mod:`objects` Module
 ---------------------
 
-.. automodule:: atlasmeta.ami.objects
+.. automodule:: pyAMI.objects
     :members:
     :undoc-members:
     :show-inheritance:
@@ -52,7 +68,7 @@ ami Package
 :mod:`query` Module
 -------------------
 
-.. automodule:: atlasmeta.ami.query
+.. automodule:: pyAMI.query
     :members:
     :undoc-members:
     :show-inheritance:
@@ -60,7 +76,23 @@ ami Package
 :mod:`schema` Module
 --------------------
 
-.. automodule:: atlasmeta.ami.schema
+.. automodule:: pyAMI.schema
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`userdata` Module
+----------------------
+
+.. automodule:: pyAMI.userdata
+    :members:
+    :undoc-members:
+    :show-inheritance:
+
+:mod:`webservices` Module
+-------------------------
+
+.. automodule:: pyAMI.webservices
     :members:
     :undoc-members:
     :show-inheritance:
