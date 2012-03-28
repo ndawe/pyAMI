@@ -19,9 +19,20 @@ else:
     if sys.version_info >= (2, 5):
         kw['requires'] = ['ZSI', 'argparse', 'lxml']
 
+from distutils.command.install_data import install_data
 from glob import glob
 
+
 execfile('pyAMI/info.py')
+
+
+class install_pyami_data(install_data):
+
+    def run(self):
+
+        open('version.txt', 'w').write(VERSION)
+        install_data.run(self)
+
 
 setup(name='pyAMI',
       version=VERSION,
@@ -33,6 +44,8 @@ setup(name='pyAMI',
       download_url=DOWNLOAD_URL,
       packages=packages,
       scripts=glob('scripts/*'),
+      data_files=[('etc/pyAMI', ['version.txt'])],
+      cmdclass={'install_data': install_pyami_data},
       license='GPLv3',
       classifiers=[
         "Programming Language :: Python",
