@@ -623,7 +623,7 @@ def get_data_datasets(client,
     Returns a list of dicts if flatten==False
     else list of tuples with elements in same order as fields
     """
-    
+
     """
         Transmit period(s) as kwargs in order to do only one query
     """
@@ -632,7 +632,7 @@ def get_data_datasets(client,
             periods = periods.split(',')
         kwargs['period'] = periods
         kwargs['prod_step'] = ('recon', 'merge')
-        
+
     if grl is not None:
         # need to be compatible with Python 2.4
         # so no ElementTree here...
@@ -644,12 +644,12 @@ def get_data_datasets(client,
             runs.append(int(node.childNodes[0].data))
         kwargs['run'] = runs
         kwargs['prod_step'] = ('recon', 'merge')
-        
+
     if latest:
         kwargs['prod_step'] = ('recon', 'merge')
-        
-    
-            
+
+
+
     datasets = get_datasets(client, tag_pattern, fields=fields,
                             project=project, stream=stream, type=type,
                             parent_type=parent_type,
@@ -696,10 +696,6 @@ def get_data_datasets(client,
                              int(new_version.group('lb')) >= int(curr_version.group('lb')))):
                             ds_unique[run] = ds
         datasets = ds_unique.values()
-    """
-        useless as by default for dataset it is ordered with primary field
-    """
-    #datasets.sort(key=lambda ds: ds['logicalDatasetName'])
     if flatten:
         fields = parse_fields(fields, DATASET_TABLE)
         fields.append('logicalDatasetName')
