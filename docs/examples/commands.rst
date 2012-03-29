@@ -63,7 +63,7 @@ Listing Data Datasets/Containers
 
 .. command-output:: ami list data --help
 
-.. command-output:: ami list data --periods M --type NTUP_TAUMEDIUM --latest p741
+.. command-output:: ami list data --periods M1 --type NTUP_TAUMEDIUM --latest p741
    :ellipsis: 20
 
 Also print out the number of events in each dataset:

@@ -20,11 +20,11 @@ list files in a dataset::
    ami list files -lhc dataset.name
    
 list latest NTUP_TAUMEDIUM data datasets (and number of events in each one)
-originating from AOD in periods I and J that are contained in a good runs list
+originating from AOD in periods L1 and L2 that are contained in a good runs list
 (GRL)::
 
    ami list data --project data11_7TeV --type NTUP_TAUMEDIUM --parent-type AOD \
-   --periods I,J --stream physics_JetTauEtmiss --latest --fields events \
+   --periods L1,L2 --stream physics_JetTauEtmiss --latest --fields events \
    --grl mygrl.xml
    
 list runs in a period or multiple periods::
