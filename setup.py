@@ -25,6 +25,11 @@ else:
 execfile('pyAMI/info.py')
 open('version.txt', 'w').write(VERSION)
 
+if os.getenv('PYAMI_AFS_INSTALL') in ('1', 'true'):
+    prefix = '/afs/cern.ch/atlas/software/tools/atlasmeta/'
+else:
+    prefix = 'etc/pyAMI'
+
 setup(name='pyAMI',
       version=VERSION,
       description='The ATLAS Metadata Interface',
@@ -35,7 +40,7 @@ setup(name='pyAMI',
       download_url=DOWNLOAD_URL,
       packages=packages,
       scripts=glob('scripts/*'),
-      data_files=[('etc/pyAMI', ['version.txt'])],
+      data_files=[(prefix, ['version.txt'])],
       license='GPLv3',
       classifiers=[
         "Programming Language :: Python",
