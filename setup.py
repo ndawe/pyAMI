@@ -5,6 +5,7 @@ from glob import glob
 
 
 kw = {}
+requires = ['ZSI', 'argparse', 'lxml']
 use_distribute = False
 if os.getenv('PYAMI_USE_DISTRIBUTE') in ('1', 'true'):
     use_distribute = True
@@ -13,13 +14,13 @@ if use_distribute:
     use_setuptools()
     from setuptools import setup, find_packages
     packages = find_packages()
-    kw['install_requires'] = ['ZSI', 'argparse', 'lxml']
+    kw['install_requires'] = requires
 else:
     from distutils.core import setup
     import sys
     packages = ['pyAMI']
     if sys.version_info >= (2, 5):
-        kw['requires'] = ['ZSI', 'argparse', 'lxml']
+        kw['requires'] = requires
 
 execfile('pyAMI/info.py')
 open('version.txt', 'w').write(VERSION)
