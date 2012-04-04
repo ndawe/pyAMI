@@ -12,7 +12,7 @@ from ZSI.TCcompound import ComplexType, Struct
 from ZSI import client
 import urlparse, types
 from pyAMI import endpoint
-from pyAMI.httpconnection import HTTPConnection, HTTPSConnection
+from pyAMI.httpconnection import AMIHTTPConnection, AMIHTTPSConnection
 ##############################
 # targetNamespace
 # https://ccami01.in2p3.fr:8443/AMI/services/AMIWebService
@@ -105,8 +105,8 @@ class AMISecureWebServiceSoapBindingSOAP:
         kw.setdefault("writerclass", None)
         # no resource properties
         self.binding = client.Binding(url=url, **kw)
-        self.binding.defaultHttpTransport = HTTPConnection
-        self.binding.defaultHttpsTransport = HTTPSConnection # no ws-addressing
+        #self.binding.defaultHttpTransport = AMIHTTPConnection
+        #self.binding.defaultHttpsTransport = AMIHTTPSConnection # no ws-addressing
 
     # op: execAMICommand
     def execAMICommand(self, request):
