@@ -3,7 +3,7 @@ from urlparse import urlparse
 from httplib import HTTPConnection, HTTPSConnection
 
 
-class MyHTTPConnection(HTTPConnection):
+class HTTPConnection(HTTPConnection):
 
     def __init__(self, host, port=None, strict=None):
 
@@ -43,7 +43,7 @@ class MyHTTPConnection(HTTPConnection):
             raise socket.error, msg
 
 
-class MyHTTPSConnection(HTTPSConnection):
+class HTTPSConnection(HTTPSConnection):
 
     def __init__(self, host, port=None, strict=None):
 
