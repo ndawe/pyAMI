@@ -26,16 +26,6 @@ except ImportError:
     USE_LXML = False
 
 
-def tutorial():
-    return """
-    This is the generic way of sending a command to the AMI server.
-    The first argument must be the name of the server command.
-    The other arguments follow as argumentName=argumentValue pairs.
-    For complete help see the PyAMI User guide
-    http://ami.in2p3.fr/opencms/opencms/AMI/www/Client/pyAMIUserGuide.pdf
-    """
-
-
 def set_endpoint_type(args):
 
     for i, arg in enumerate(args):
@@ -242,11 +232,11 @@ class AMIClient(object):
         self.verbose = verbose
         self.verbose_format = verbose_format
         self._config = AMIConfig()
-        self._locator = AMISecureWebServiceServiceLocator()#AMI web service locator
+        # AMI web service locator
+        self._locator = AMISecureWebServiceServiceLocator()
         self._transdict = None
-        #self._client = None not used ...
-        #self._auth_method = None # could be x509 or password not used...
-        self._ami = None # AMI Secure Web Service instance
+        # AMI Secure Web Service instance
+        self._ami = None
 
     """
     User/password authentication
@@ -254,7 +244,6 @@ class AMIClient(object):
     """
     def auth(self, user, password):
 
-        #self._auth_method = "password"
         self.reset_cert_auth()
         self.authenticate(user, password)
 
@@ -440,7 +429,10 @@ class AMIClient(object):
                 error = str(msg)
                 try:
                     if 'alert certificate expired' in error:
-                        error = 'No password or config file found, expecting VOMS proxy...\nCannot find a valid VOMS proxy, please renew it with voms-proxy-init.'
+                        error = ('No password or config file found, '
+                                 'expecting VOMS proxy...\n'
+                                 'Cannot find a valid VOMS proxy, please renew '
+                                 'it with voms-proxy-init.')
                     if '<?' not in error:
                         error = '<?xml version="1.0" ?><AMIMessage><error>%s</error></AMIMessage>' % error
                     f = StringIO(error[error.find('<?'):error.find('</AMIMessage>') + 13])
@@ -489,7 +481,6 @@ class AMIClient(object):
         self._result = AMIResult(doc)
         self._result.setxslt(self._xslt)
         return self._result
-        #return AMIResult(doc)
 
     def _check_format(self, argDict):
 

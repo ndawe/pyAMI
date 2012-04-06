@@ -1,11 +1,16 @@
 #!/usr/bin/env python
 
 import os
+import sys
 from glob import glob
 
 
-kw = {}
 requires = ['ZSI', 'argparse', 'lxml']
+if sys.version_info < (2, 6):
+    # http://pypi.python.org/pypi/httpsproxy_urllib2
+    requires.append('httpsproxy_urllib2')
+
+kw = {}
 use_distribute = False
 if os.getenv('PYAMI_USE_DISTRIBUTE') in ('1', 'true'):
     use_distribute = True
@@ -17,7 +22,6 @@ if use_distribute:
     kw['install_requires'] = requires
 else:
     from distutils.core import setup
-    import sys
     packages = ['pyAMI']
     if sys.version_info >= (2, 5):
         kw['requires'] = requires
