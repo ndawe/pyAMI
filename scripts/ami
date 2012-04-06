@@ -27,7 +27,7 @@ parser.add_argument('-d', '--debug', action='store_true', default=False,
                     help="show a stack trace")
 parser.add_argument('-f', '--format', default='text',
                     choices=AMIResult.XSLT.keys(),
-                    help="format of raw output")
+                    help="format of verbose output")
 parser.add_argument('--version', action='version', version=VERSION,
                     help="show the version number and exit")
 subparsers = parser.add_subparsers()
@@ -261,9 +261,6 @@ try:
     else:
         amiclient = AMIClient(verbose=args.verbose,
                               verbose_format=args.format)
-        #if not os.path.exists(AMI_CONFIG):
-        #    create_auth_config()
-        #amiclient.read_config(AMI_CONFIG)
         cmd_args = dict(args._get_kwargs())
         del cmd_args['op']
         del cmd_args['pr']

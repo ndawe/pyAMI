@@ -411,6 +411,7 @@ class AMIClient(object):
             self.reset_cert_auth()
 
         if self.verbose:
+            print
             print "query:"
             print ' '.join(args)
         if len(args) == 1 and args[0] == "UploadProxy":
@@ -451,8 +452,10 @@ class AMIClient(object):
                 raise AMI_Error(outputmsg)
             result = self._parse_reply(reply)
         if self.verbose:
+            print
             print "reply:"
             print result.output(format=self.verbose_format)
+            print
         return result
 
     def _parse_args(self, args):
