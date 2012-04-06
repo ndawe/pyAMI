@@ -6,7 +6,7 @@ import re
 from sys import stdout
 import cPickle as pickle
 import base64
-import urllib
+import urllib2
 import urlparse
 
 from pyAMI.webservices import *
@@ -186,7 +186,7 @@ class AMIResult(object):
                 raise ValueError("lxml must be installed to "
                                  "perform XSLT transformations")
             xslt_url = urlparse.urljoin(endpoint.get_XSL_URL(), self.XSLT[format])
-            xslt_root = etree.XML(urllib.urlopen(xslt_url).read())
+            xslt_root = etree.XML(urllib2.urlopen(xslt_url).read())
             transform = etree.XSLT(xslt_root)
             doc = etree.fromstring(self.dom.toxml())
             return transform(doc)
