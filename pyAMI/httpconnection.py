@@ -7,7 +7,7 @@ class AMIHTTPConnection(HTTPConnection):
 
     def __init__(self, host, port=None, strict=None):
 
-        self.proxy_host = None
+        self.proxy_host = None 
         self.proxy_port = None
         if os.environ.has_key('http_proxy'):
             o = urlparse(os.environ['http_proxy'])
