@@ -8,6 +8,7 @@ from pyAMI.query import *
 from pyAMI.schema import *
 from pyAMI.auth import create_auth_config
 from pyAMI.defaults import YEAR, PROJECT, STREAM, TYPE
+from pyAMI.client import AMIResult
 
 
 class formatter_class(argparse.ArgumentDefaultsHelpFormatter,
@@ -24,6 +25,9 @@ parser.add_argument('-v', '--verbose', action='store_true', default=False,
                     help="show verbose output")
 parser.add_argument('-d', '--debug', action='store_true', default=False,
                     help="show a stack trace")
+parser.add_argument('-f', '--format', default='text',
+                    choices=AMIResult.XSLT.keys(),
+                    help="format of raw output")
 parser.add_argument('--version', action='version', version=VERSION,
                     help="show the version number and exit")
 subparsers = parser.add_subparsers()
@@ -247,7 +251,6 @@ parser_command.set_defaults(pr=None)
 args = parser.parse_args()
 
 
-from pyAMI.client import AMIResult
 from pyAMI.auth import AMI_CONFIG, create_auth_config
 import sys
 import os
@@ -256,7 +259,8 @@ try:
     if args.op == create_auth_config:
         create_auth_config()
     else:
-        amiclient = AMIClient(verbose=args.verbose)
+        amiclient = AMIClient(verbose=args.verbose,
+                              verbose_format=args.format)
         #if not os.path.exists(AMI_CONFIG):
         #    create_auth_config()
         #amiclient.read_config(AMI_CONFIG)
@@ -265,6 +269,7 @@ try:
         del cmd_args['pr']
         del cmd_args['verbose']
         del cmd_args['debug']
+        del cmd_args['format']
         if 'help' in cmd_args:
             del cmd_args['help']
         if 'amiCommand' in cmd_args:
@@ -272,7 +277,7 @@ try:
             del cmd_args['amiCommand']
         result = args.op(amiclient, **cmd_args)
         if isinstance(result, AMIResult):
-            print result.output()
+            print result.output(format=args.format)
         elif args.pr and result:
             if args.pr == print_table:
                 args.pr(result)

@@ -9,8 +9,6 @@ import base64
 import urllib
 import urlparse
 
-
-
 from pyAMI.webservices import *
 from pyAMI.exceptions import *
 from pyAMI.exceptions import _AMI_Error_Base
@@ -64,13 +62,14 @@ class AMIResult(object):
     """
 
     XSLT = {
+        'xml':       None,
         'csv':       'AMIXmlToCsv.xsl',
         'htmltable': 'AMIXmlToHtmlTable.xsl',
         'html':      'AMIXmlToHtml.xsl',
         'text':      'AMIXmlToText.xsl',
         'verbose':   'AMIXmlToTextVerbose.xsl',
     }
-    
+
     _xslt = None
 
     def __init__(self, dom):
@@ -79,9 +78,10 @@ class AMIResult(object):
         self.errors = dom.getElementsByTagName('error')
         self.infos = dom.getElementsByTagName('info')
         self.rowsets = dom.getElementsByTagName('rowset')
-        
+
     def setxslt(self , xslt):
-        self._xslt = xslt  
+
+        self._xslt = xslt
 
     def write_gpickle(self, filenameBase):
 
@@ -176,13 +176,12 @@ class AMIResult(object):
                 yield field_dict
 
     def output(self, format=None):
-        
+
         if format is None:
             if self._xslt is not None:
                 format = self._xslt
             else:
                 format = 'text'
-
         format = format.lower()
         if format == 'xml':
             return self.dom.toxml()
@@ -223,11 +222,10 @@ class AMIClient(object):
 
     NB: pyAMI expects XML format when it tries to parse replies from the AMI Web Service.
     """
-    
+
     _xslt = None
-    
-    #def __init__(self, user=None, password=None, cert_auth=False, transdict=None, verbose=False):
-    def __init__(self, verbose=False):
+
+    def __init__(self, verbose=False, verbose_format='text'):
         """
         Parameters
         ----------
@@ -242,6 +240,7 @@ class AMIClient(object):
             :Default: None
         """
         self.verbose = verbose
+        self.verbose_format = verbose_format
         self._config = AMIConfig()
         self._locator = AMISecureWebServiceServiceLocator()#AMI web service locator
         self._transdict = None
@@ -253,13 +252,12 @@ class AMIClient(object):
     User/password authentication
     ----------------------------
     """
-
     def auth(self, user, password):
 
         #self._auth_method = "password"
         self.reset_cert_auth()
         self.authenticate(user, password)
-        
+
     def is_authenticated(self):
         """
 		Returns `True` if user is authenticated, `False` otherwise.
@@ -272,26 +270,21 @@ class AMIClient(object):
 		"""
         self._config.set('AMI', 'AMIUser', user)
         self._config.set('AMI', 'AMIPass', base64.b64encode(password))
-        
+
     """
 	Certificate authentication
 	--------------------------
 	"""
-
-    #def cert_auth(self, transdict=None):
-
-        #self._auth_method = "x509"
-    #   self.set_cert_auth(transdict)
-
     def reset_cert_auth(self):
+
         kw = {}
         self._ami = self._locator.getAMISecureWebService(url=None, **kw)
 
     def set_cert_auth(self):
+
         kw = {'transdict':self.setup_identity()}
         self._ami = self._locator.getAMISecureWebService(url=None, **kw)
-        
-   
+
     def setup_identity(self):
 
         try:
@@ -323,7 +316,7 @@ class AMIClient(object):
             else:
                 options = None
         return options
-       
+
     """
     Authentication from AMICommand arguments
     ----------------------------------------
@@ -356,9 +349,8 @@ class AMIClient(object):
         for arg in args:
             if arg not in remove:
                 out.append(arg)
-        return out    
-    
-    
+        return out
+
     """
     Authentication checking
     -----------------------
@@ -375,17 +367,15 @@ class AMIClient(object):
         except Exception, error:
             return None
 
-
     def _check_authentication(self):
 
         if not self.is_authenticated():
-            raise AMI_Error("AMIUser and AMIPass must be defined!")    
-    
-    
+            raise AMI_Error("AMIUser and AMIPass must be defined!")
+
     """
     AMIConfig settings
     ------------------
-    """  
+    """
     def write_config(self, fp):
 
         self._config.write(fp)
@@ -393,13 +383,13 @@ class AMIClient(object):
     def read_config(self, fpname):
 
         self._config.read(fpname)
-        
+
     def reset_config(self):
         """
         Resets parameter values in the pyAMI.cfg to default values.
         """
         self._config.reset()
-    
+
     """
     Execute methods
     --------------
@@ -416,10 +406,9 @@ class AMIClient(object):
                 self.read_config(AMI_CONFIG)
                 self.reset_cert_auth()
             elif not self.is_authenticated():
-                    self.set_cert_auth()    
+                    self.set_cert_auth()
         else:
             self.reset_cert_auth()
-                
 
         if self.verbose:
             print "query:"
@@ -463,7 +452,7 @@ class AMIClient(object):
             result = self._parse_reply(reply)
         if self.verbose:
             print "reply:"
-            print result.output(format='text')
+            print result.output(format=self.verbose_format)
         return result
 
     def _parse_args(self, args):
@@ -487,7 +476,6 @@ class AMIClient(object):
             else:
                 arguments.update({arg:value})
         return arguments
-       
 
     def _parse_reply(self, reply):
         """
@@ -500,7 +488,6 @@ class AMIClient(object):
         return self._result
         #return AMIResult(doc)
 
-
     def _check_format(self, argDict):
 
         try:
@@ -508,8 +495,6 @@ class AMIClient(object):
                 raise AMI_Info("pyAMI supports the XML format only.")
         except KeyError:
             pass
-
-
 
     def upload_proxy(self):
 
