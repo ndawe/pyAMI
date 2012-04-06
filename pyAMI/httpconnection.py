@@ -56,7 +56,6 @@ class AMIHTTPSConnection(HTTPSConnection):
 
         self.proxy_host = None
         self.proxy_port = None
-        self.debuglevel = 2
         if os.environ.has_key('https_proxy'):
             o = urlparse(os.environ['https_proxy'])
             try:
