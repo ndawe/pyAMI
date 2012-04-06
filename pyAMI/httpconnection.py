@@ -7,7 +7,7 @@ class AMIHTTPConnection(HTTPConnection):
 
     def __init__(self, host, port=None, strict=None):
 
-        self.proxy_host = None 
+        self.proxy_host = None
         self.proxy_port = None
         if os.environ.has_key('http_proxy'):
             o = urlparse(os.environ['http_proxy'])
@@ -41,14 +41,17 @@ class AMIHTTPConnection(HTTPConnection):
                 break
             if not self.sock:
                 raise socket.error, msg
-        
+
     def putrequest(self, method, url, skip_host=0, skip_accept_encoding=0):
-        """Recover the full URL path together with host"""
+        """
+        Recover the full URL path together with host
+        """
         full_url = url
         urlPref = "http://"
         if not url.startswith(urlPref):
             full_url = '%s%s:%s%s' % (urlPref, self.host, self.port, url)
         HTTPConnection.putrequest(self, method, full_url, skip_host, skip_accept_encoding)
+
 
 class AMIHTTPSConnection(HTTPSConnection):
 
@@ -88,9 +91,11 @@ class AMIHTTPSConnection(HTTPSConnection):
                 break
             if not self.sock:
                 raise socket.error, msg
-        
+
     def putrequest(self, method, url, skip_host=0, skip_accept_encoding=0):
-        """Recover the full URL path together with host"""
+        """
+        Recover the full URL path together with host
+        """
         full_url = url
         urlPref = "https://"
         if not url.startswith(urlPref):
