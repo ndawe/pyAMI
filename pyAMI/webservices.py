@@ -105,8 +105,8 @@ class AMISecureWebServiceSoapBindingSOAP:
         kw.setdefault("writerclass", None)
         # no resource properties
         self.binding = client.Binding(url=url, **kw)
-        #self.binding.defaultHttpTransport = AMIHTTPConnection
-        #self.binding.defaultHttpsTransport = AMIHTTPSConnection # no ws-addressing
+        self.binding.defaultHttpTransport = AMIHTTPConnection
+        self.binding.defaultHttpsTransport = AMIHTTPSConnection # no ws-addressing
 
     # op: execAMICommand
     def execAMICommand(self, request):
@@ -166,7 +166,7 @@ class AMISecureWebServiceSoapBindingSOAP:
         response = self.binding.Receive(typecode)
         return response
 
-_execAMICommandRequestTypecode = Struct(pname=("http://DefaultNamespace","execAMICommand"), ofwhat=[ns0.Map_Def(pname="confArgs", aname="_confArgs", typed=False, encoded=None, minOccurs=1, maxOccurs=1, nillable=True), ns0.Map_Def(pname="args", aname="_args", typed=False, encoded=None, minOccurs=1, maxOccurs=1, nillable=True)], pyclass=None, encoded="http://DefaultNamespace")
+_execAMICommandRequestTypecode = Struct(pname=("http://DefaultNamespace", "execAMICommand"), ofwhat=[ns0.Map_Def(pname="confArgs", aname="_confArgs", typed=False, encoded=None, minOccurs=1, maxOccurs=1, nillable=True), ns0.Map_Def(pname="args", aname="_args", typed=False, encoded=None, minOccurs=1, maxOccurs=1, nillable=True)], pyclass=None, encoded="http://DefaultNamespace")
 class execAMICommandRequest:
     typecode = _execAMICommandRequestTypecode
     __metaclass__ = pyclass_type
@@ -176,7 +176,7 @@ class execAMICommandRequest:
         return
 execAMICommandRequest.typecode.pyclass = execAMICommandRequest
 
-_execAMICommandResponseTypecode = Struct(pname=(endpoint.get_endpoint(),"execAMICommandResponse"), ofwhat=[ZSI.TC.String(pname="execAMICommandReturn", aname="_execAMICommandReturn", typed=False, encoded=None, minOccurs=1, maxOccurs=1, nillable=True)], pyclass=None, encoded=endpoint.get_endpoint())
+_execAMICommandResponseTypecode = Struct(pname=(endpoint.get_endpoint(), "execAMICommandResponse"), ofwhat=[ZSI.TC.String(pname="execAMICommandReturn", aname="_execAMICommandReturn", typed=False, encoded=None, minOccurs=1, maxOccurs=1, nillable=True)], pyclass=None, encoded=endpoint.get_endpoint())
 class execAMICommandResponse:
     typecode = _execAMICommandResponseTypecode
     __metaclass__ = pyclass_type
@@ -185,7 +185,7 @@ class execAMICommandResponse:
         return
 execAMICommandResponse.typecode.pyclass = execAMICommandResponse
 
-_execAMICommand_map_arrayRequestTypecode = Struct(pname=("http://DefaultNamespace","execAMICommand_map_array"), ofwhat=[ns0.Map_Def(pname="confArgs", aname="_confArgs", typed=False, encoded=None, minOccurs=1, maxOccurs=1, nillable=True), ns1.ArrayOf_soapenc_string_Def(pname="args", aname="_args", typed=False, encoded=None, minOccurs=1, maxOccurs=1, nillable=True)], pyclass=None, encoded="http://DefaultNamespace")
+_execAMICommand_map_arrayRequestTypecode = Struct(pname=("http://DefaultNamespace", "execAMICommand_map_array"), ofwhat=[ns0.Map_Def(pname="confArgs", aname="_confArgs", typed=False, encoded=None, minOccurs=1, maxOccurs=1, nillable=True), ns1.ArrayOf_soapenc_string_Def(pname="args", aname="_args", typed=False, encoded=None, minOccurs=1, maxOccurs=1, nillable=True)], pyclass=None, encoded="http://DefaultNamespace")
 class execAMICommand_map_arrayRequest:
     typecode = _execAMICommand_map_arrayRequestTypecode
     __metaclass__ = pyclass_type
@@ -195,7 +195,7 @@ class execAMICommand_map_arrayRequest:
         return
 execAMICommand_map_arrayRequest.typecode.pyclass = execAMICommand_map_arrayRequest
 
-_execAMICommand_map_arrayResponseTypecode = Struct(pname=(endpoint.get_endpoint(),"execAMICommand_map_arrayResponse"), ofwhat=[ZSI.TC.String(pname="execAMICommand_map_arrayReturn", aname="_execAMICommand_map_arrayReturn", typed=False, encoded=None, minOccurs=1, maxOccurs=1, nillable=True)], pyclass=None, encoded=endpoint.get_endpoint())
+_execAMICommand_map_arrayResponseTypecode = Struct(pname=(endpoint.get_endpoint(), "execAMICommand_map_arrayResponse"), ofwhat=[ZSI.TC.String(pname="execAMICommand_map_arrayReturn", aname="_execAMICommand_map_arrayReturn", typed=False, encoded=None, minOccurs=1, maxOccurs=1, nillable=True)], pyclass=None, encoded=endpoint.get_endpoint())
 class execAMICommand_map_arrayResponse:
     typecode = _execAMICommand_map_arrayResponseTypecode
     __metaclass__ = pyclass_type
@@ -204,7 +204,7 @@ class execAMICommand_map_arrayResponse:
         return
 execAMICommand_map_arrayResponse.typecode.pyclass = execAMICommand_map_arrayResponse
 
-_execAMICommand_mapRequestTypecode = Struct(pname=("http://DefaultNamespace","execAMICommand_map"), ofwhat=[ns0.Map_Def(pname="args", aname="_args", typed=False, encoded=None, minOccurs=1, maxOccurs=1, nillable=True)], pyclass=None, encoded="http://DefaultNamespace")
+_execAMICommand_mapRequestTypecode = Struct(pname=("http://DefaultNamespace", "execAMICommand_map"), ofwhat=[ns0.Map_Def(pname="args", aname="_args", typed=False, encoded=None, minOccurs=1, maxOccurs=1, nillable=True)], pyclass=None, encoded="http://DefaultNamespace")
 class execAMICommand_mapRequest:
     typecode = _execAMICommand_mapRequestTypecode
     __metaclass__ = pyclass_type
@@ -213,7 +213,7 @@ class execAMICommand_mapRequest:
         return
 execAMICommand_mapRequest.typecode.pyclass = execAMICommand_mapRequest
 
-_execAMICommand_mapResponseTypecode = Struct(pname=(endpoint.get_endpoint(),"execAMICommand_mapResponse"), ofwhat=[ZSI.TC.String(pname="execAMICommand_mapReturn", aname="_execAMICommand_mapReturn", typed=False, encoded=None, minOccurs=1, maxOccurs=1, nillable=True)], pyclass=None, encoded=endpoint.get_endpoint())
+_execAMICommand_mapResponseTypecode = Struct(pname=(endpoint.get_endpoint(), "execAMICommand_mapResponse"), ofwhat=[ZSI.TC.String(pname="execAMICommand_mapReturn", aname="_execAMICommand_mapReturn", typed=False, encoded=None, minOccurs=1, maxOccurs=1, nillable=True)], pyclass=None, encoded=endpoint.get_endpoint())
 class execAMICommand_mapResponse:
     typecode = _execAMICommand_mapResponseTypecode
     __metaclass__ = pyclass_type
@@ -222,7 +222,7 @@ class execAMICommand_mapResponse:
         return
 execAMICommand_mapResponse.typecode.pyclass = execAMICommand_mapResponse
 
-_execAMICommand_arrayRequestTypecode = Struct(pname=("http://DefaultNamespace","execAMICommand_array"), ofwhat=[ns1.ArrayOf_soapenc_string_Def(pname="args", aname="_args", typed=False, encoded=None, minOccurs=1, maxOccurs=1, nillable=True)], pyclass=None, encoded="http://DefaultNamespace")
+_execAMICommand_arrayRequestTypecode = Struct(pname=("http://DefaultNamespace", "execAMICommand_array"), ofwhat=[ns1.ArrayOf_soapenc_string_Def(pname="args", aname="_args", typed=False, encoded=None, minOccurs=1, maxOccurs=1, nillable=True)], pyclass=None, encoded="http://DefaultNamespace")
 class execAMICommand_arrayRequest:
     typecode = _execAMICommand_arrayRequestTypecode
     __metaclass__ = pyclass_type
@@ -231,7 +231,7 @@ class execAMICommand_arrayRequest:
         return
 execAMICommand_arrayRequest.typecode.pyclass = execAMICommand_arrayRequest
 
-_execAMICommand_arrayResponseTypecode = Struct(pname=(endpoint.get_endpoint(),"execAMICommand_arrayResponse"), ofwhat=[ZSI.TC.String(pname="execAMICommand_arrayReturn", aname="_execAMICommand_arrayReturn", typed=False, encoded=None, minOccurs=1, maxOccurs=1, nillable=True)], pyclass=None, encoded=endpoint.get_endpoint())
+_execAMICommand_arrayResponseTypecode = Struct(pname=(endpoint.get_endpoint(), "execAMICommand_arrayResponse"), ofwhat=[ZSI.TC.String(pname="execAMICommand_arrayReturn", aname="_execAMICommand_arrayReturn", typed=False, encoded=None, minOccurs=1, maxOccurs=1, nillable=True)], pyclass=None, encoded=endpoint.get_endpoint())
 class execAMICommand_arrayResponse:
     typecode = _execAMICommand_arrayResponseTypecode
     __metaclass__ = pyclass_type
@@ -245,13 +245,13 @@ class uploadProxyRequest:
         """Keyword parameters:
         proxyFileContent -- part proxyFileContent
         """
-        self._proxyFileContent =  kw.get("proxyFileContent")
-uploadProxyRequest.typecode = Struct(pname=("http://Webservice.AMI.Bookkeeping.Database.atlas.hep.net","uploadProxy"), ofwhat=[ZSI.TC.String(pname="proxyFileContent", aname="_proxyFileContent", typed=False, encoded=None, minOccurs=1, maxOccurs=1, nillable=True)], pyclass=uploadProxyRequest, encoded="http://Webservice.AMI.Bookkeeping.Database.atlas.hep.net")
+        self._proxyFileContent = kw.get("proxyFileContent")
+uploadProxyRequest.typecode = Struct(pname=("http://Webservice.AMI.Bookkeeping.Database.atlas.hep.net", "uploadProxy"), ofwhat=[ZSI.TC.String(pname="proxyFileContent", aname="_proxyFileContent", typed=False, encoded=None, minOccurs=1, maxOccurs=1, nillable=True)], pyclass=uploadProxyRequest, encoded="http://Webservice.AMI.Bookkeeping.Database.atlas.hep.net")
 
 class uploadProxyResponse:
     def __init__(self, **kw):
         """Keyword parameters:
         uploadProxyReturn -- part uploadProxyReturn
         """
-        self._uploadProxyReturn =  kw.get("uploadProxyReturn")
-uploadProxyResponse.typecode = Struct(pname=(endpoint.get_endpoint(),"uploadProxyResponse"), ofwhat=[ZSI.TC.String(pname="uploadProxyReturn", aname="_uploadProxyReturn", typed=False, encoded=None, minOccurs=1, maxOccurs=1, nillable=True)], pyclass=uploadProxyResponse, encoded=endpoint.get_endpoint())
+        self._uploadProxyReturn = kw.get("uploadProxyReturn")
+uploadProxyResponse.typecode = Struct(pname=(endpoint.get_endpoint(), "uploadProxyResponse"), ofwhat=[ZSI.TC.String(pname="uploadProxyReturn", aname="_uploadProxyReturn", typed=False, encoded=None, minOccurs=1, maxOccurs=1, nillable=True)], pyclass=uploadProxyResponse, encoded=endpoint.get_endpoint())
