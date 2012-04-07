@@ -9,6 +9,7 @@ from pyAMI.schema import *
 from pyAMI.auth import create_auth_config
 from pyAMI.defaults import YEAR, PROJECT, STREAM, TYPE
 from pyAMI.client import AMIResult
+from pyAMI import userdata
 
 
 class formatter_class(argparse.ArgumentDefaultsHelpFormatter,
@@ -247,6 +248,13 @@ parser_command.add_argument('args', nargs=argparse.REMAINDER, help="Some argumen
 parser_command.set_defaults(op=AMIClient.execute)
 parser_command.set_defaults(pr=None)
 
+"""
+Reset to default settings and remove user config data
+"""
+parser_reset = subparsers.add_parser('reset',
+                    description="Reset to default settings "
+                                "and remove user config data")
+parser_reset.set_defaults(op=userdata.reset)
 
 args = parser.parse_args()
 
@@ -258,6 +266,8 @@ import os
 try:
     if args.op == create_auth_config:
         create_auth_config()
+    elif args.op == userdata.reset:
+        userdata.reset()
     else:
         amiclient = AMIClient(verbose=args.verbose,
                               verbose_format=args.format)

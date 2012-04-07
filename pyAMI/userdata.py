@@ -1,4 +1,5 @@
 import os
+import shutil
 
 
 DATA_ROOT = os.path.expanduser('~/.pyami')
@@ -10,3 +11,13 @@ elif not os.path.isdir(DATA_ROOT):
 
 # only allow user access
 os.chmod(DATA_ROOT, 0700)
+
+
+def reset(interactive=True):
+
+    if interactive:
+        print "This will remove everything under %s" % DATA_ROOT
+        option = raw_input("Proceed? (Y/[n]): ")
+        if not (option == 'Y' or not option):
+            return
+    shutil.rmtree(DATA_ROOT)
