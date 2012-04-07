@@ -57,12 +57,17 @@ class DatasetInfo(object):
 
 class RunPeriod(object):
 
-    def __init__(self, project, name, level, year=0):
+    def __init__(self, project, name, level,
+                 status,
+                 description,
+                 year=0):
 
         self.project = project
         self.year = year
         self.name = name
         self.level = level
+        self.status = status
+        self.description = description
 
     def __cmp__(self, other):
 
@@ -78,4 +83,5 @@ class RunPeriod(object):
 
     def __str__(self):
 
-        return '\t'.join([self.project, self.name])
+        return '\t'.join([self.project, self.name,
+                          self.status, self.description])

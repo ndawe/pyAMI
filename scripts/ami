@@ -283,7 +283,9 @@ try:
             cmd_args['args'] = cmd_args['amiCommand'] + cmd_args['args']
             del cmd_args['amiCommand']
         result = args.op(amiclient, **cmd_args)
-        if isinstance(result, AMIResult):
+        if args.op == get_periods:
+            print_periods(result)    
+        elif isinstance(result, AMIResult):
             print result.output(format=args.format)
         elif args.pr and result:
             if args.pr == print_table:

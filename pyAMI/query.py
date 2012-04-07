@@ -3,6 +3,8 @@
 from __future__ import division
 import re
 import sys
+import textwrap
+
 from pyAMI.objects import DatasetInfo, RunPeriod
 from pyAMI.schema import *
 from pyAMI.defaults import YEAR, STREAM, TYPE, PROJECT
@@ -86,19 +88,40 @@ def validate_field(field, table):
     return name
 
 
-def print_table(table, sep='  ', stream=None):
+def print_table(table, sep='  ',
+                wrap_last=False,
+                wrap_width=50,
+                header=False,
+                vsep=None,
+                stream=None):
 
     if stream is None:
         stream = sys.stdout
     # reorganize data by columns
     cols = zip(*table)
     # compute column widths by taking maximum length of values per column
-    col_widths = [ max(len(value) for value in col) for col in cols[:-1] ]
+    col_widths = [max(len(value) for value in col) for col in cols]
     # create a suitable format string
-    format = sep.join(['%%-%ds' % width for width in col_widths ] + ['%s'])
+    format = sep.join(['%%-%ds' % width for width in col_widths[:-1] ] + ['%s'])
     # print each row using the computed format
-    for row in table:
-        print >> stream, format % tuple(row)
+    if wrap_last:
+        total_width = sum(col_widths[:-1]) + (len(sep) * (len(cols) - 1)) + wrap_width
+        filler = [''] * (len(cols) - 1)
+        for i, row in enumerate(table):
+            last = textwrap.wrap(row[-1], width=wrap_width)
+            print >> stream, format % tuple(row[:-1] + [last[0]])
+            for wrapped in last[1:]:
+                print >> stream, format % tuple(filler + [wrapped])
+            if vsep != None:
+                if i < len(table) - 1:
+                    print vsep * total_width
+    else:
+        total_width = sum(col_widths) + (len(sep) * (len(cols) - 1))
+        for i, row in enumerate(table):
+            print >> stream, format % tuple(row)
+            if vsep is not None:
+                if i < len(table) - 1:
+                    print vsep * total_width
 
 
 def search_query(client,
@@ -366,10 +389,18 @@ def get_periods(client, year=YEAR, level=2):
     cmd += [ '-projectName=data%02i%%' % year]
     if level in [1, 2, 3]:
         cmd += [ '-periodLevel=%i' % level ]
+    else:
+        raise ValueError('level must be 1, 2, or 3')
     result = client.execute(cmd)
-    rows = [RunPeriod(project=e['projectName'], year=year, name=str(e['period']), level=level) \
+    periods = [RunPeriod(project=e['projectName'],
+                      year=year,
+                      name=str(e['period']),
+                      level=level,
+                      status=e['status'],
+                      description=e['description']) \
             for e in result.get_dict()['Element_Info'].values()]
-    return sorted(rows)
+    periods.sort()
+    return periods
 
 
 def get_all_periods(client):
@@ -398,6 +429,23 @@ def get_all_periods(client):
     return all_periods
 
 
+def print_periods(periods, wrap_desc=True, wrap_width=50, stream=None):
+
+    if stream is None:
+        stream = sys.stdout
+    table = [['Project', 'Name', 'Status', 'Description']]
+    for period in periods:
+        table.append([period.project,
+                      period.name,
+                      period.status,
+                      period.description])
+    print_table(table,
+                wrap_last=wrap_desc,
+                wrap_width=wrap_width,
+                vsep='-',
+                stream=stream)
+
+
 def get_runs(client, periods=None, year=YEAR):
     """
     Return all runs contained in the given periods in the specified year
@@ -405,7 +453,7 @@ def get_runs(client, periods=None, year=YEAR):
     if year > 2000:
         year %= 1000
     if not periods:
-        periods = [period.name for period in get_periods(client, year=year, level=0)]
+        periods = [period.name for period in get_periods(client, year=year, level=1)]
     elif isinstance(periods, basestring):
         periods = periods.split(',')
     runs = []
