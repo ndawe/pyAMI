@@ -18,6 +18,6 @@ def reset(interactive=True):
     if interactive:
         print "This will remove everything under %s" % DATA_ROOT
         option = raw_input("Proceed? (Y/[n]): ")
-        if not (option == 'Y' or not option):
+        if option != 'Y':
             return
     shutil.rmtree(DATA_ROOT)
