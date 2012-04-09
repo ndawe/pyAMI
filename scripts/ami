@@ -37,9 +37,7 @@ class CreditsAction(argparse.Action):
 
     def __call__(self, parser, namespace, values, option_string=None):
         
-        formatter = parser._get_formatter()
-        formatter.add_text(pyAMI.__doc__)
-        parser.exit(message=formatter.format_help())
+        parser.exit(message=pyAMI.info.__doc__)
 
 
 parser = argparse.ArgumentParser(

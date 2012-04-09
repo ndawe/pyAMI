@@ -34,6 +34,8 @@ if os.getenv('PYAMI_AFS_INSTALL') in ('1', 'true'):
 else:
     prefix = 'etc/pyAMI'
 
+print __doc__
+
 setup(name='pyAMI',
       version=VERSION,
       description='The ATLAS Metadata Interface',
