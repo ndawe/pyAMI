@@ -66,7 +66,8 @@ def search_query_args(parser, entity, include_pattern=True):
     parser.add_argument('--show-archived', action='store_true',
                         default=False, help="search in archived catalogues as well")
     if include_pattern:
-        parser.add_argument('pattern', help="matches must contain this pattern (glob with %%)")
+        parser.add_argument('pattern', help="matches must contain this pattern (glob with %%)",
+                            default='%', nargs='?')
     parser.set_defaults(flatten=True)
     parser.set_defaults(op=get_datasets)
     parser.set_defaults(pr=print_table)
