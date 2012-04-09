@@ -83,5 +83,4 @@ class RunPeriod(object):
 
     def __str__(self):
 
-        return '\t'.join([self.project, self.name,
-                          self.status, self.description])
+        return '%s %s' % (self.project, self.name)
