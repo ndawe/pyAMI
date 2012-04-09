@@ -124,6 +124,23 @@ def print_table(table, sep='  ',
                     print vsep * total_width
 
 
+def _expand_period_contraints(periods):
+    """
+    period=B -> period like B%
+    period=B2 -> period=B2
+    """
+    if isinstance(periods, basestring):
+        periods = periods.split(',')
+    selection = []
+    # single character
+    single_chars = [p for p in periods if len(p) == 1]
+    selection += ["period like '%s%%'" % p for p in single_chars]
+    # multiple characters
+    mult_chars = [p for p in periods if len(p) > 1]
+    selection += ["period='%s'" % p for p in mult_chars]
+    return " OR ".join(selection)
+
+
 def search_query(client,
                  entity,
                  cmd='SearchQuery',
@@ -167,15 +184,16 @@ def search_query(client,
             if value is not None:
                 name = validate_field(name, table)
                 """
-                    Case of multiple values for a given field -> search with OR
+                Case of multiple values for a given field -> search with OR
                 """
-                if isinstance(value, list) or isinstance(value, tuple):
-                    constraints += " AND (%s='%s'" % (name, value[0])
-                    for val in value[1:]:
-                        constraints += " OR %s='%s'" % (name, val)
-                    constraints += " )"
+                if name == 'period':
+                    constraints += " AND (%s)" % _expand_period_contraints(value)
                 else:
-                    constraints += " AND %s='%s'" % (name, value)
+                    if isinstance(value, (list, tuple)):
+                        constraints += " AND (%s)" % (" OR ".join(["%s='%s'" %
+                                       (name, val) for val in value]))
+                    else:
+                        constraints += " AND %s='%s'" % (name, value)
 
     if order is None:
         order_field = primary_field
