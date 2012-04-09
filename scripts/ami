@@ -3,6 +3,7 @@
 # Author: Noel Dawe
 
 import argparse
+import pyAMI
 from pyAMI.info import VERSION, AUTHOR_EMAIL, URL
 from pyAMI.query import *
 from pyAMI.schema import *
@@ -15,6 +16,30 @@ from pyAMI import userdata
 class formatter_class(argparse.ArgumentDefaultsHelpFormatter,
                       argparse.RawTextHelpFormatter):
     pass
+
+
+class CreditsAction(argparse.Action):
+
+    def __init__(self,
+                 option_strings,
+                 version=None,
+                 dest=argparse.SUPPRESS,
+                 default=argparse.SUPPRESS,
+                 help=None):
+        
+        super(CreditsAction, self).__init__(
+            option_strings=option_strings,
+            dest=dest,
+            default=default,
+            nargs=0,
+            help=help)
+        self.version = version
+
+    def __call__(self, parser, namespace, values, option_string=None):
+        
+        formatter = parser._get_formatter()
+        formatter.add_text(pyAMI.__doc__)
+        parser.exit(message=formatter.format_help())
 
 
 parser = argparse.ArgumentParser(
@@ -31,6 +56,8 @@ parser.add_argument('-f', '--format', default='text',
                     help="format of verbose output")
 parser.add_argument('--version', action='version', version=VERSION,
                     help="show the version number and exit")
+parser.add_argument('--credits', action=CreditsAction,
+                    help="show the credits and exit")
 subparsers = parser.add_subparsers()
 
 """
@@ -261,7 +288,6 @@ parser_reset = subparsers.add_parser('reset',
 parser_reset.set_defaults(op=userdata.reset)
 
 args = parser.parse_args()
-
 
 from pyAMI.auth import AMI_CONFIG, create_auth_config
 import sys
