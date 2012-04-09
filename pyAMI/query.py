@@ -712,7 +712,6 @@ def get_data_datasets(client,
             runs.append(int(node.childNodes[0].data))
         kwargs['run'] = runs
 
-    print prod_step
     datasets = get_datasets(client, tag_pattern, fields=fields,
                             project=project, stream=stream, type=type,
                             prod_step=prod_step,
@@ -760,6 +759,7 @@ def get_data_datasets(client,
                              int(new_version.group('lb')) >= int(curr_version.group('lb')))):
                             ds_unique[run] = ds
         datasets = ds_unique.values()
+        datasets.sort()
     if flatten:
         fields = parse_fields(fields, DATASET_TABLE)
         fields.append('logicalDatasetName')
