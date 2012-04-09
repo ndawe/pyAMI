@@ -7,7 +7,7 @@ from pyAMI.info import VERSION, AUTHOR_EMAIL, URL
 from pyAMI.query import *
 from pyAMI.schema import *
 from pyAMI.auth import create_auth_config
-from pyAMI.defaults import YEAR, PROJECT, STREAM, TYPE
+from pyAMI.defaults import YEAR, PROJECT, STREAM, TYPE, PRODSTEP
 from pyAMI.client import AMIResult
 from pyAMI import userdata
 
@@ -118,7 +118,10 @@ parser_list_data_datasets.add_argument('-s', '--stream', default=STREAM,
                                        help='data stream')
 parser_list_data_datasets.add_argument('-t', '--type', default=TYPE,
                                        help='data type')
-parser_list_data_datasets.add_argument('--periods', default=None)
+parser_list_data_datasets.add_argument('--prod-step', default=PRODSTEP,
+                                       help='production step')
+parser_list_data_datasets.add_argument('--periods', help='data periods',
+                                       default=None)
 parser_list_data_datasets.add_argument('--grl', default=None,
                                        help='only show runs in the specified good runs list')
 parser_list_data_datasets.add_argument('--latest', action='store_true',

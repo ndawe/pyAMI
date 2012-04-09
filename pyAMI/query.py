@@ -7,7 +7,7 @@ import textwrap
 
 from pyAMI.objects import DatasetInfo, RunPeriod
 from pyAMI.schema import *
-from pyAMI.defaults import YEAR, STREAM, TYPE, PROJECT
+from pyAMI.defaults import YEAR, STREAM, TYPE, PROJECT, PRODSTEP
 
 
 DATA_PATTERN = re.compile('^(?P<project>\w+).(?P<run>[0-9]+).(?P<stream>[a-zA-Z_\-0-9]+).(recon|merge).(?P<type>[a-zA-Z_\-0-9]+).(?P<version>\w+)$')
@@ -658,6 +658,7 @@ def get_data_datasets(client,
                       project=PROJECT,
                       stream=STREAM,
                       type=TYPE,
+                      prod_step=PRODSTEP,
                       parent_type=None,
                       grl=None,
                       fields=None,
@@ -678,6 +679,8 @@ def get_data_datasets(client,
 
     *type*: str
 
+    *prod_step*: str
+
     *parent_type*: str
 
     *fields*: [ list | tuple | str | None ]
@@ -697,7 +700,6 @@ def get_data_datasets(client,
         if isinstance(periods, basestring):
             periods = periods.split(',')
         kwargs['period'] = periods
-        kwargs['prod_step'] = ('recon', 'merge')
 
     if grl is not None:
         # need to be compatible with Python 2.4
@@ -709,15 +711,11 @@ def get_data_datasets(client,
         for node in run_nodes:
             runs.append(int(node.childNodes[0].data))
         kwargs['run'] = runs
-        kwargs['prod_step'] = ('recon', 'merge')
 
-    if latest:
-        kwargs['prod_step'] = ('recon', 'merge')
-
-
-
+    print prod_step
     datasets = get_datasets(client, tag_pattern, fields=fields,
                             project=project, stream=stream, type=type,
+                            prod_step=prod_step,
                             parent_type=parent_type,
                             **kwargs)
 
