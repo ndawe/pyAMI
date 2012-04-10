@@ -1,5 +1,12 @@
 .. -*- mode: rst -*-
 
+Version 4.0.0a2 (4/10/2012)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Second prerelease of the new pyAMI
+* Support for connection through a proxy (BNL)
+* Other minor improvements 
+
 Version 4.0.0a1 (3/28/2012)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
