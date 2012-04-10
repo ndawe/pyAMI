@@ -183,8 +183,8 @@ class AMIResult(object):
             return None
         elif format in self.XSLT:
             if not USE_LXML:
-                raise ValueError("lxml must be installed to "
-                                 "perform XSLT transformations")
+                raise ImportError("lxml must be installed to "
+                                  "perform XSLT transformations")
             xslt_url = urlparse.urljoin(endpoint.get_XSL_URL(), self.XSLT[format])
             xslt_root = etree.XML(urllib2.urlopen(xslt_url).read())
             transform = etree.XSLT(xslt_root)

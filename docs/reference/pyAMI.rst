@@ -49,14 +49,6 @@ pyAMI Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`info` Module
-------------------
-
-.. automodule:: pyAMI.info
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`objects` Module
 ---------------------
 
@@ -88,12 +80,3 @@ pyAMI Package
     :members:
     :undoc-members:
     :show-inheritance:
-
-:mod:`webservices` Module
--------------------------
-
-.. automodule:: pyAMI.webservices
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
