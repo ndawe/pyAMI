@@ -88,6 +88,11 @@ in your .bashrc)::
 
    export PATH=${HOME}/.local/bin${PATH:+:$PATH}
 
+If you are unable to satisfy the requirement on lxml (only used for XSL
+transformations) then you may disable this dependency before installation with::
+
+   export PYAMI_NO_LXML=1
+
 
 Authentication
 --------------
