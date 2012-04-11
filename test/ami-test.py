@@ -5,7 +5,7 @@ Created on 22 sept. 2010
 @author: lambert
 '''
 import sys
-from pyAMI import *
+from pyAMI.client import AMIClient
 
 def main(argv):
     try:
@@ -27,7 +27,7 @@ def main(argv):
         #print the default output of the command result
         # The default output=text, but others can be set using argument output.
         print 'Test xml/xsl -> txt\n'
-        print result.output(fornat='text')
+        print result.output(format='text')
 
         #print 'Test xml -> dom -> dict\n'
         #print result.getDict();
@@ -35,5 +35,7 @@ def main(argv):
     except Exception, msg:
         print msg
         return 1
+
 if __name__ == '__main__':
+
     main(sys.argv[1:])
