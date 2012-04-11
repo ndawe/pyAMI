@@ -5,7 +5,7 @@ from httplib import HTTPConnection, HTTPSConnection
 
 class AMIHTTPConnection(HTTPConnection):
 
-    def __init__(self, host, port=None, strict=None):
+    def __init__(self, host, port=None, strict=None, **kwargs):
 
         self.proxy_host = None
         self.proxy_port = None
@@ -15,7 +15,10 @@ class AMIHTTPConnection(HTTPConnection):
                 self.proxy_host, self.proxy_port = o[1].split(':')
             except:
                 pass
-        HTTPConnection.__init__(self, host, port, strict)
+        HTTPConnection.__init__(self, host=host,
+                                      port=port,
+                                      strict=strict,
+                                      **kwargs)
 
     def connect(self):
 
@@ -55,7 +58,7 @@ class AMIHTTPConnection(HTTPConnection):
 
 class AMIHTTPSConnection(HTTPSConnection):
 
-    def __init__(self, host, port=None, strict=None):
+    def __init__(self, host, port=None, strict=None, **kwargs):
 
         self.proxy_host = None
         self.proxy_port = None
@@ -65,7 +68,10 @@ class AMIHTTPSConnection(HTTPSConnection):
                 self.proxy_host, self.proxy_port = o[1].split(':')
             except:
                 pass
-        HTTPSConnection.__init__(self, host, port, strict)
+        HTTPSConnection.__init__(self, host=host,
+                                       port=port,
+                                       strict=strict,
+                                       **kwargs)
 
     def connect(self):
 
