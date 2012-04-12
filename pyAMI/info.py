@@ -1,5 +1,4 @@
-# -*- coding: utf-8 -*-
-u"""
+"""
                 _    __  __ ___
  _ __  _   _   / \  |  \/  |_ _|
 | '_ \| | | | / _ \ | |\/| || |
@@ -11,7 +10,7 @@ Authors:
 
 Solveig Albrand
 Noel Dawe
-Jérôme Fulachier
+Jerome Fulachier
 Fabian Lambert
 
 """
