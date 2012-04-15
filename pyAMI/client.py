@@ -503,3 +503,7 @@ class AMIClient(object):
         request = upload_proxyRequest(**args)
         self._ami.upload_proxy(request)._upload_proxyReturn
         return "Proxy successfully uploaded"
+
+
+class AMI(AMIClient):
+    pass
