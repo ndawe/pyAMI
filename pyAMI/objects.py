@@ -21,7 +21,7 @@ class DatasetInfo(object):
         out = StringIO()
         if self.info:
             print >> out, ""
-            print >> out, "Parameters of dataset"
+            print >> out, "Dataset Parameters"
             print >> out, "========================"
             for name, value in self.info.items():
                 spaces = rjust(" ", 30 - len(name))
@@ -51,7 +51,7 @@ class DatasetInfo(object):
                 else:
                     valueToPrint = ' - '.join([tmpDict.get("min"), tmpDict.get("max")])
                 print >> out, physProp + rjust(' ', 30 - len(physProp)) + \
-                        ' '.join([valueToPrint, tmpDict.get("unit"), '"%s"' % tmpDict.get("description")])
+                        ' '.join([valueToPrint, tmpDict.get("unit"), '(%s)' % tmpDict.get("description")])
         return out.getvalue()
 
 
