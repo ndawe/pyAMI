@@ -595,9 +595,6 @@ def get_dataset_info(client, dataset, **kwargs):
                                 if propertyNameSubField == propertyName + "_desc":
                                     tmpDict["description"] = propertyNameSubValue
                                 dataset_info.properties[propertyName] = tmpDict
-                                #print propertyName
-                                #if field.attributes['name'].value.contains("_type"):
-                                #   value=field.firstChild.nodeValue
     return dataset_info
 
 
@@ -650,6 +647,38 @@ def get_dataset_xsec_effic(client, dataset, **kwargs):
     except KeyError:
         raise ValueError('No generator filter efficiency listed for dataset %s' % dataset)
     return xsec, effic
+
+
+def get_dataset_xsec_min_max_effic(client, dataset, **kwargs):
+    """
+    Return the cross section mean, min, max, and generator filter efficiency
+
+    *client*: AMIClient
+
+    *dataset*: str
+
+    *kwargs*: dict
+    """
+    infos = get_event_info(client, dataset, **kwargs)
+    if len(infos) > 1:
+        raise ValueError('Dataset %s has multiple parent event generator datasets' % dataset)
+    elif not infos:
+        raise ValueError('Event info not found for dataset %s' % dataset)
+    info = infos[0]
+    try:
+        xsec = float(info.extra['crossSection_mean'])
+    except KeyError:
+        raise ValueError('No cross section listed for dataset %s' % dataset)
+    try:
+        xsec_min = float(info.properties['crossSection']['min'])
+        xsec_max = float(info.properties['crossSection']['max'])
+    except KeyError:
+        raise ValueError('No cross section min or max listed for dataset %s' % dataset)
+    try:
+        effic = float(info.extra['GenFiltEff_mean'])
+    except KeyError:
+        raise ValueError('No generator filter efficiency listed for dataset %s' % dataset)
+    return xsec, xsec_min, xsec_max, effic
 
 
 def get_data_datasets(client,
