@@ -1,5 +1,4 @@
 include *.py
-exclude fabfile.py 
 include LICENSE
 include README
 include README.rst
