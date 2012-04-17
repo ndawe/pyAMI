@@ -9,4 +9,4 @@ echo "sourcing ${SOURCE_PYAMI_SETUP}..."
 export PATH=${DIR_PYAMI_SETUP}/bin${PATH:+:$PATH}
 export PYTHONPATH=${DIR_PYAMI_SETUP}/lib/python2.4/site-packages${PYTHONPATH:+:$PYTHONPATH}
 export PYAMI_VERSION=`cat ${DIR_PYAMI_SETUP}/version.txt`
-echo "Setting up pyAMI ${PYAMI_VERSION}"
+echo "setting up pyAMI ${PYAMI_VERSION}"
