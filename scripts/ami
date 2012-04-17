@@ -2,6 +2,13 @@
 
 # Author: Noel Dawe
 
+import os
+import sys
+
+if 'PYAMI_LIBRARY_PATH' in os.environ:
+    sys.path.insert(0, os.environ['PYAMI_LIBRARY_PATH'])
+
+
 import argparse
 import pyAMI
 from pyAMI.info import VERSION, AUTHOR_EMAIL, URL
@@ -288,8 +295,6 @@ parser_reset.set_defaults(op=userdata.reset)
 args = parser.parse_args()
 
 from pyAMI.auth import AMI_CONFIG, create_auth_config
-import sys
-import os
 
 try:
     if args.op == create_auth_config:
