@@ -6,8 +6,12 @@ import re
 from sys import stdout
 import cPickle as pickle
 import base64
-import urllib2
 import urlparse
+
+if sys.version_info < (2, 6):
+    from pyAMI.backports import urllib2
+else:
+    import urllib2
 
 from pyAMI.webservices import *
 from pyAMI.exceptions import *

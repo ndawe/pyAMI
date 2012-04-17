@@ -10,10 +10,6 @@ requires = ['ZSI', 'argparse']
 if os.getenv('PYAMI_NO_LXML') not in ('1', 'true'):
     requires.append('lxml')
 
-if sys.version_info < (2, 6):
-    # http://pypi.python.org/pypi/httpsproxy_urllib2
-    requires.append('httpsproxy_urllib2')
-
 kw = {}
 if os.getenv('PYAMI_USE_DISTRIBUTE') in ('1', 'true'):
     from distribute_setup import use_setuptools
