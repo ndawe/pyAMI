@@ -1,1 +1,1 @@
-Patched urllib2 and httplib taken from http://pypi.python.org/pypi/httpsproxy_urllib2
+Patched urllib2 taken from http://pypi.python.org/pypi/httpsproxy_urllib2

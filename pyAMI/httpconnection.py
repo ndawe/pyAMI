@@ -1,11 +1,6 @@
-import sys
 import os, socket
 from urlparse import urlparse
-
-if sys.version_info < (2, 6):
-    from pyAMI.backports.httplib import HTTPConnection, HTTPSConnection
-else:
-    from httplib import HTTPConnection, HTTPSConnection
+from httplib import HTTPConnection, HTTPSConnection
 
 
 class AMIHTTPConnection(HTTPConnection):
