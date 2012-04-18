@@ -2,6 +2,12 @@
 Changelog
 ---------
 
+Version 4.0.0a3 (4/17/2012)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+* Make distribute the default install method
+* Include patched urllib2 module in pyAMI.backports
+
 Version 4.0.0a2 (4/10/2012)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
