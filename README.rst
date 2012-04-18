@@ -1,13 +1,13 @@
 .. -*- mode: rst -*-
 
-For more information see `pyAMI <http://cern.ch/noel.dawe/projects/pyAMI>`_
+For more information see the full `pyAMI documentation <http://cern.ch/noel.dawe/projects/pyAMI>`_
 
 About
 -----
 
 This is a prerelease of the new and improved pyAMI 
-(formerly known as atlasmeta, a fork of the original
-`pyAMI <http://ccami01.in2p3.fr:8080/opencms/opencms/AMI/www/Tutorial/pyAMI.html>`_)
+(formerly known as atlasmeta, a fork of the
+`original pyAMI <http://ccami01.in2p3.fr:8080/opencms/opencms/AMI/www/Tutorial/pyAMI.html>`_)
 This new version offers a cleaner codebase, enhanced API, and improved command-line functionality.
 All commands are simply subcommands of ``ami``.
 

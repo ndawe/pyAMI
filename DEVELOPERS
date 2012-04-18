@@ -14,6 +14,12 @@ all required files are included in MANIFEST.in. Then run:
 The new .tar.gz and .egg can now be found in dist/
 
 
+Updating the content on PyPI
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+    python setup.py register
+
+
 Using git
 ~~~~~~~~~
 
