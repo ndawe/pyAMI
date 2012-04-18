@@ -17,7 +17,14 @@ The new .tar.gz and .egg can now be found in dist/
 Updating the content on PyPI
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
+To update the PyPI page of the current version or to post a
+new version:
+
     python setup.py register
+
+To upload a new tarball to PyPI:
+
+    python setup.py sdist upload
 
 
 Using git
