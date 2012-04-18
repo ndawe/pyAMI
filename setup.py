@@ -31,7 +31,8 @@ if os.getenv('PYAMI_AFS_INSTALL') in ('1', 'true'):
 else:
     prefix = 'etc/pyAMI'
 
-print __doc__
+if 'install' in sys.argv:
+    print __doc__
 
 setup(name='pyAMI',
       version=VERSION,
@@ -49,7 +50,7 @@ setup(name='pyAMI',
         "Programming Language :: Python",
         "Topic :: Utilities",
         "Operating System :: POSIX :: Linux",
-        "Development Status :: 4 - Beta",
+        "Development Status :: 3 - Alpha",
         "Intended Audience :: Science/Research",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: GNU General Public License (GPL)"
