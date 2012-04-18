@@ -96,11 +96,11 @@ disutils install by setting the environment variable::
 
 One advantage of using distribute is that all dependencies are automatically
 downloaded and installed for you. To install pyAMI into your home directory
-with newer Python (>2.4) versions::
+if using at least Python 2.6::
 
    python setup.py install --user
 
-or with Python 2.4::
+or with older Python versions::
 
    python setup.py install --prefix=~/.local
 
