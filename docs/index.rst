@@ -16,7 +16,4 @@ Contents
    examples/api
    reference/modules
 
-ChangeLog
----------
-
-.. include:: ../ChangeLog
+.. include:: ../Changelog
