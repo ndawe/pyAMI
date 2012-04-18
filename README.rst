@@ -68,10 +68,10 @@ Untar and install (replace X appropriately)::
    tar -zxvf pyAMI-X.tar.gz
    cd pyAMI-X
 
-By default, pyAMI uses distutils to install but you may optionally use
-distribute by setting the environment variable::
+pyAMI uses distribute to install but you may revert to a basic
+disutils install by setting the environment variable::
 
-   export PYAMI_USE_DISTRIBUTE=1
+   export PYAMI_NO_DISTRIBUTE=1
 
 One advantage of using distribute is that all dependencies are automatically
 downloaded and installed for you. To install pyAMI into your home directory

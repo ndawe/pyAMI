@@ -11,17 +11,17 @@ if os.getenv('PYAMI_NO_LXML') not in ('1', 'true'):
     requires.append('lxml')
 
 kw = {}
-if os.getenv('PYAMI_USE_DISTRIBUTE') in ('1', 'true'):
+if os.getenv('PYAMI_NO_DISTRIBUTE') in ('1', 'true'):
+    from distutils.core import setup
+    packages = ['pyAMI']
+    if sys.version_info >= (2, 5):
+        kw['requires'] = requires
+else:
     from distribute_setup import use_setuptools
     use_setuptools()
     from setuptools import setup, find_packages
     packages = find_packages()
     kw['install_requires'] = requires
-else:
-    from distutils.core import setup
-    packages = ['pyAMI']
-    if sys.version_info >= (2, 5):
-        kw['requires'] = requires
 
 execfile('pyAMI/info.py')
 open('version.txt', 'w').write(VERSION)
