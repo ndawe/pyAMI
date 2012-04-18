@@ -54,14 +54,35 @@ then authenticate yourself if you haven't already (see below).
 Requirements
 ------------
 
-At least Python 2.4, `ZSI <http://pypi.python.org/pypi/ZSI/>`_, and `argparse <http://pypi.python.org/pypi/argparse>`_.
+At least Python 2.4, `ZSI <http://pypi.python.org/pypi/ZSI/>`_,
+and `argparse <http://pypi.python.org/pypi/argparse>`_.
 `lxml <http://lxml.de/>`_ is optional but required for XSL transformations.
 
 
-Install
--------
+Automatic Installation
+----------------------
 
-Get the latest tarball here: `http://cern.ch/noel.dawe/downloads/pyAMI <http://cern.ch/noel.dawe/downloads/pyAMI>`_
+Automatically install the latest version of pyAMI with
+`pip <http://pypi.python.org/pypi/pip>`_::
+
+    pip install --user pyAMI
+
+or with ``easy_install``::
+
+    easy_install --user pyAMI
+
+Omit the ``--user`` for a system-wide installation (requires root privileges).
+Add ``${HOME}/.local/bin`` to your ``${PATH}`` if using ``--user`` and if
+it is not there already (put this in your .bashrc)::
+
+   export PATH=${HOME}/.local/bin${PATH:+:$PATH}
+
+To upgrade an existing installation use the ``-U`` option in the ``pip`` or ``easy_install`` commands above.
+
+Manual Installation
+-------------------
+
+Get the latest tarball on `PyPI <http://pypi.python.org/pypi/pyAMI/>`_
 
 Untar and install (replace X appropriately)::
 
