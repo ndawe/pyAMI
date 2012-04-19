@@ -2,10 +2,6 @@
 Create a source distribution
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
-First enable building with distribute:
-
-    export PYAMI_USE_DISTRIBUTE=1
-
 Set the version number in pyAMI/info.py and make sure
 all required files are included in MANIFEST.in. Then run:
 
