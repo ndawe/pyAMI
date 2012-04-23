@@ -12,7 +12,6 @@ class AMIConfig(ConfigParser):
         ConfigParser.__init__(self)
         self.optionxform = str
         self.add_section('AMI')
-        self.add_section('AMIMISC')
         self.reset()
 
     def reset(self):
@@ -21,7 +20,6 @@ class AMIConfig(ConfigParser):
         """
         self.set('AMI', 'AMIUser', '')
         self.set('AMI', 'AMIPass', '')
-        self.set('AMIMISC', 'separator', ';')
 
     def include(self, params):
         """

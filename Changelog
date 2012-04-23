@@ -22,7 +22,7 @@ Version 4.0.0a1 (3/28/2012)
 * Package renamed to pyAMI
 * Speed improvements
 * VOMS authentication
-* Fixed permissions of ~/.atlasmeta/ami.cfg
+* Fixed permissions of ~/.pyami/ami.cfg
 * Removed intermediate ami package.
   Everything is now under pyAMI
 
