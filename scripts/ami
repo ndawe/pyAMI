@@ -56,7 +56,9 @@ parser.add_argument('-v', '--verbose', action='store_true', default=False,
                     help="show verbose output")
 parser.add_argument('-d', '--debug', action='store_true', default=False,
                     help="show a stack trace")
-parser.add_argument('-f', '--format', default='text',
+parser.add_argument('-f', '--format', '--output',
+                    dest='format',
+                    default='text',
                     choices=AMIResult.XSLT.keys(),
                     help="format of verbose output")
 parser.add_argument('--version', action='version', version=VERSION,

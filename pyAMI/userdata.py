@@ -2,12 +2,12 @@ import os
 import shutil
 
 
-DATA_ROOT = os.path.expanduser('~/.pyami')
+DATA_ROOT = os.getenv('PYAMI_CONFIG_DIR', os.path.expanduser('~/.pyami'))
 if not os.path.exists(DATA_ROOT):
     os.mkdir(DATA_ROOT)
 elif not os.path.isdir(DATA_ROOT):
-    raise RuntimeError("A file at ~/.pyami already exists."
-                       "Unable to create user data")
+    raise RuntimeError("A file at %s already exists."
+                       "Unable to create user data" % DATA_ROOT)
 
 # only allow user access
 os.chmod(DATA_ROOT, 0700)
