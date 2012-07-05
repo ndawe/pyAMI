@@ -1,6 +1,7 @@
 .. -*- mode: rst -*-
 
-For more information see the full `pyAMI documentation <http://cern.ch/noel.dawe/projects/pyAMI>`_
+For more information see the full
+`pyAMI documentation <http://cern.ch/noel.dawe/projects/pyAMI>`_
 
 About
 -----
@@ -8,8 +9,8 @@ About
 This is a prerelease of the new and improved pyAMI 
 (formerly known as atlasmeta, a fork of the
 `original pyAMI <http://ccami01.in2p3.fr:8080/opencms/opencms/AMI/www/Tutorial/pyAMI.html>`_)
-This new version offers a cleaner codebase, enhanced API, and improved command-line functionality.
-All commands are simply subcommands of ``ami``.
+This new version offers a cleaner codebase, enhanced API, and improved
+command-line functionality. All commands are simply subcommands of ``ami``.
 
 List AOD datasets matching a pattern::
 
@@ -77,7 +78,8 @@ it is not there already (put this in your .bashrc)::
 
    export PATH=${HOME}/.local/bin${PATH:+:$PATH}
 
-To upgrade an existing installation use the ``-U`` option in the ``pip`` or ``easy_install`` commands above.
+To upgrade an existing installation use the ``-U`` option in the ``pip``
+or ``easy_install`` commands above.
 
 
 Manual Installation
@@ -105,8 +107,8 @@ or with older Python versions::
 
    python setup.py install --prefix=~/.local
 
-Add ``${HOME}/.local/bin`` to your ``${PATH}`` if it is not there already (put this
-in your .bashrc)::
+Add ``${HOME}/.local/bin`` to your ``${PATH}`` if it is not there
+already (put this in your .bashrc)::
 
    export PATH=${HOME}/.local/bin${PATH:+:$PATH}
 
@@ -129,5 +131,8 @@ is to send your username and password along with each AMI command::
    ami auth
 
 This will prompt you for your AMI username and password.
-You will only need to do this once since your credentials are stored in ~/.pyAMI/ami.conf
-for later use. If your credentials change just run ``ami auth`` again.
+You will only need to do this once since your credentials are stored in
+~/.pyami/ami.conf for later use. If your credentials change just
+run ``ami auth`` again. If you would like to keep your pyAMI configuration
+in a directory other than ~/.pyami then set the environment
+variable PYAMI_CONFIG_DIR.
