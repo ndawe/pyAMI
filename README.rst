@@ -52,6 +52,12 @@ simply::
 then authenticate yourself if you haven't already (see below).
 
 
+From CVMFS
+----------
+
+ADD INFO HERE
+
+
 Requirements
 ------------
 
