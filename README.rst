@@ -79,6 +79,7 @@ it is not there already (put this in your .bashrc)::
 
 To upgrade an existing installation use the ``-U`` option in the ``pip`` or ``easy_install`` commands above.
 
+
 Manual Installation
 -------------------
 
