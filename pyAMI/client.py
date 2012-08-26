@@ -406,6 +406,7 @@ class AMIClient(object):
         if self.verbose:
             print
             print "query:"
+            print
             print ' '.join(args)
         if len(args) == 1 and args[0] == "UploadProxy":
             self.upload_proxy()
@@ -450,6 +451,7 @@ class AMIClient(object):
         if self.verbose:
             print
             print "reply:"
+            print
             print result.output(format=self.verbose_format)
             print
         return result
