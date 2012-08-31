@@ -1,1 +1,4 @@
-distribute_setup.py
+include distribute_setup.py
+include README
+include README.rst
+include LICENSE
