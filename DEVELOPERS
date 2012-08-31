@@ -3,7 +3,8 @@ Create a source distribution
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 Set the version number in pyAMI/info.py and make sure
-all required files are included in MANIFEST.in. Then run:
+all required files (that not included by default) are
+included in MANIFEST.in. Then run:
 
     python setup.py sdist
 
