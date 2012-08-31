@@ -17,3 +17,8 @@ version.txt
 build
 dist
 *.swp
+cmt/Makefile
+cmt/*.sh
+cmt/*.csh
+i686*
+i386*
