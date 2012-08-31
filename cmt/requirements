@@ -1,5 +1,0 @@
-
-use PyCmt       PyCmt-*         Tools -no_auto_imports
-use AtlasPyFwdBwdPorts AtlasPyFwdBwdPorts-* External
-
-apply_pattern make_pkgbuild name=pyAMI file=pkgbuild_pyAMI.py

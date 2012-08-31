@@ -13,14 +13,12 @@ if os.getenv('PYAMI_NO_LXML') not in ('1', 'true'):
 kw = {}
 if os.getenv('PYAMI_NO_DISTRIBUTE') in ('1', 'true'):
     from distutils.core import setup
-    packages = ['pyAMI']
     if sys.version_info >= (2, 5):
         kw['requires'] = requires
 else:
     from distribute_setup import use_setuptools
     use_setuptools()
     from setuptools import setup, find_packages
-    packages = find_packages()
     kw['install_requires'] = requires
 
 execfile('pyAMI/info.py')
@@ -42,7 +40,7 @@ setup(name='pyAMI',
       author_email=AUTHOR_EMAIL,
       url=URL,
       download_url=DOWNLOAD_URL,
-      packages=packages,
+      packages=['pyAMI'],
       scripts=glob('scripts/*'),
       data_files=[(prefix, ['version.txt'])],
       license='GPLv3',
