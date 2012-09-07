@@ -49,12 +49,12 @@ Use the ``ami list runs`` subcommand to list all runs contained in the specified
 
 For example, to list runs in period M of the current year's data:
 
-.. command-output:: ami list runs M
+.. command-output:: ami list runs --year 11 M
    :ellipsis: 20
 
 You may also specify multiple periods:
 
-.. command-output:: ami list runs K1 K2
+.. command-output:: ami list runs --year 11 K1 K2
    :ellipsis: 20
 
 
