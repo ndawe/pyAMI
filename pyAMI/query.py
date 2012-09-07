@@ -223,7 +223,7 @@ def search_query(client,
         args.append('showArchived=true')
 
     result = client.execute(args)
-    things = [thing for thing in result.iterrows()]
+    things = [thing for thing in result.rows()]
     if flatten:
         things = flatten_results(things, query_fields)
     return query_fields, things
@@ -836,7 +836,7 @@ def get_configtags(client, tag, *args, **kwargs):
     for name, value in kwargs.items():
         argv.append("%s='%s'" % (name, value))
     result = client.execute(argv)
-    return [row for row in result.iterrows()]
+    return [row for row in result.rows()]
 
 
 def get_files(client, dataset, limit=None):
@@ -856,7 +856,7 @@ def get_files(client, dataset, limit=None):
             limit = 'limit=0,%i' % limit
         args.append(limit)
     result = client.execute(args)
-    return result.iterrows()
+    return result.rows()
 
 
 def humanize_bytes(bytes, precision=1):
