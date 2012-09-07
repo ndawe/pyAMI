@@ -64,8 +64,6 @@ class AMIResult(object):
         'verbose':   'AMIXmlToTextVerbose.xsl',
     }
 
-    _xslt = None
-
     def __init__(self, dom):
 
         self.dom = dom
@@ -73,27 +71,22 @@ class AMIResult(object):
         self.infos = dom.getElementsByTagName('info')
         self.rowsets = dom.getElementsByTagName('rowset')
 
-    def setxslt(self , xslt):
+    def pickle(self, filename):
 
-        self._xslt = xslt
-
-    def write_gpickle(self, filenameBase):
-
-        if filenameBase.endswith('.gpickle'):
-            filename = filenameBase
-        else:
-            filename = filenameBase + '.gpickle'
+        root, ext = os.path.splitext(filename)
+        if not ext:
+            filename += '.pickle'
         try:
-            errorFile = open(filename, 'w')
+            pickle_file = open(filename, 'w')
         except IOError:
             print "WARNING: Could not write gpickle report to file %s" % filename
             return False
         else:
-            pickle.dump(self.get_dict(), errorFile, 0)
-            errorFile.close()
+            pickle.dump(self.to_dict(), pickle_file, 0)
+            pickle_file.close()
             return True
 
-    def get_dict(self):
+    def to_dict(self):
         """
         Convert the DOM into a dictionary and return it
         """
@@ -128,7 +121,7 @@ class AMIResult(object):
             resultDict.update({rowsetLabel:rowsetDict})
         return resultDict
 
-    def rows(self):
+    def print_rows(self):
         """
         Print the rows in the DOM
         """
@@ -158,7 +151,7 @@ class AMIResult(object):
                         line = line + "{}"
                 print line
 
-    def iterrows(self):
+    def rows(self):
         """
         Return an iterator over the rows in the DOM
         """
@@ -175,24 +168,13 @@ class AMIResult(object):
                         field_dict[name] = 'NULL'
                 yield field_dict
 
-    def output(self, format=None):
+    def xslt(self, format='text'):
         """
         Return the DOM in the specified format using an XSLT
         """
-        if format is None:
-            if self._xslt is not None:
-                format = self._xslt
-            else:
-                format = 'text'
         format = format.lower()
         if format == 'xml':
             return self.dom.toxml()
-        if format.endswith('gpickle'):
-            outputfile = "output.gpickle"
-            if format != 'gpickle':
-                outputfile = format
-            self.write_gpickle(outputfile)
-            return None
         elif format in self.XSLT:
             if not USE_LXML:
                 raise ImportError("lxml must be installed to "
@@ -363,7 +345,7 @@ class AMIClient(object):
                     "levelName=motherDatabase",
                     "output=xml"]
             result = self.execute(args)
-            msg = result.output()
+            msg = result.xslt()
             return msg[msg.find('amiLogin="') + 10:msg.find('" database')]
         except Exception, error:
             return None
@@ -421,7 +403,6 @@ class AMIClient(object):
             f = StringIO("<?xml version=\"1.0\" ?><AMIMessage><info>Proxy uploaded</info></AMIMessage>");
             doc = minidom.parse(f)
             result = AMIResult(doc)
-            result.setxslt("text")
         else:
             args = self._parse_args(args)
             self._check_format(args)
@@ -451,7 +432,7 @@ class AMIClient(object):
                     f = StringIO(error[error.find('<?'):error.find('</AMIMessage>') + 13])
                     doc = minidom.parse(f)
                     result = AMIResult(doc)
-                    outputmsg = str(result.output())
+                    outputmsg = str(result.xslt())
                 except Exception:
                     raise AMI_Error("cannot parse error : " + error)
                 raise AMI_Error(outputmsg)
@@ -460,7 +441,7 @@ class AMIClient(object):
             print
             print "reply:"
             print
-            print result.output(format=self.verbose_format)
+            print result.xslt(format=self.verbose_format)
             print
         return result
 
@@ -493,7 +474,6 @@ class AMIClient(object):
         f = StringIO(reply._execAMICommand_arrayReturn.encode('utf-8'))
         doc = minidom.parse(f)
         self._result = AMIResult(doc)
-        self._result.setxslt(self._xslt)
         return self._result
 
     def _check_format(self, argDict):

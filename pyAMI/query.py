@@ -393,7 +393,7 @@ def get_periods_for_run(client, run):
     """
     result = client.execute(['GetDataPeriodsForRun', '-runNumber=%i' % run])
     periods = sorted([RunPeriod(level=int(e['periodLevel']), name=str(e['period']), project=str(e['project'])) \
-                      for e in result.get_dict()['Element_Info'].values() ])
+                      for e in result.to_dict()['Element_Info'].values() ])
     return periods
 
 
@@ -416,7 +416,7 @@ def get_periods(client, year=YEAR, level=2):
                       level=level,
                       status=e['status'],
                       description=e['description']) \
-            for e in result.get_dict()['Element_Info'].values()]
+            for e in result.to_dict()['Element_Info'].values()]
     periods.sort()
     return periods
 
@@ -480,7 +480,7 @@ def get_runs(client, periods=None, year=YEAR):
         cmd = ['GetRunsForDataPeriod', '-period=%s' % period]
         cmd += [ '-projectName=data%02i%%' % year ]
         result = client.execute(cmd)
-        runs += [ int(e['runNumber']) for e in result.get_dict()['Element_Info'].values() ]
+        runs += [ int(e['runNumber']) for e in result.to_dict()['Element_Info'].values() ]
     # remove duplicates
     runs = list(set(runs))
     runs.sort()
