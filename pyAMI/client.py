@@ -94,7 +94,9 @@ class AMIResult(object):
             return True
 
     def get_dict(self):
-
+        """
+        Convert the DOM into a dictionary and return it
+        """
         resultDict = {}
         cptRowset = 0
         for rowset in self.rowsets:
@@ -127,7 +129,9 @@ class AMIResult(object):
         return resultDict
 
     def rows(self):
-
+        """
+        Print the rows in the DOM
+        """
         for rowset in self.rowsets:
             rowsetLabel = "#rowset:"
             if "type" in rowset.attributes.keys():
@@ -155,7 +159,9 @@ class AMIResult(object):
                 print line
 
     def iterrows(self):
-
+        """
+        Return an iterator over the rows in the DOM
+        """
         for rowset in self.rowsets:
             rows = rowset.getElementsByTagName('row')
             for row in rows:
@@ -170,7 +176,9 @@ class AMIResult(object):
                 yield field_dict
 
     def output(self, format=None):
-
+        """
+        Return the DOM in the specified format using an XSLT
+        """
         if format is None:
             if self._xslt is not None:
                 format = self._xslt
