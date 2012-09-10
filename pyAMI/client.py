@@ -19,6 +19,7 @@ from pyAMI.exceptions import _AMI_Error_Base
 from pyAMI import endpoint
 from pyAMI.config import AMIConfig
 from pyAMI.userdata import DATA_ROOT
+from pyAMI.xslt import XSLT
 from xml.dom import minidom, Node
 
 AMI_CONFIG = os.path.join(DATA_ROOT, 'ami.cfg')
@@ -35,16 +36,6 @@ class AMIResult(object):
     Python class representing the XML reply from the AMI Web Service.
     The default transformation produces text.
     """
-
-    XSLT = {
-        'xml':       None,
-        'csv':       'AMIXmlToCsv.xsl',
-        'htmltable': 'AMIXmlToHtmlTable.xsl',
-        'html':      'AMIXmlToHtml.xsl',
-        'text':      'AMIXmlToText.xsl',
-        'verbose':   'AMIXmlToTextVerbose.xsl',
-    }
-
     def __init__(self, dom):
 
         self.dom = dom
@@ -149,25 +140,25 @@ class AMIResult(object):
                         field_dict[name] = 'NULL'
                 yield field_dict
 
-    def xslt(self, format='text'):
+    def xslt(self, output='text'):
         """
         Return the DOM in the specified format using an XSLT
         """
-        format = format.lower()
-        if format == 'xml':
+        output = output.lower()
+        if output == 'xml':
             return self.dom.toxml()
-        elif format in self.XSLT:
+        elif output in XSLT:
             if not USE_LXML:
                 raise ImportError("lxml must be installed to "
                                   "perform XSLT transformations")
-            xslt_url = urlparse.urljoin(endpoint.get_XSL_URL(), self.XSLT[format])
+            xslt_url = urlparse.urljoin(endpoint.get_XSL_URL(), XSLT[output])
             xslt_root = etree.XML(urllib2.urlopen(xslt_url).read())
             transform = etree.XSLT(xslt_root)
             doc = etree.fromstring(self.dom.toxml())
             return transform(doc)
         else:
-            raise ValueError("Format '%s' is not a valid "
-                             "AMIResult format" % format)
+            raise ValueError("'%s' is not a valid "
+                             "AMIResult XSLT output format" % output)
 
 
 class AMIClient(object):

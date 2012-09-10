@@ -14,11 +14,9 @@ import pyAMI
 from pyAMI.info import VERSION, AUTHOR_EMAIL, URL
 from pyAMI.query import *
 from pyAMI.schema import *
-from pyAMI.auth import create_auth_config
 from pyAMI.defaults import YEAR, PROJECT, STREAM, TYPE, PRODSTEP
-from pyAMI.client import AMIResult
+from pyAMI.xslt import XSLT
 from pyAMI import userdata
-from pyAMI import endpoint
 
 
 class formatter_class(argparse.ArgumentDefaultsHelpFormatter,
@@ -57,10 +55,10 @@ parser.add_argument('-v', '--verbose', action='store_true', default=False,
                     help="show verbose output")
 parser.add_argument('-d', '--debug', action='store_true', default=False,
                     help="show a stack trace")
-parser.add_argument('-f', '--format', '--output',
-                    dest='format',
+parser.add_argument('-f', '--format',
+                    dest='output',
                     default='text',
-                    choices=AMIResult.XSLT.keys(),
+                    choices=XSLT.keys(),
                     help="format of verbose output")
 parser.add_argument('-s', '--server',
                     help="set the server", choices=('main', 'replica'),
@@ -75,7 +73,7 @@ subparsers = parser.add_subparsers()
 Authorize
 """
 parser_auth = subparsers.add_parser('auth')
-parser_auth.set_defaults(op=create_auth_config)
+parser_auth.set_defaults(op='auth')
 
 """
 List
@@ -282,12 +280,10 @@ parser_update.set_defaults(op=None)
 """
 default -> raw ami command
 """
-from pyAMI.client import AMIClient
-
 parser_command = subparsers.add_parser('cmd', description="A raw ami command to execute")
 parser_command.add_argument('amiCommand', nargs=1, help="An AMI command (mandatory)")
 parser_command.add_argument('args', nargs=argparse.REMAINDER, help="Some arguments (optional)")
-parser_command.set_defaults(op=AMIClient.execute)
+parser_command.set_defaults(op='exec')
 parser_command.set_defaults(pr=None)
 
 """
@@ -299,24 +295,31 @@ parser_reset = subparsers.add_parser('reset',
 parser_reset.set_defaults(op=userdata.reset)
 
 args = parser.parse_args()
+
+from pyAMI import endpoint
+# this must be done before an import of webservices anywhere
 endpoint.TYPE = args.server
 
 from pyAMI.auth import AMI_CONFIG, create_auth_config
+from pyAMI.client import AMIClient, AMIResult
+
+if args.op == 'exec':
+    args.op = AMIClient.execute
 
 try:
-    if args.op == create_auth_config:
+    if args.op == 'auth':
         create_auth_config()
     elif args.op == userdata.reset:
         userdata.reset()
     else:
         amiclient = AMIClient(verbose=args.verbose,
-                              verbose_format=args.format)
+                              verbose_format=args.output)
         cmd_args = dict(args._get_kwargs())
         del cmd_args['op']
         del cmd_args['pr']
         del cmd_args['verbose']
         del cmd_args['debug']
-        del cmd_args['format']
+        del cmd_args['output']
         del cmd_args['server']
         if 'help' in cmd_args:
             del cmd_args['help']
@@ -327,7 +330,7 @@ try:
         if args.op == get_periods:
             print_periods(result)    
         elif isinstance(result, AMIResult):
-            print result.xslt(format=args.format)
+            print result.xslt(output=args.output)
         elif args.pr and result:
             if args.pr == print_table:
                 args.pr(result)
