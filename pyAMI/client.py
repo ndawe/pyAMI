@@ -30,25 +30,6 @@ except ImportError:
     USE_LXML = False
 
 
-def set_endpoint_type(args):
-
-    for i, arg in enumerate(args):
-        value = ""
-        # this can be done in a better way with regex
-        if arg.startswith('-'):
-            arg = arg[1:]
-            if arg.startswith('-'):
-                arg = arg[1:]
-        if '=' in arg:
-            value = arg[arg.find('=') + 1:]
-            value = value.replace('=', '\=')
-            arg = arg[0:arg.find('=')]
-        if arg == 'replica':
-            args.pop(i)
-            endpoint.TYPE = 'replica'
-            return
-
-
 class AMIResult(object):
     """
     Python class representing the XML reply from the AMI Web Service.

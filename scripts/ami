@@ -18,6 +18,7 @@ from pyAMI.auth import create_auth_config
 from pyAMI.defaults import YEAR, PROJECT, STREAM, TYPE, PRODSTEP
 from pyAMI.client import AMIResult
 from pyAMI import userdata
+from pyAMI import endpoint
 
 
 class formatter_class(argparse.ArgumentDefaultsHelpFormatter,
@@ -61,6 +62,9 @@ parser.add_argument('-f', '--format', '--output',
                     default='text',
                     choices=AMIResult.XSLT.keys(),
                     help="format of verbose output")
+parser.add_argument('-s', '--server',
+                    help="set the server", choices=('main', 'replica'),
+                    default='main')
 parser.add_argument('--version', action='version', version=VERSION,
                     help="show the version number and exit")
 parser.add_argument('--credits', action=CreditsAction,
@@ -295,6 +299,7 @@ parser_reset = subparsers.add_parser('reset',
 parser_reset.set_defaults(op=userdata.reset)
 
 args = parser.parse_args()
+endpoint.TYPE = args.server
 
 from pyAMI.auth import AMI_CONFIG, create_auth_config
 
@@ -312,6 +317,7 @@ try:
         del cmd_args['verbose']
         del cmd_args['debug']
         del cmd_args['format']
+        del cmd_args['server']
         if 'help' in cmd_args:
             del cmd_args['help']
         if 'amiCommand' in cmd_args:
