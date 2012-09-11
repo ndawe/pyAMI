@@ -165,8 +165,6 @@ class AMIClient(object):
     AMIClient handles sending a command to the AMI server and receiving the
     response.
     """
-    _xslt = None
-
     def __init__(self, verbose=False, verbose_format='text'):
 
         self.verbose = verbose
@@ -208,15 +206,10 @@ class AMIClient(object):
 	"""
     def reset_cert_auth(self):
 
-        kw = {}
-        self._ami = self._locator.getAMISecureWebService(url=None, **kw)
+        self._ami = self._locator.getAMISecureWebService(
+                url=None)
 
     def set_cert_auth(self):
-
-        kw = {'transdict':self.setup_identity()}
-        self._ami = self._locator.getAMISecureWebService(url=None, **kw)
-
-    def setup_identity(self):
 
         try:
             if hasattr(os, "geteuid"):
@@ -228,7 +221,6 @@ class AMIClient(object):
             user_id = -1
         options = {}
         #options['capath']= "/etc/grid-security/certificates"
-
         if user_id == 0:
             ## we are running as root, use host certificate
             options['cert_file'] = "/etc/grid-security/hostcert.pem"
@@ -247,7 +239,9 @@ class AMIClient(object):
             ## no configured environnement, using https with no client authentication
             else:
                 options = None
-        return options
+        self._ami = self._locator.getAMISecureWebService(
+                url=None,
+                transdict=options)
 
     """
     Authentication from AMICommand arguments
@@ -255,8 +249,8 @@ class AMIClient(object):
     """
     def set_user_credentials(self, args):
 
-        password = "None"
-        user = "None"
+        password = None
+        user = None
         remove = []
         for arg in args:
             save = arg
@@ -275,7 +269,7 @@ class AMIClient(object):
             if arg == 'AMIUser':
                 remove.append(save)
                 user = value
-        if (user != "None") and (password != "None"):
+        if (user is not None) and (password is not None):
             self.authenticate(user, password)
         out = []
         for arg in args:
@@ -298,11 +292,6 @@ class AMIClient(object):
             return msg[msg.find('amiLogin="') + 10:msg.find('" database')]
         except Exception, error:
             return None
-
-    def _check_authentication(self):
-
-        if not self.is_authenticated():
-            raise AMI_Error("AMIUser and AMIPass must be defined!")
 
     """
     AMIConfig settings
@@ -362,7 +351,6 @@ class AMIClient(object):
             result = AMIResult(doc)
         else:
             args = self._parse_args(args)
-            self._check_format(args)
             if 'command' not in args:
                 raise AMI_Error("You must provide a command")
             args = self._config.include(args)
@@ -394,7 +382,9 @@ class AMIClient(object):
                 except Exception:
                     raise AMI_Error("cannot parse error : " + error)
                 raise AMI_Error(outputmsg)
-            result = self._parse_reply(reply)
+            f = StringIO(reply._execAMICommand_arrayReturn.encode('utf-8'))
+            doc = minidom.parse(f)
+            result = AMIResult(doc)
         if self.verbose:
             print
             print "reply:"
@@ -417,30 +407,8 @@ class AMIClient(object):
                 value = arg[arg.find('=') + 1:]
                 value = value.replace('=', '\=')
                 arg = arg[0:arg.find('=')]
-            #if arg != 'output':
-            #    arguments.update({arg:value})
-            if arg == 'output':
-                self._xslt = value
-            else:
                 arguments.update({arg:value})
         return arguments
-
-    def _parse_reply(self, reply):
-        """
-        This method makes a dom object and then applies a transformation
-        """
-        f = StringIO(reply._execAMICommand_arrayReturn.encode('utf-8'))
-        doc = minidom.parse(f)
-        self._result = AMIResult(doc)
-        return self._result
-
-    def _check_format(self, argDict):
-
-        try:
-            if argDict['format'] != 'XML':
-                raise AMI_Info("pyAMI supports the XML format only.")
-        except KeyError:
-            pass
 
     def upload_proxy(self):
 
