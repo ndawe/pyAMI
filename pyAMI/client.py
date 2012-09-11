@@ -420,10 +420,10 @@ class AMIClient(object):
         proxFile = open(proxy_fname, 'r')
         proxyFileContent = proxFile.read()
         proxFile.close()
-        request = upload_proxyRequest(
+        request = uploadProxyRequest(
                 proxyFileContent=proxyFileContent)
-        self.ami_service.upload_proxy(request)._upload_proxyReturn
-        return "Proxy successfully uploaded"
+        self.ami_service.uploadProxy(request)._upload_proxyReturn
+        # proxy successfully uploaded
 
 
 class AMI(AMIClient):
