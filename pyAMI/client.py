@@ -3,7 +3,6 @@ import sys
 import os
 from cStringIO import StringIO
 import re
-from sys import stdout
 import cPickle as pickle
 import base64
 import urlparse
@@ -169,12 +168,12 @@ class AMIClient(object):
 
         self.verbose = verbose
         self.verbose_format = verbose_format
-        self._config = AMIConfig()
+        self.config = AMIConfig()
         # AMI web service locator
-        self._locator = AMISecureWebServiceServiceLocator()
-        self._transdict = None
+        self.ami_service_locator = AMISecureWebServiceServiceLocator()
+        self.cert_info = None
         # AMI Secure Web Service instance
-        self._ami = None
+        self.ami_service = None
 
     """
     User/password authentication
@@ -189,16 +188,16 @@ class AMIClient(object):
         """
 		Returns `True` if user is authenticated, `False` otherwise.
 		"""
-        return ((self._config.get('AMI', 'AMIPass') != '') and
-                (self._config.get('AMI', 'AMIUser') != ''))
+        return ((self.config.get('AMI', 'AMIPass') != '') and
+                (self.config.get('AMI', 'AMIUser') != ''))
 
     def authenticate(self, user, password):
         """
 		Sets User ID and password with *user* and *password* parameters
         respectively.
 		"""
-        self._config.set('AMI', 'AMIUser', user)
-        self._config.set('AMI', 'AMIPass', base64.b64encode(password))
+        self.config.set('AMI', 'AMIUser', user)
+        self.config.set('AMI', 'AMIPass', base64.b64encode(password))
 
     """
 	Certificate authentication
@@ -206,7 +205,7 @@ class AMIClient(object):
 	"""
     def reset_cert_auth(self):
 
-        self._ami = self._locator.getAMISecureWebService(
+        self.ami_service = self.ami_service_locator.getAMISecureWebService(
                 url=None)
 
     def set_cert_auth(self):
@@ -239,7 +238,8 @@ class AMIClient(object):
             ## no configured environnement, using https with no client authentication
             else:
                 options = None
-        self._ami = self._locator.getAMISecureWebService(
+        self.cert_info = options
+        self.ami_service = self.ami_service_locator.getAMISecureWebService(
                 url=None,
                 transdict=options)
 
@@ -299,17 +299,17 @@ class AMIClient(object):
     """
     def write_config(self, fp):
 
-        self._config.write(fp)
+        self.config.write(fp)
 
     def read_config(self, fpname):
 
-        self._config.read(fpname)
+        self.config.read(fpname)
 
     def reset_config(self):
         """
         Resets parameter values in the pyAMI.cfg to default values.
         """
-        self._config.reset()
+        self.config.reset()
 
     """
     Execute Method
@@ -353,7 +353,7 @@ class AMIClient(object):
             args = self._parse_args(args)
             if 'command' not in args:
                 raise AMI_Error("You must provide a command")
-            args = self._config.include(args)
+            args = self.config.include(args)
             request = execAMICommand_arrayRequest()
             request._args = []
             for name, value in args.items():
@@ -363,7 +363,7 @@ class AMIClient(object):
                         value = base64.b64decode(value)
                     request._args.append('-%s=%s' % (name, value))
             try:
-                reply = self._ami.execAMICommand_array(request)
+                reply = self.ami_service.execAMICommand_array(request)
             except Exception, msg:
                 error = str(msg)
                 try:
@@ -412,16 +412,17 @@ class AMIClient(object):
 
     def upload_proxy(self):
 
-        if self._transdict is None:
-            raise AMI_Error("No proxy file to upload.")
-        proxy_fname = self._transdict['cert_file']
-        args = {}
+        if self.cert_info is None:
+            raise AMI_Error(
+                    "No proxy file to upload. "
+                    "Call client.set_cert_auth first.")
+        proxy_fname = self.cert_info['cert_file']
         proxFile = open(proxy_fname, 'r')
         proxyFileContent = proxFile.read()
         proxFile.close()
-        args.update({'proxyFileContent':proxyFileContent})
-        request = upload_proxyRequest(**args)
-        self._ami.upload_proxy(request)._upload_proxyReturn
+        request = upload_proxyRequest(
+                proxyFileContent=proxyFileContent)
+        self.ami_service.upload_proxy(request)._upload_proxyReturn
         return "Proxy successfully uploaded"
 
 
