@@ -138,25 +138,25 @@ class AMIResult(object):
                         field_dict[name] = 'NULL'
                 yield field_dict
 
-    def xslt(self, output='text'):
+    def output(self, xslt='text'):
         """
         Return the DOM in the specified format using an XSLT
         """
-        output = output.lower()
-        if output == 'xml':
+        xslt = xslt.lower()
+        if xslt == 'xml':
             return self.dom.toxml()
-        elif output in XSLT:
+        elif xslt in XSLT:
             if not USE_LXML:
                 raise ImportError("lxml must be installed to "
                                   "perform XSLT transformations")
-            xslt_url = urlparse.urljoin(endpoint.get_XSL_URL(), XSLT[output])
+            xslt_url = urlparse.urljoin(endpoint.get_XSL_URL(), XSLT[xslt])
             xslt_root = etree.XML(urllib2.urlopen(xslt_url).read())
             transform = etree.XSLT(xslt_root)
             doc = etree.fromstring(self.dom.toxml())
             return transform(doc)
         else:
             raise ValueError("'%s' is not a valid "
-                             "AMIResult XSLT output format" % output)
+                             "AMIResult XSLT output format" % xslt)
 
 
 class AMIClient(object):
@@ -286,10 +286,9 @@ class AMIClient(object):
 
         try:
             args = ["GetLevelInfo",
-                    "levelName=motherDatabase",
-                    "output=xml"]
+                    "levelName=motherDatabase"]
             result = self.execute(args)
-            msg = result.xslt()
+            msg = result.output(xslt='xml')
             return msg[msg.find('amiLogin="') + 10:msg.find('" database')]
         except Exception, error:
             return None
@@ -379,7 +378,7 @@ class AMIClient(object):
                     f = StringIO(error[error.find('<?'): error.find('</AMIMessage>') + 13])
                     doc = minidom.parse(f)
                     result = AMIResult(doc)
-                    outputmsg = str(result.xslt())
+                    outputmsg = str(result.output())
                 except Exception:
                     raise AMI_Error("cannot parse error : " + error)
                 raise AMI_Error(outputmsg)
@@ -390,7 +389,7 @@ class AMIClient(object):
             print
             print "reply:"
             print
-            print result.xslt(format=self.verbose_format)
+            print result.output(xslt=self.verbose_format)
             print
         return result
 

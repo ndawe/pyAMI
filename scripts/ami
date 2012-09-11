@@ -330,7 +330,7 @@ try:
         if args.op == get_periods:
             print_periods(result)    
         elif isinstance(result, AMIResult):
-            print result.xslt(output=args.output)
+            print result.output(xslt=args.output)
         elif args.pr and result:
             if args.pr == print_table:
                 args.pr(result)
