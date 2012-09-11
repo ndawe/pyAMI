@@ -216,26 +216,27 @@ class AMIClient(object):
             else:
                 user_id = -1
         except:
-            ## In case client aren't running on linux system
+            # in case client isn't running on linux system
             user_id = -1
         options = {}
         #options['capath']= "/etc/grid-security/certificates"
         if user_id == 0:
-            ## we are running as root, use host certificate
+            # we are running as root, use host certificate
             options['cert_file'] = "/etc/grid-security/hostcert.pem"
             options['key_file'] = "/etc/grid-security/hostkey.pem"
         else:
             proxy_fname = "/tmp/x509up_u%d" % user_id
-            ## look for a proxy in X509_USER_PROXY env variable
+            # look for a proxy in X509_USER_PROXY env variable
             if (os.environ.has_key("X509_USER_PROXY") and
                     os.path.exists(os.environ['X509_USER_PROXY'])):
                 options['cert_file'] = os.environ['X509_USER_PROXY']
                 options['key_file'] = os.environ['X509_USER_PROXY']
-            ## look for a proxy
+            # look for a proxy
             elif os.path.exists(proxy_fname):
                 options['cert_file'] = proxy_fname
                 options['key_file'] = proxy_fname
-            ## no configured environnement, using https with no client authentication
+            # no configured environment
+            # using https with no client authentication
             else:
                 options = None
         self.cert_info = options
