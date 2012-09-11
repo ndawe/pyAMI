@@ -15,7 +15,6 @@ else:
 
 from pyAMI.webservices import *
 from pyAMI.exceptions import *
-from pyAMI.exceptions import _AMI_Error_Base
 from pyAMI import endpoint
 from pyAMI.config import AMIConfig
 from pyAMI.userdata import DATA_ROOT
@@ -163,38 +162,13 @@ class AMIResult(object):
 
 class AMIClient(object):
     """
-    This is the generic way of sending a command to the AMI server.
-    The first argument must be the name of the server command.
-    The other arguments follow as argumentName=argumentValue pairs.
-    For complete help see the PyAMI User guide
-    http://ami.in2p3.fr/opencms/opencms/AMI/www/Client/pyAMIUserGuide.pdf
+    AMIClient handles sending a command to the AMI server and receiving the
+    response.
     """
-    """
-    AMI Web Service Client for Python. Most methods defined in this
-    class mirror the methods recognised by the AMI Web Service.
-    Mandatory parameters are enforced and pyAMI will complain if
-    they are left out. All other parameters not recognised
-    by pyAMI will be passed on to the AMI Web Service.
-
-    NB: pyAMI expects XML format when it tries to parse replies from the AMI Web Service.
-    """
-
     _xslt = None
 
     def __init__(self, verbose=False, verbose_format='text'):
-        """
-        Parameters
-        ----------
-        *user*
-            :Description: User ID for access to the AMI Web Service.
-            :Type: String
-            :Default: None
 
-        *password*
-            :Description: Password for access to the AMI Web Service.
-            :Type: String
-            :Default: None
-        """
         self.verbose = verbose
         self.verbose_format = verbose_format
         self._config = AMIConfig()
@@ -217,11 +191,13 @@ class AMIClient(object):
         """
 		Returns `True` if user is authenticated, `False` otherwise.
 		"""
-        return (self._config.get('AMI', 'AMIPass') != '') and (self._config.get('AMI', 'AMIUser') != '')
+        return ((self._config.get('AMI', 'AMIPass') != '') and
+                (self._config.get('AMI', 'AMIUser') != ''))
 
     def authenticate(self, user, password):
         """
-		Sets User ID and password with *user* and *password* parameters respectively.
+		Sets User ID and password with *user* and *password* parameters
+        respectively.
 		"""
         self._config.set('AMI', 'AMIUser', user)
         self._config.set('AMI', 'AMIPass', base64.b64encode(password))
@@ -260,7 +236,8 @@ class AMIClient(object):
         else:
             proxy_fname = "/tmp/x509up_u%d" % user_id
             ## look for a proxy in X509_USER_PROXY env variable
-            if os.environ.has_key("X509_USER_PROXY") and os.path.exists(os.environ['X509_USER_PROXY']):
+            if (os.environ.has_key("X509_USER_PROXY") and
+                    os.path.exists(os.environ['X509_USER_PROXY'])):
                 options['cert_file'] = os.environ['X509_USER_PROXY']
                 options['key_file'] = os.environ['X509_USER_PROXY']
             ## look for a proxy
@@ -346,8 +323,14 @@ class AMIClient(object):
         self._config.reset()
 
     """
-    Execute methods
+    Execute Method
     --------------
+
+    The first argument must be the name of the server command.
+    The other arguments follow as argumentName=argumentValue pairs.
+    For complete help see the PyAMI User guide
+    http://ami.in2p3.fr/opencms/opencms/AMI/www/Client/pyAMIUserGuide.pdf
+
     Here we check authentication methods:
     	- Argument AMIUser and AMIPass from command line
     	- Config file
@@ -372,7 +355,9 @@ class AMIClient(object):
             print ' '.join(args)
         if len(args) == 1 and args[0] == "UploadProxy":
             self.upload_proxy()
-            f = StringIO("<?xml version=\"1.0\" ?><AMIMessage><info>Proxy uploaded</info></AMIMessage>");
+            f = StringIO(
+                    "<?xml version=\"1.0\" ?><AMIMessage>"
+                    "<info>Proxy uploaded</info></AMIMessage>")
             doc = minidom.parse(f)
             result = AMIResult(doc)
         else:
@@ -384,8 +369,8 @@ class AMIClient(object):
             request = execAMICommand_arrayRequest()
             request._args = []
             for name, value in args.items():
-                if not (name == "AMIUser" and value == "") and \
-                   not (name == "AMIPass" and value == "") :
+                if (not (name == "AMIUser" and value == "") and
+                   not (name == "AMIPass" and value == "")):
                     if name == 'AMIPass':
                         value = base64.b64decode(value)
                     request._args.append('-%s=%s' % (name, value))
@@ -400,8 +385,9 @@ class AMIClient(object):
                                  'Cannot find a valid VOMS proxy, please renew '
                                  'it with voms-proxy-init.')
                     if '<?' not in error:
-                        error = '<?xml version="1.0" ?><AMIMessage><error>%s</error></AMIMessage>' % error
-                    f = StringIO(error[error.find('<?'):error.find('</AMIMessage>') + 13])
+                        error = ('<?xml version="1.0" ?><AMIMessage><error>'
+                                 '%s</error></AMIMessage>') % error
+                    f = StringIO(error[error.find('<?'): error.find('</AMIMessage>') + 13])
                     doc = minidom.parse(f)
                     result = AMIResult(doc)
                     outputmsg = str(result.xslt())
