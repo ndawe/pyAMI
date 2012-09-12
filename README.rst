@@ -52,8 +52,8 @@ simply::
 then authenticate yourself if you haven't already (see below).
 
 
-From CVMFS
-----------
+Through CVMFS
+-------------
 
 pyAMI is available through CVMFS::
 
