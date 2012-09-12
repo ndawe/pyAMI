@@ -131,46 +131,45 @@ Installation on Windows
 -----------------------
 
 1. Install python, for example
-`Python 2.7.3 <http://www.python.org/getit/releases/2.7.3/>`_
+   `Python 2.7.3 <http://www.python.org/getit/releases/2.7.3/>`_
 
-2. Install `distribute <http://python-distribute.org/distribute_setup.py>`_
-(for easy set up of dependences)
-For 64 bit machines there may be problems,
-see http://bugs.python.org/issue6792
+2. Install `distribute <http://python-distribute.org/distribute_setup.py>`__
+   (for easy installation of dependences). For 64 bit machines there may be problems,
+   see `bugs.python.org/issue6792 <http://bugs.python.org/issue6792>`__.
 
-3. Download `pip <http://pypi.python.org/packages/source/p/pip/pip-1.1.tar.gz>`_
+3. Download `pip-1.1.tar.gz <http://pypi.python.org/packages/source/p/pip/pip-1.1.tar.gz>`__.
 
 4. Install pip. Open a "cmd" terminal in windows. Assuming that you installed pip
-below Python::
+   below Python::
 
-   cd C:\Python27\pip-1.1
-   C:\Python27\python setup.py install
+      cd C:\Python27\pip-1.1
+      C:\Python27\python setup.py install
 
 5. Install pyAMI. ``pip.exe`` should be in ``C:\Python27\Scripts``::
    
-   cd C:\Python27\Scripts
-   pip install pyAMI
+      cd C:\Python27\Scripts
+      pip install pyAMI
 
 6. Install lxml to enable XSLT. If you don't install lxml, pyAMI will still work,
-but you will only be able to obtain XML output on the command line.
-However if you only want to use the API of pyAMI you may skip this step.::
+   but you will only be able to obtain XML output on the command line.
+   However if you only want to use the API of pyAMI you may skip this step.::
 
-   easy_install --allow-hosts=lxml.de,*.python.org lxml==2.2.8
+      easy_install --allow-hosts=lxml.de,*.python.org lxml==2.2.8
 
 7. Now so that you can use pyAMI conveniently you must ajust your paths in the
-Windows environnement. (if you do not know how to do this follow the instructions
-here http://www.java.com/en/download/help/path.xml
-Add to the path::
+   Windows environnement. (if you do not know how to do this follow the instructions
+   here `www.java.com/en/download/help/path.xml <http://www.java.com/en/download/help/path.xml>`__.
+   Add to the path::
 
-   PATH    C:\PYTHON27;C:\PYTHON27\Scripts
+      PATH    C:\PYTHON27;C:\PYTHON27\Scripts
 
 8. Lastly explain to Windows that a python script can be executed.
-Add to the ``PATHEXT`` variable::
+   Add to the ``PATHEXT`` variable::
    
-   PATHEXT .PY
+      PATHEXT .PY
 
 9. Then change the name of the file ``ami``  in ``C:\Python27\Scripts`` to ``ami.py``
-so that script ami.py can be executed just by typing ``ami``.
+   so that script ami.py can be executed just by typing ``ami``.
 
 **N.B. If you are not administrator of your machine you will probably need to
 create the PATHEXT variable in your windows user environnement.**
