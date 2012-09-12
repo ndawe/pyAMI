@@ -1,16 +1,16 @@
 .. -*- mode: rst -*-
 
 For more information see the full
-`pyAMI documentation <http://cern.ch/noel.dawe/projects/pyAMI>`_
+`pyAMI documentation <https://atlas-ami.cern.ch/AMI/pyAMI/>`_
 
 About
 -----
 
-This is a prerelease of the new and improved pyAMI 
-(formerly known as atlasmeta, a fork of the
-`original pyAMI <http://ccami01.in2p3.fr:8080/opencms/opencms/AMI/www/Tutorial/pyAMI.html>`_)
-This new version offers a cleaner codebase, enhanced API, and improved
-command-line functionality. All commands are simply subcommands of ``ami``.
+pyAMI-04 is a major upgrade of the AMI python client. The command line syntax
+has been rationalized, with improved help functions. pyAMI is available the
+ATLAS software release, on lxplus, and can be installed standalone on a laptop.
+
+All commands are simply subcommands of ``ami``.
 
 List AOD datasets matching a pattern::
 
@@ -122,6 +122,55 @@ If you are unable to satisfy the requirement on lxml (only used for XSL
 transformations) then you may disable this dependency before installation with::
 
    export PYAMI_NO_LXML=1
+
+
+Installation on Windows
+-----------------------
+
+1. Install python, for example
+`Python 2.7.3 <http://www.python.org/getit/releases/2.7.3/>`_
+
+2. Install `distribute <http://python-distribute.org/distribute_setup.py>`_
+(for easy set up of dependences)
+For 64 bit machines there may be problems,
+see __ http://bugs.python.org/issue6792
+
+3. Download `pip <http://pypi.python.org/packages/source/p/pip/pip-1.1.tar.gz>`_
+
+4. Install pip. Open a "cmd" terminal in windows. Assuming that you installed pip
+below Python::
+
+   cd C:\Python27\pip-1.1</br>
+   C:\Python27\python setup.py install
+
+5. Install pyAMI. ``pip.exe`` should be in ``C:\Python27\Scripts``::
+   
+   cd C:\Python27\Scripts
+   pip install pyAMI
+
+6. Install lxml to enable XSLT. If you don't install lxml, pyAMI will still work,
+but you will only be able to obtain XML output on the command line.
+However if you only want to use the API of pyAMI you may skip this step.::
+
+   easy_install --allow-hosts=lxml.de,*.python.org lxml==2.2.8
+
+7. Now so that you can use pyAMI conveniently you must ajust your paths in the
+Windows environnement. (if you do not know how to do this follow the instructions
+here __ http://www.java.com/en/download/help/path.xml
+Add to the path::
+
+   PATH    C:\PYTHON27;C:\PYTHON27\Scripts
+
+8. Lastly explain to Windows that a python script can be executed.
+Add to the ``PATHEXT`` variable::
+   
+   PATHEXT .PY
+
+9. Then change the name of the file ``ami``  in ``C:\Python27\Scripts`` to ``ami.py``
+so that script ami.py can be executed just by typing ``ami``.
+
+**N.B. If you are not administrator of your machine you will probably need to
+create the PATHEXT variable in your windows user environnement.**
 
 
 Authentication
