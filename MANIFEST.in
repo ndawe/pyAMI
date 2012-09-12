@@ -1,5 +1,4 @@
 include distribute_setup.py
-include README
 include README.rst
 include LICENSE
 include Changelog
