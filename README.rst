@@ -55,7 +55,10 @@ then authenticate yourself if you haven't already (see below).
 From CVMFS
 ----------
 
-ADD INFO HERE
+pyAMI is available through CVMFS::
+
+   source /cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/user/atlasLocalSetup.sh
+   localSetupPyAMI
 
 
 Requirements
@@ -133,14 +136,14 @@ Installation on Windows
 2. Install `distribute <http://python-distribute.org/distribute_setup.py>`_
 (for easy set up of dependences)
 For 64 bit machines there may be problems,
-see __ http://bugs.python.org/issue6792
+see http://bugs.python.org/issue6792
 
 3. Download `pip <http://pypi.python.org/packages/source/p/pip/pip-1.1.tar.gz>`_
 
 4. Install pip. Open a "cmd" terminal in windows. Assuming that you installed pip
 below Python::
 
-   cd C:\Python27\pip-1.1</br>
+   cd C:\Python27\pip-1.1
    C:\Python27\python setup.py install
 
 5. Install pyAMI. ``pip.exe`` should be in ``C:\Python27\Scripts``::
@@ -156,7 +159,7 @@ However if you only want to use the API of pyAMI you may skip this step.::
 
 7. Now so that you can use pyAMI conveniently you must ajust your paths in the
 Windows environnement. (if you do not know how to do this follow the instructions
-here __ http://www.java.com/en/download/help/path.xml
+here http://www.java.com/en/download/help/path.xml
 Add to the path::
 
    PATH    C:\PYTHON27;C:\PYTHON27\Scripts
@@ -187,7 +190,7 @@ is to send your username and password along with each AMI command::
 
 This will prompt you for your AMI username and password.
 You will only need to do this once since your credentials are stored in
-~/.pyami/ami.conf for later use. If your credentials change just
+``~/.pyami/ami.conf`` for later use. If your credentials change just
 run ``ami auth`` again. If you would like to keep your pyAMI configuration
-in a directory other than ~/.pyami then set the environment
-variable PYAMI_CONFIG_DIR.
+in a directory other than ``~/.pyami`` then set the environment
+variable ``PYAMI_CONFIG_DIR``.
