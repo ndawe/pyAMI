@@ -2,7 +2,7 @@
 API Examples
 ============
 
-A few examples of how to use pyAMI from our own Python application.
+A few examples of how to use pyAMI from your own Python application.
 
 First create a client and authenticate:
 
