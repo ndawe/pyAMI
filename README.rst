@@ -7,8 +7,9 @@ About
 -----
 
 pyAMI-04 is a major upgrade of the AMI python client. The command line syntax
-has been rationalized, with improved help functions. pyAMI is available the
-ATLAS software release, on lxplus, and can be installed standalone on a laptop.
+has been rationalized, with improved help functions. pyAMI is available in the
+ATLAS software release and also installed centrally on lxplus.
+pyAMI can be installed standalone on a laptop. Instructions are given below for linux and windows.
 
 All commands are simply subcommands of ``ami``.
 
@@ -157,7 +158,7 @@ Installation on Windows
       easy_install --allow-hosts=lxml.de,*.python.org lxml==2.2.8
 
 7. Now so that you can use pyAMI conveniently you must ajust your paths in the
-   Windows environnement. (if you do not know how to do this follow the instructions
+   Windows environment. If you do not know how to do this follow the instructions
    here `www.java.com/en/download/help/path.xml <http://www.java.com/en/download/help/path.xml>`__.
    Add to the path::
 
