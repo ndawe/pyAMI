@@ -2,6 +2,13 @@
 Changelog
 ---------
 
+Version 4.0.1 (9/20/2012)
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+* This is pyAMI-04-00-01 in the ATLAS release
+* Minor syntax changes in the API
+* Added Windows installation to the doc.
+* Expanded doc section on API
+
 Version 4.0.0a3 (4/17/2012)
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
