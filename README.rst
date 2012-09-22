@@ -1,7 +1,7 @@
 .. -*- mode: rst -*-
 
 For more information see the full
-`pyAMI documentation <https://atlas-ami.cern.ch/AMI/pyAMI/>`_
+`pyAMI documentation <https://end.web.cern.ch/end/projects/pyAMI/>`_
 
 pyAMI 4 is a major upgrade of the AMI python client. The command line syntax
 has been rationalized, with improved help functions. pyAMI is available in the
