@@ -54,11 +54,15 @@ Here is a complete example:
 
    # set up your arguments for your favorite command
    # This is the equivalent of 
-   #ami cmd SearchQuery -sql="select logicalDatasetName from dataset where dataType='AOD' and version like '%r3542' and datasetNumber=146932" -project=mc12_001 -processingStep=production
+   # ami cmd SearchQuery -sql="select logicalDatasetName from dataset where \
+   # dataType='AOD' and version like '%r3542' and datasetNumber=146932" \
+   # -project=mc12_001 -processingStep=production
    argv=[]
    argv.append("SearchQuery") 
 
-   argv.append("-sql=select logicalDatasetName from dataset where dataType='AOD' and version like '%r3542' and datasetNumber=146932")    
+   argv.append(
+      "-sql=select logicalDatasetName from dataset where "
+      "dataType='AOD' and version like '%r3542' and datasetNumber=146932")    
    # Tell AMI in which catalogue you want to look. (Or use the gLite syntax)
    argv.append('project=mc12_001')
    argv.append('processingStep=production')
@@ -77,8 +81,9 @@ Here is a complete example:
 Switching between servers
 -------------------------
 
-Here is a complete example. In general the Main server at Lyon is faster, but you can include a failover to the CERN replica
-if you wish. This example starts with the replica end point, and a command known to fail.
+Here is a complete example. In general the Main server at Lyon is faster, but
+you can include a failover to the CERN replica if you wish. This example starts
+with the replica end point, and a command known to fail.
 
 .. testcode::
 
@@ -92,7 +97,8 @@ if you wish. This example starts with the replica end point, and a command known
 
    argv=[]
    argv.append("GetUserInfo") 
-   # the following will fail on the replica but succeed on the main, because the replica is case sensitive!
+   # the following will fail on the replica but succeed on the main,
+   # because the replica is case sensitive!
    argv.append("amiLogin=ALBRAND")    
    #to use the replica 
    endpoint.TYPE = 'replica'
@@ -121,5 +127,4 @@ if you wish. This example starts with the replica end point, and a command known
       except Exception, msg:
          error = str(msg) 
          print error
-
 

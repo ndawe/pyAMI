@@ -3,14 +3,11 @@
 For more information see the full
 `pyAMI documentation <https://atlas-ami.cern.ch/AMI/pyAMI/>`_
 
-*****
-About
-*****
-
-pyAMI-04 is a major upgrade of the AMI python client. The command line syntax
+pyAMI 4 is a major upgrade of the AMI python client. The command line syntax
 has been rationalized, with improved help functions. pyAMI is available in the
 ATLAS software release and also installed centrally on lxplus.
-pyAMI can be installed standalone on a laptop. Instructions are given below for linux and windows.
+pyAMI can be installed standalone on a laptop. Instructions are given below for
+linux and windows.
 
 All commands are simply subcommands of ``ami``.
 
@@ -43,8 +40,8 @@ and query projects, data types, dataset provenance, etc.
 from within your own Python program.
 
 
-On LXPLUS at CERN
------------------
+LXPLUS and CVMFS
+================
 
 pyAMI is installed centrally on LXPLUS at CERN. To begin using pyAMI simply::
 
@@ -53,22 +50,16 @@ pyAMI is installed centrally on LXPLUS at CERN. To begin using pyAMI simply::
 then authenticate yourself if you haven't already (see below).
 
 
-CVMFS
------
-
-pyAMI is available through CVMFS::
+pyAMI is also available through CVMFS::
 
    source /cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/user/atlasLocalSetup.sh
    localSetupPyAMI
 
-************
+
 Installation
-************
+============
 
-Requirements
-------------
-
-At least Python 2.4, `ZSI <http://pypi.python.org/pypi/ZSI/>`_,
+pyAMI requires at least Python 2.4, `ZSI <http://pypi.python.org/pypi/ZSI/>`_,
 and `argparse <http://pypi.python.org/pypi/argparse>`_.
 `lxml <http://lxml.de/>`_ is optional but required for XSL transformations.
 
@@ -106,7 +97,7 @@ Untar and install (replace X appropriately)::
    cd pyAMI-X
 
 pyAMI uses distribute to install but you may revert to a basic
-disutils install by setting the environment variable::
+distutils install by setting the environment variable::
 
    export PYAMI_NO_DISTRIBUTE=1
 
@@ -125,7 +116,7 @@ already (put this in your .bashrc)::
 
    export PATH=${HOME}/.local/bin${PATH:+:$PATH}
 
-If you are unable to satisfy the requirement on lxml (only used for XSL
+If you are unable to satisfy the dependency on lxml (only used for XSL
 transformations) then you may disable this dependency before installation with::
 
    export PYAMI_NO_LXML=1
@@ -160,7 +151,7 @@ Installation on Windows
 
       easy_install --allow-hosts=lxml.de,*.python.org lxml==2.2.8
 
-7. Now so that you can use pyAMI conveniently you must ajust your paths in the
+7. Now so that you can use pyAMI conveniently you must adjust your paths in the
    Windows environment. If you do not know how to do this follow the instructions
    here `www.java.com/en/download/help/path.xml <http://www.java.com/en/download/help/path.xml>`__.
    Add to the path::
@@ -176,12 +167,11 @@ Installation on Windows
    so that script ami.py can be executed just by typing ``ami``.
 
 .. note:: If you are not administrator of your machine you will probably need to
-   create the PATHEXT variable in your windows user environnement.
+   create the PATHEXT variable in your windows user environment.
 
 
-**************
 Authentication
-**************
+==============
 
 VOMS authentication is supported::
 

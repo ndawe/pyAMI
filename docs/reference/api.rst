@@ -1,5 +1,5 @@
-pyAMI Package
-=============
+pyAMI API
+=========
 
 :mod:`auth` Module
 ------------------
