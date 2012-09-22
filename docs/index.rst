@@ -1,13 +1,13 @@
-:orphan:
-
+#####
 pyAMI
-=====
+#####
 
 .. include:: ../README.rst
-   :start-line: 7
+   :start-line: 5
 
+********
 Contents
---------
+********
 
 .. toctree::
    :maxdepth: 2

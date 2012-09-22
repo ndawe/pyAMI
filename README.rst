@@ -3,8 +3,9 @@
 For more information see the full
 `pyAMI documentation <https://atlas-ami.cern.ch/AMI/pyAMI/>`_
 
+*****
 About
------
+*****
 
 pyAMI-04 is a major upgrade of the AMI python client. The command line syntax
 has been rationalized, with improved help functions. pyAMI is available in the
@@ -45,22 +46,24 @@ from within your own Python program.
 On LXPLUS at CERN
 -----------------
 
-pyAMI is installed centrally on LXPLUS at CERN. To begin using pyAMI
-simply::
+pyAMI is installed centrally on LXPLUS at CERN. To begin using pyAMI simply::
 
     source /afs/cern.ch/atlas/software/tools/atlasmeta/setup.sh
 
 then authenticate yourself if you haven't already (see below).
 
 
-Through CVMFS
--------------
+CVMFS
+-----
 
 pyAMI is available through CVMFS::
 
    source /cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/user/atlasLocalSetup.sh
    localSetupPyAMI
 
+************
+Installation
+************
 
 Requirements
 ------------
@@ -172,12 +175,13 @@ Installation on Windows
 9. Then change the name of the file ``ami``  in ``C:\Python27\Scripts`` to ``ami.py``
    so that script ami.py can be executed just by typing ``ami``.
 
-**N.B. If you are not administrator of your machine you will probably need to
-create the PATHEXT variable in your windows user environnement.**
+.. note:: If you are not administrator of your machine you will probably need to
+   create the PATHEXT variable in your windows user environnement.
 
 
+**************
 Authentication
---------------
+**************
 
 VOMS authentication is supported::
 

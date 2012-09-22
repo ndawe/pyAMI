@@ -25,14 +25,6 @@ pyAMI Package
     :undoc-members:
     :show-inheritance:
 
-:mod:`defaults` Module
-----------------------
-
-.. automodule:: pyAMI.defaults
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
 :mod:`endpoint` Module
 ----------------------
 
@@ -69,14 +61,6 @@ pyAMI Package
 --------------------
 
 .. automodule:: pyAMI.schema
-    :members:
-    :undoc-members:
-    :show-inheritance:
-
-:mod:`userdata` Module
-----------------------
-
-.. automodule:: pyAMI.userdata
     :members:
     :undoc-members:
     :show-inheritance:

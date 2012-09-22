@@ -1,4 +1,3 @@
-============
 API Examples
 ============
 
@@ -37,13 +36,16 @@ Query the cross section and generator efficiency for a dataset:
    dataset = 'mc11_7TeV.125206.PowHegPythia_VBFH130_tautauhh.evgen.EVNT.e893'
    xsec, effic = get_dataset_xsec_effic(client, dataset)
    
+
 Constructing an arbitrary query to AMI
 ---------------------------------------
+
 The command and the command arguments are passed to the pyAMI client in a list.
 The first member must be the name of the command.
 Here is a complete example:
 
 .. testcode::
+
    from pyAMI.client import AMIClient
    from pyAMI.endpoint import get_endpoint,get_XSL_URL
    from pyAMI.auth import AMI_CONFIG, create_auth_config
@@ -74,6 +76,7 @@ Here is a complete example:
 
 Switching between servers
 -------------------------
+
 Here is a complete example. In general the Main server at Lyon is faster, but you can include a failover to the CERN replica
 if you wish. This example starts with the replica end point, and a command known to fail.
 

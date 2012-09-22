@@ -1,4 +1,3 @@
-================
 Command Examples
 ================
 
@@ -129,6 +128,7 @@ For example:
 
 Sending an Arbitrary Command to the AMI server
 ----------------------------------------------
+
 You might want to send a command directly to the server. For example a **Tag Collector** command.
 Use ``ami cmd commandName arguments``.
 
