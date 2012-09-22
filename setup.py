@@ -35,7 +35,7 @@ if 'install' in sys.argv:
 setup(name='pyAMI',
       version=VERSION,
       description='The ATLAS Metadata Interface',
-      long_description=open('README.rst').read() + open('Changelog').read(),
+      long_description=open('README.rst').read() + open('Changelog.rst').read(),
       author='The AMI Team',
       author_email=AUTHOR_EMAIL,
       url=URL,
