@@ -83,16 +83,18 @@ subparsers_list = parser_list.add_subparsers()
 
 def search_query_args(parser, entity, include_pattern=True):
     
-    for option in entity.fields.keys():
-        option = '--%s' % option.replace('_','-')
+    for field in entity.fields.keys():
+        option = '--%s' % field.replace('_','-')
         if not parser._get_option_tuples(option):
-            parser.add_argument(option, default=None)
+            parser.add_argument(option,
+                    default=entity.defaults.get(field, None))
     if entity.foreign is not None:
         for name, foreign_entity in entity.foreign.items():
             for field in foreign_entity.fields.keys():
                 option = '--%s' % (('%s.%s' % (name, field)).replace('_','-'))
                 if not parser._get_option_tuples(option):
-                    parser.add_argument(option, default=None)
+                    parser.add_argument(option,
+                            default=None) # don't use foreign default here
     parser.add_argument('-o', '--order', default=None,
                         help="order results by this field")
     parser.add_argument('-l', '--limit', type=int, default=None,

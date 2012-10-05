@@ -1,7 +1,7 @@
 
 class Table(object):
 
-    pass
+    defaults = {}
 
 
 class PRODSTEP_TABLE(Table):
@@ -11,6 +11,10 @@ class PRODSTEP_TABLE(Table):
         'tag': 'productionStepTag',
         'write_status': 'writeStatus',
         'read_status': 'readStatus'
+    }
+
+    defaults = {
+        'write_status': 'valid',
     }
 
     primary = 'productionStepName'
@@ -76,6 +80,10 @@ class DATASET_TABLE(Table):
         'conditions_tag': 'conditionsTag',
     }
 
+    defaults = {
+        'ami_status': 'valid',
+    }
+
     primary = 'logicalDatasetName'
 
     foreign = {
@@ -93,6 +101,10 @@ class NOMENCLATURE_TABLE(Table):
         'read_status': 'readStatus',
     }
 
+    defaults = {
+        'write_status': 'valid',
+    }
+
     primary = 'nomenclatureName'
 
     foreign = None
@@ -107,6 +119,10 @@ class PROJECT_TABLE(Table):
         'read_status': 'readStatus',
         'write_status': 'writeStatus',
         'manager': 'projectManager',
+    }
+
+    defaults = {
+        'write_status': 'valid',
     }
 
     primary = 'projectTag'
@@ -127,6 +143,10 @@ class SUBPROJECT_TABLE(Table):
         'manager': 'projectManager',
     }
 
+    defaults = {
+        'write_status': 'valid',
+    }
+
     primary = 'subProjectTag'
 
     foreign = {
@@ -143,6 +163,10 @@ class TYPE_TABLE(Table):
         'read_status': 'readStatus',
     }
 
+    defaults = {
+        'write_status': 'valid',
+    }
+
     primary = 'dataType'
 
     foreign = None
@@ -155,6 +179,10 @@ class SUBTYPE_TABLE(Table):
         'description': 'description',
         'write_status': 'writeStatus',
         'read_status': 'readStatus',
+    }
+
+    defaults = {
+        'write_status': 'valid',
     }
 
     primary = 'subDataType'

@@ -10,7 +10,9 @@ from pyAMI.schema import *
 from pyAMI.defaults import YEAR, STREAM, TYPE, PROJECT, PRODSTEP
 
 
-DATA_PATTERN = re.compile('^(?P<project>\w+).(?P<run>[0-9]+).(?P<stream>[a-zA-Z_\-0-9]+).(recon|merge).(?P<type>[a-zA-Z_\-0-9]+).(?P<version>\w+)$')
+DATA_PATTERN = re.compile(
+    '^(?P<project>\w+).(?P<run>[0-9]+).(?P<stream>[a-zA-Z_\-0-9]+).'
+    '(recon|merge).(?P<type>[a-zA-Z_\-0-9]+).(?P<version>\w+)$')
 
 ESD_VERSION_PATTERN = '(?P<la>f|r)(?P<lb>[0-9]+)'
 AOD_VERSION_PATTERN = ESD_VERSION_PATTERN + '_(?P<ma>m|p)(?P<mb>[0-9]+)'
@@ -76,15 +78,17 @@ def validate_field(field, table):
             try:
                 foreign_entity = table.foreign[foreign_name]
             except KeyError, AttributeError:
-                raise ValueError('%s is not associated with %s' % (table.__name__, foreign_name))
+                raise ValueError('%s is not associated with %s' %
+                        (table.__name__, foreign_name))
             if foreign_field not in foreign_entity.fields.values():
                 foreign_field = foreign_entity.fields[foreign_field]
             name = '%s.%s' % (foreign_name, foreign_field)
         else:
             name = table.fields[name]
     except KeyError:
-        raise ValueError(('field %s does not exist\n' % name) + \
-                         'valid fields are:\n\t' + '\n\t'.join(table.fields.keys()))
+        raise ValueError(
+                ('field %s does not exist\n' % name) +
+                'valid fields are:\n\t' + '\n\t'.join(table.fields.keys()))
     return name
 
 
@@ -172,11 +176,11 @@ def search_query(client,
     if pattern is None:
         pattern = '%'
     else:
+        # reduce repeated % to a single %
         pattern = re.sub('%+', '%', pattern)
-        if not pattern.startswith('%'):
-            pattern = '%' + pattern
-        if not pattern.endswith('%'):
-            pattern += '%'
+        # surround pattern with % if % wasn't there on either side originally
+        if not pattern.startswith('%') and not pattern.endswith('%'):
+            pattern = '%%%s%%' % pattern
 
     constraints = "%s like '%s'" % (primary_field, pattern)
     if kwargs:
@@ -241,11 +245,14 @@ def get_types(client,
     A command to list all ATLAS types.
     Only those with writeStatus=valid can be used for new names.
     """
-    if 'write_status' not in kwargs:
-        kwargs['write_status'] = 'valid'
-    query_fields, types = search_query(client=client, entity='data_type', pattern=pattern,
-                                       processing_step_name='*',
-                                       order=order, limit=limit, fields=fields, show_archived=show_archived, **kwargs)
+    for f, default in TYPE_TABLE.defaults.items():
+        if f not in kwargs:
+            kwargs[f] = default
+    query_fields, types = search_query(client=client, entity='data_type',
+            pattern=pattern,
+            processing_step_name='*',
+            order=order, limit=limit, fields=fields,
+            show_archived=show_archived, **kwargs)
     if flatten:
         types = flatten_results(types, query_fields)
     return types
@@ -263,11 +270,14 @@ def get_subtypes(client,
     A command to list all ATLAS subtypes.
     Only those with writeStatus=valid can be used for new names.
     """
-    if 'write_status' not in kwargs:
-        kwargs['write_status'] = 'valid'
-    query_fields, types = search_query(client=client, entity='subData_type', pattern=pattern,
-                                       processing_step_name='*',
-                                       order=order, limit=limit, fields=fields, show_archived=show_archived, **kwargs)
+    for f, default in SUBTYPE_TABLE.defaults.items():
+        if f not in kwargs:
+            kwargs[f] = default
+    query_fields, types = search_query(client=client, entity='subData_type',
+            pattern=pattern,
+            processing_step_name='*',
+            order=order, limit=limit, fields=fields,
+            show_archived=show_archived, **kwargs)
     if flatten:
         types = flatten_results(types, query_fields)
     return types
@@ -292,11 +302,14 @@ def get_nomenclatures(client,
     """
     Return list of ATLAS nomenclatures
     """
-    if 'write_status' not in kwargs:
-        kwargs['write_status'] = 'valid'
-    query_fields, nomens = search_query(client=client, entity='nomenclature', pattern=pattern,
-                                        processing_step_name='*',
-                                        order=order, limit=limit, fields=fields, show_archived=show_archived, **kwargs)
+    for f, default in NOMENCLATURE_TABLE.defaults.items():
+        if f not in kwargs:
+            kwargs[f] = default
+    query_fields, nomens = search_query(client=client, entity='nomenclature',
+            pattern=pattern,
+            processing_step_name='*',
+            order=order, limit=limit,
+            fields=fields, show_archived=show_archived, **kwargs)
     if flatten:
         nomens = flatten_results(nomens, query_fields)
     return nomens
@@ -310,11 +323,14 @@ def get_projects(client,
                  flatten=False,
                  show_archived=False,
                  **kwargs):
-    if 'write_status' not in kwargs:
-        kwargs['write_status'] = 'valid'
-    query_fields, projects = search_query(client=client, entity='projects', pattern=pattern,
-                                          processing_step_name='*',
-                                          order=order, limit=limit, fields=fields, show_archived=show_archived, **kwargs)
+    for f, default in PROJECT_TABLE.defaults.items():
+        if f not in kwargs:
+            kwargs[f] = default
+    query_fields, projects = search_query(client=client, entity='projects',
+            pattern=pattern,
+            processing_step_name='*',
+            order=order, limit=limit,
+            fields=fields, show_archived=show_archived, **kwargs)
     if flatten:
         projects = flatten_results(projects, query_fields)
     return projects
@@ -328,11 +344,14 @@ def get_subprojects(client,
                     flatten=False,
                     show_archived=False,
                     **kwargs):
-    if 'write_status' not in kwargs:
-        kwargs['write_status'] = 'valid'
-    query_fields, projects = search_query(client=client, entity='subProjects', pattern=pattern,
-                                          processing_step_name='*',
-                                          order=order, limit=limit, fields=fields, show_archived=show_archived, **kwargs)
+    for f, default in SUBPROJECT_TABLE.defaults.items():
+        if f not in kwargs:
+            kwargs[f] = default
+    query_fields, projects = search_query(client=client, entity='subProjects',
+            pattern=pattern,
+            processing_step_name='*',
+            order=order, limit=limit, fields=fields,
+            show_archived=show_archived, **kwargs)
     if flatten:
         projects = flatten_results(projects, query_fields)
     return projects
@@ -346,11 +365,14 @@ def get_prodsteps(client,
                   flatten=False,
                   show_archived=False,
                   **kwargs):
-    if 'write_status' not in kwargs:
-        kwargs['write_status'] = 'valid'
-    query_fields, steps = search_query(client=client, entity='productionStep', pattern=pattern,
-                                       processing_step_name='*',
-                                       order=order, limit=limit, fields=fields, show_archived=show_archived, **kwargs)
+    for f, default in PRODSTEP_TABLE.defaults.items():
+        if f not in kwargs:
+            kwargs[f] = default
+    query_fields, steps = search_query(client=client, entity='productionStep',
+            pattern=pattern,
+            processing_step_name='*',
+            order=order, limit=limit,
+            fields=fields, show_archived=show_archived, **kwargs)
     if flatten:
         steps = flatten_results(steps, query_fields)
     return steps
@@ -368,8 +390,9 @@ def get_datasets(client,
     """
     Return list of datasets matching pattern
     """
-    if 'ami_status' not in kwargs:
-        kwargs['ami_status'] = 'VALID'
+    for f, default in DATASET_TABLE.defaults.items():
+        if f not in kwargs:
+            kwargs[f] = default
     cmd_args = {}
     if parent_type is not None and 'parent_type' not in kwargs:
         cmd_args['parentType'] = parent_type
@@ -392,8 +415,12 @@ def get_periods_for_run(client, run):
     Return data periods which contain this run
     """
     result = client.execute(['GetDataPeriodsForRun', '-runNumber=%i' % run])
-    periods = sorted([RunPeriod(level=int(e['periodLevel']), name=str(e['period']), project=str(e['project'])) \
-                      for e in result.to_dict()['Element_Info'].values() ])
+    periods = sorted([
+        RunPeriod(
+            level=int(e['periodLevel']),
+            name=str(e['period']),
+            project=str(e['project']))
+            for e in result.to_dict()['Element_Info'].values()])
     return periods
 
 
@@ -426,7 +453,8 @@ def get_all_periods(client):
     Return all periods
     """
     all_periods = []
-    p = re.compile("(?P<period>(?P<periodletter>[A-Za-z]+)(?P<periodnumber>\d+)?)$")
+    p = re.compile(
+            "(?P<period>(?P<periodletter>[A-Za-z]+)(?P<periodnumber>\d+)?)$")
     result = get_periods(client, year=0, level=0)
     for period, projectName in result:
         m = p.match(period)
@@ -471,7 +499,8 @@ def get_runs(client, periods=None, year=YEAR):
     if year > 2000:
         year %= 1000
     if not periods:
-        periods = [period.name for period in get_periods(client, year=year, level=1)]
+        periods = [period.name for period in
+                get_periods(client, year=year, level=1)]
     elif isinstance(periods, basestring):
         periods = periods.split(',')
     runs = []
@@ -480,7 +509,8 @@ def get_runs(client, periods=None, year=YEAR):
         cmd = ['GetRunsForDataPeriod', '-period=%s' % period]
         cmd += [ '-projectName=data%02i%%' % year ]
         result = client.execute(cmd)
-        runs += [ int(e['runNumber']) for e in result.to_dict()['Element_Info'].values() ]
+        runs += [int(e['runNumber']) for e in
+                result.to_dict()['Element_Info'].values()]
     # remove duplicates
     runs = list(set(runs))
     runs.sort()
@@ -634,7 +664,9 @@ def get_dataset_xsec_effic(client, dataset, **kwargs):
     """
     infos = get_event_info(client, dataset, **kwargs)
     if len(infos) > 1:
-        raise ValueError('Dataset %s has multiple parent event generator datasets' % dataset)
+        raise ValueError(
+                'Dataset %s has multiple parent event generator datasets' %
+                dataset)
     elif not infos:
         raise ValueError('Event info not found for dataset %s' % dataset)
     info = infos[0]
@@ -645,7 +677,9 @@ def get_dataset_xsec_effic(client, dataset, **kwargs):
     try:
         effic = float(info.extra['GenFiltEff_mean'])
     except KeyError:
-        raise ValueError('No generator filter efficiency listed for dataset %s' % dataset)
+        raise ValueError(
+                'No generator filter efficiency listed for dataset %s' %
+                dataset)
     return xsec, effic
 
 
@@ -661,7 +695,9 @@ def get_dataset_xsec_min_max_effic(client, dataset, **kwargs):
     """
     infos = get_event_info(client, dataset, **kwargs)
     if len(infos) > 1:
-        raise ValueError('Dataset %s has multiple parent event generator datasets' % dataset)
+        raise ValueError(
+                'Dataset %s has multiple parent event generator datasets' %
+                dataset)
     elif not infos:
         raise ValueError('Event info not found for dataset %s' % dataset)
     info = infos[0]
@@ -673,11 +709,14 @@ def get_dataset_xsec_min_max_effic(client, dataset, **kwargs):
         xsec_min = float(info.properties['crossSection']['min'])
         xsec_max = float(info.properties['crossSection']['max'])
     except KeyError:
-        raise ValueError('No cross section min or max listed for dataset %s' % dataset)
+        raise ValueError(
+                'No cross section min or max listed for dataset %s' % dataset)
     try:
         effic = float(info.extra['GenFiltEff_mean'])
     except KeyError:
-        raise ValueError('No generator filter efficiency listed for dataset %s' % dataset)
+        raise ValueError(
+                'No generator filter efficiency listed for dataset %s' %
+                dataset)
     return xsec, xsec_min, xsec_max, effic
 
 
@@ -768,7 +807,9 @@ def get_data_datasets(client,
                 if run not in ds_unique:
                     ds_unique[run] = ds
                 else:
-                    curr_version = re.match(VERSION_PATTERN, re.match(DATA_PATTERN, ds_unique[run]['logicalDatasetName']).group('version'))
+                    curr_version = re.match(VERSION_PATTERN,
+                            re.match(DATA_PATTERN,
+                                ds_unique[run]['logicalDatasetName']).group('version'))
                     if type.startswith('NTUP'):
                         if new_version.group('la') == 'r' and curr_version.group('la') == 'f' or \
                            ((new_version.group('la') == curr_version.group('la') and \
@@ -905,7 +946,10 @@ def humanize_bytes(bytes, precision=1):
     return '%.*f %s' % (precision, bytes / factor, suffix)
 
 
-def list_files(client, dataset, limit=None, total=False, human_readable=False, long=False, stream=None):
+def list_files(client, dataset,
+        limit=None, total=False,
+        human_readable=False,
+        long=False, stream=None):
     """
     *client*: AMIClient
 
@@ -936,11 +980,18 @@ def list_files(client, dataset, limit=None, total=False, human_readable=False, l
             events = file['events']
             if events != 'NULL':
                 total_events += int(events)
-            table.append(["size: %s" % size, "events: %s" % events, file['LFN'], "GUID: %s" % file['fileGUID']])
+            table.append([
+                "size: %s" % size,
+                "events: %s" % events,
+                file['LFN'],
+                "GUID: %s" % file['fileGUID']])
         if total:
             if human_readable:
                 total_size = humanize_bytes(total_size)
-            table.append(["size: %s" % total_size, "events: %i" % total_events, "total", ""])
+            table.append([
+                "size: %s" % total_size,
+                "events: %i" % total_events,
+                "total", ""])
         print_table(table, stream=stream)
     else:
         for file in get_files(client, dataset, limit=limit):

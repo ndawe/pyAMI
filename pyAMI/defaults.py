@@ -15,4 +15,3 @@ else:
 STREAM = 'physics_JetTauEtmiss'
 TYPE = 'AOD'
 PRODSTEP = 'merge'
-STATUS = 'VALID'
