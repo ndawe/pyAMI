@@ -1,33 +1,98 @@
+Releasing a new version of pyAMI
+--------------------------------
+
+Increment the version in pyAMI/info.py::
+
+    VERSION = 'X.Y.Z'
+
+Build the documentation (which also checks for problems with pyAMI)::
+
+    cd docs/
+    make clean
+    make
+
+Be sure that any new non-python files that are not included by MANIFEST.in are
+added there. MANIFEST.in controls what is and is not included in the source
+tarball that is released on PyPI and the ATLAS Subversion repository.
+
+Then follow the instructions below regarding updating pyAMI on PyPI, CERN AFS,
+CVMFS, and the ATLAS Subversion repository.
+
+
+Updating pyAMI on PyPI
+----------------------
+
+pyAMI is released on the Python Package Index (PyPI)::
+    
+    http://pypi.python.org/pypi/pyAMI/
+
+To update the PyPI page of the current version or to post a
+new version (you must be assigned a maintainer role for pyAMI on PyPI first)::
+
+    python setup.py register
+
+To upload a new tarball to PyPI::
+
+    python setup.py sdist upload
+
+If you upload a bad tarball you can delete it on PyPI after logging in and then
+run the command above again.
+
+
+Updating pyAMI on CVMFS
+-----------------------
+
+Send a new tar.gz to Asoka De Silva <desilva@cern.ch> and request that the
+version provided by CVMFS be updated.
+
+
+Updating pyAMI on AFS
+---------------------
+
+While on LXPLUS run::
+
+    ./install_afs.sh
+
+If you have write permissions on /afs/cern.ch/atlas/software/tools/atlasmeta the
+version there will be updated.
+
+
+Releasing a new verion of pyAMI in the ATLAS Subversion repository
+------------------------------------------------------------------
+
+Checkout pyAMI from ATLAS Subversion::
+
+    svn co svn+ssh://${USER}@svn.cern.ch/reps/atlasoff/External/pyAMI/trunk pyAMI
+
+Update the version number in cmt/pkgbuild_pyAMI.py::
+
+    pkg_ver = 'X.Y.Z'
+
+Check that pyAMI builds properly in CMT (after setting up Athena)::
+
+    cd cmt/ && make
+
+Commit and create the new tag::
+
+    svn commit -m "version X.Y.Z"
+    svn copy svn+ssh://${USER}@svn.cern.ch/reps/atlasoff/External/pyAMI/trunk \
+    svn+ssh://${USER}@svn.cern.ch/reps/atlasoff/External/pyAMI/tags/pyAMI-XX-YY-ZZ
+
 
 Create a source distribution
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+----------------------------
 
-Set the version number in pyAMI/info.py and make sure
-all required files (that not included by default) are
-included in MANIFEST.in. Then run:
+Follow the instructions above regarding the release of a new version and run::
 
     python setup.py sdist
 
 The new .tar.gz and .egg can now be found in dist/
 
 
-Updating the content on PyPI
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
-To update the PyPI page of the current version or to post a
-new version:
-
-    python setup.py register
-
-To upload a new tarball to PyPI:
-
-    python setup.py sdist upload
-
-
 Using git
-~~~~~~~~~
+---------
 
-To clone the repository with git-svn:
+To clone the repository with git-svn::
 
     git svn clone https://lpsc.in2p3.fr/svn/AMI/ \
     --trunk=trunk/AMIWebServiceClient/pyAMI/ \
