@@ -1,10 +1,16 @@
 from pyAMI.client import AMIClient
 from pyAMI.query import get_datasets, get_provenance, get_dataset_info
-
+from pyAMI.auth import AMI_CONFIG, create_auth_config
+import os
 
 client = AMIClient()
+# if you are using VOMS you do not need this:
+if not os.path.exists(AMI_CONFIG):
+    create_auth_config()
+client.read_config(AMI_CONFIG)
 
-ntup_tau = get_datasets(client, 'p1130', parent_type='AOD', fields='events', flatten=True)
+ntup_tau = get_datasets(client, 'p1130', type='NTUP_TAU',
+        parent_type='AOD', fields='events', flatten=True)
 
 for nevents, ds in ntup_tau:
     print "checking %s ..." % ds
