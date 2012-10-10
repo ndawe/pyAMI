@@ -18,7 +18,7 @@ if os.getenv('PYAMI_NO_DISTRIBUTE') in ('1', 'true'):
 else:
     from distribute_setup import use_setuptools
     use_setuptools()
-    from setuptools import setup, find_packages
+    from setuptools import setup
     kw['install_requires'] = requires
 
 execfile('pyAMI/info.py')
