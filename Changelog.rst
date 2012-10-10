@@ -1,12 +1,20 @@
 .. -*- mode: rst -*-
 
+Version 4.0.3 (10/11/2012)
+--------------------------
+
+* Skip version 4.0.2 to sync with ATLAS SVN tag version
+* Fix setup.py for py2.4 compatibility
+* Make ami-status=VALID default
+* Fix globbing issue. Only surround pattern with % if the pattern didn't have %
+  on both ends originally.
 
 Version 4.0.1 (9/20/2012)
 -------------------------
 
 * This is pyAMI-04-00-01 in the ATLAS release
 * Minor syntax changes in the API
-* Added Windows installation to the doc.
+* Added Windows installation to the doc
 * Expanded doc section on API
 
 Version 4.0.0a3 (4/17/2012)
@@ -30,7 +38,7 @@ Version 4.0.0a1 (3/28/2012)
 * Speed improvements
 * VOMS authentication
 * Fixed permissions of ~/.pyami/ami.cfg
-* Removed intermediate ami package.
+* Removed intermediate ami package
   Everything is now under pyAMI
 
 atlasmeta versions below:
@@ -39,10 +47,10 @@ Version 0.4.0 (2/4/2012)
 ------------------------
 
 * Now compatible with Python 2.4
-* Install with distutils by default and make installation with distribute optional.
+* Install with distutils by default and make installation with distribute optional
 * Improved parent-type feature in dataset query
 * Ability to specify a good runs list (GRL) in 'ami list data' and only
-  the runs contained in the GRL are shown.
+  the runs contained in the GRL are shown
 * Installed on LXPLUS at CERN
 * XSL transformations reimplemented
 
