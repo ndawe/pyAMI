@@ -37,8 +37,8 @@ Query the cross section and generator efficiency for a dataset:
    xsec, effic = get_dataset_xsec_effic(client, dataset)
    
 
-Constructing an arbitrary query to AMI
----------------------------------------
+Constructing an Arbitrary AMI Query
+-----------------------------------
 
 The command and the command arguments are passed to the pyAMI client in a list.
 The first member must be the name of the command.
@@ -78,7 +78,7 @@ Here is a complete example:
       print error
 
 
-Switching between servers
+Switching Between Servers
 -------------------------
 
 Here is a complete example. In general the Main server at Lyon is faster, but

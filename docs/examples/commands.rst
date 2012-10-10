@@ -126,10 +126,10 @@ For example:
 .. command-output:: ami dataset evtinfo mc11_7TeV.125367.PythiaWH125_tautauhh.merge.NTUP_TAUMEDIUM.e825_s1310_s1300_r2730_r2700_p787
    :shell:
 
-Sending an Arbitrary Command to the AMI server
+Sending an Arbitrary Command to the AMI Server
 ----------------------------------------------
 
-You might want to send a command directly to the server. For example a **Tag Collector** command.
+You might want to send a command directly to the server. For example a *Tag Collector* command.
 Use ``ami cmd commandName arguments``.
 
 For example:
