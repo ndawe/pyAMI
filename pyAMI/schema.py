@@ -81,7 +81,7 @@ class DATASET_TABLE(Table):
     }
 
     defaults = {
-        'ami_status': 'valid',
+        'ami_status': 'VALID',
     }
 
     primary = 'logicalDatasetName'
