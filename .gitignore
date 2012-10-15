@@ -1,23 +1,32 @@
+# Buildout's directories
+/bin
+/develop-eggs
+/eggs
+/parts
+/.installed.cfg
+/downloads
+/lib
+
+# Setuptools/Distribute's files
+*.egg-info
+/dist
+/build
+
+# Python's precompiled files
+*.pyc
+*.pyo
+
+# Sphinx's builds
+/docs/_build
+
+# other stuff
 MANIFEST
 version.txt
 *.egg
 *.tar
 *.tar.gz
-*.egg-info
-*.pyc
 *.d
 *.so
 *~
-*.root
-*.log
-*.png
-*.jpg
-*.eps
 .nfs*
-build
-dist
 *.swp
-bin/
-parts/
-develop-eggs/
-.installed.cfg
