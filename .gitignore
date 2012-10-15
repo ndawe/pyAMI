@@ -17,3 +17,6 @@ version.txt
 build
 dist
 *.swp
+bin/
+parts/
+develop-eggs/
