@@ -12,11 +12,12 @@
 # serve to show the default.
 
 import sys, os
+from os import path
+execfile(path.normpath(path.join(
+    path.dirname(path.abspath(__file__)), '../pyAMI/info.py')))
+
 import datetime
-
 YEAR = datetime.datetime.now().year
-
-execfile('../pyAMI/info.py')
 
 # If extensions (or modules to document with autodoc) are in another directory,
 # add these directories to sys.path here. If the directory is relative to the
@@ -77,7 +78,7 @@ release = VERSION
 
 # List of patterns, relative to source directory, that match files and
 # directories to ignore when looking for source files.
-exclude_patterns = ['_build']
+exclude_patterns = ['_build', 'README*']
 
 # The reST default role (used for this markup: `text`) to use for all documents.
 #default_role = None
