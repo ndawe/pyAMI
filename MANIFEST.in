@@ -1,7 +1,9 @@
+recursive-include docs *
+recursive-include examples *
 include distribute_setup.py
-include README.rst
 include LICENSE
 include DEVELOPERS
+include README.rst
 include Changelog.rst
 include bootstrap.py
 include buildout.cfg
