@@ -23,6 +23,9 @@ install:
 install-user:
 	$(PYTHON) setup.py install --user
 
+install-afs:
+	./install_afs.sh
+
 test-code:
 	$(NOSETESTS) -s pyAMI
 
