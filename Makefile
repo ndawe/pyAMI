@@ -17,6 +17,12 @@ clean-ctags:
 
 clean: clean-build clean-pyc clean-ctags
 
+bootstrap:
+	$(PYTHON) bootstrap.py
+
+buildout:
+	./bin/buildout
+
 install:
 	$(PYTHON) setup.py install
 
