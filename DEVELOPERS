@@ -1,3 +1,24 @@
+Using zc.buildout to develop and deploy pyAMI in an isolated environment
+------------------------------------------------------------------------
+
+First run the bootstrap.py with the desired python interpreter::
+
+    python bootstrap.py
+
+Now create the buildout environment::
+
+    ./bin/buildout
+
+An isolated installation of pyAMI is now in eggs/ along with all of its
+dependencies. To run the ami script::
+
+    ./bin/ami -h
+
+Using buildout allows us to develop pyAMI in a completely reproducible
+environment. This environment can also be deployed to other machines with the
+same architecture. 
+
+
 Releasing a new version of pyAMI
 --------------------------------
 

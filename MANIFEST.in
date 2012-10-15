@@ -1,4 +1,8 @@
 include distribute_setup.py
 include README.rst
 include LICENSE
+include DEVELOPERS
 include Changelog.rst
+include bootstrap.py
+include buildout.cfg
+include Makefile
