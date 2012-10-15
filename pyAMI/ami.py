@@ -296,59 +296,65 @@ parser_reset = subparsers.add_parser('reset',
                                 "and remove user config data")
 parser_reset.set_defaults(op=userdata.reset)
 
-args = parser.parse_args()
 
-from pyAMI import endpoint
-# this must be done before an import of webservices anywhere
-endpoint.TYPE = args.server
+def ami():
 
-from pyAMI.auth import AMI_CONFIG, create_auth_config
-from pyAMI.client import AMIClient, AMIResult
+    args = parser.parse_args()
 
-if args.op == 'exec':
-    args.op = AMIClient.execute
+    from pyAMI import endpoint
+    # this must be done before an import of webservices anywhere
+    endpoint.TYPE = args.server
 
-try:
-    if args.op == 'auth':
-        create_auth_config()
-    elif args.op == userdata.reset:
-        userdata.reset()
-    else:
-        amiclient = AMIClient(verbose=args.verbose,
-                              verbose_format=args.output)
-        cmd_args = dict(args._get_kwargs())
-        del cmd_args['op']
-        del cmd_args['pr']
-        del cmd_args['verbose']
-        del cmd_args['debug']
-        del cmd_args['output']
-        del cmd_args['server']
-        if 'help' in cmd_args:
-            del cmd_args['help']
-        if 'amiCommand' in cmd_args:
-            cmd_args['args'] = cmd_args['amiCommand'] + cmd_args['args']
-            del cmd_args['amiCommand']
-        result = args.op(amiclient, **cmd_args)
-        if args.op == get_periods:
-            print_periods(result)    
-        elif isinstance(result, AMIResult):
-            print result.output(xslt=args.output)
-        elif args.pr and result:
-            if args.pr == print_table:
-                args.pr(result)
-            elif isinstance(result, (list, tuple)):
-                for thing in result:
-                    rep = args.pr(thing)
-                    if rep:
+    from pyAMI.auth import AMI_CONFIG, create_auth_config
+    from pyAMI.client import AMIClient, AMIResult
+
+    if args.op == 'exec':
+        args.op = AMIClient.execute
+
+    try:
+        if args.op == 'auth':
+            create_auth_config()
+        elif args.op == userdata.reset:
+            userdata.reset()
+        else:
+            amiclient = AMIClient(verbose=args.verbose,
+                                  verbose_format=args.output)
+            cmd_args = dict(args._get_kwargs())
+            del cmd_args['op']
+            del cmd_args['pr']
+            del cmd_args['verbose']
+            del cmd_args['debug']
+            del cmd_args['output']
+            del cmd_args['server']
+            if 'help' in cmd_args:
+                del cmd_args['help']
+            if 'amiCommand' in cmd_args:
+                cmd_args['args'] = cmd_args['amiCommand'] + cmd_args['args']
+                del cmd_args['amiCommand']
+            result = args.op(amiclient, **cmd_args)
+            if args.op == get_periods:
+                print_periods(result)    
+            elif isinstance(result, AMIResult):
+                print result.output(xslt=args.output)
+            elif args.pr and result:
+                if args.pr == print_table:
+                    args.pr(result)
+                elif isinstance(result, (list, tuple)):
+                    for thing in result:
+                        rep = args.pr(thing)
+                        if rep:
+                            print rep
+                else:
+                    rep = args.pr(result)
+                    if rep is not None:
                         print rep
-            else:
-                rep = args.pr(result)
-                if rep is not None:
-                    print rep
-except Exception, e:
-    if args.debug:
-        # If in debug mode show full stack trace
-        import traceback
-        traceback.print_exception(*sys.exc_info())
-    else:
-        sys.exit("%s: %s" % (e.__class__.__name__, e))
+    except Exception, e:
+        if args.debug:
+            # If in debug mode show full stack trace
+            import traceback
+            traceback.print_exception(*sys.exc_info())
+        else:
+            sys.exit("%s: %s" % (e.__class__.__name__, e))
+
+if __name__ == '__main__':
+    ami()

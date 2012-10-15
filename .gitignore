@@ -20,3 +20,4 @@ dist
 bin/
 parts/
 develop-eggs/
+.installed.cfg

@@ -2,7 +2,6 @@
 
 import os
 import sys
-from glob import glob
 
 
 requires = ['ZSI', 'argparse']
@@ -32,22 +31,27 @@ else:
 if 'install' in sys.argv:
     print __doc__
 
-setup(name='pyAMI',
-      version=VERSION,
-      description='The ATLAS Metadata Interface',
-      long_description=open('README.rst').read() + open('Changelog.rst').read(),
-      author='The AMI Team',
-      author_email=AUTHOR_EMAIL,
-      url=URL,
-      download_url=DOWNLOAD_URL,
-      packages=[
-          'pyAMI',
-          'pyAMI.backports',
-      ],
-      scripts=glob('scripts/*'),
-      data_files=[(prefix, ['version.txt'])],
-      license='GPLv3',
-      classifiers=[
+setup(
+    name='pyAMI',
+    version=VERSION,
+    description='The ATLAS Metadata Interface',
+    long_description=open('README.rst').read() + open('Changelog.rst').read(),
+    author='The AMI Team',
+    author_email=AUTHOR_EMAIL,
+    url=URL,
+    download_url=DOWNLOAD_URL,
+    packages=[
+      'pyAMI',
+      'pyAMI.backports',
+    ],
+    entry_points = {
+        'console_scripts': [
+            'ami = pyAMI.ami:ami',
+        ],
+    },
+    data_files=[(prefix, ['version.txt'])],
+    license='GPLv3',
+    classifiers=[
         "Programming Language :: Python",
         "Topic :: Utilities",
         "Operating System :: POSIX :: Linux",
@@ -55,8 +59,8 @@ setup(name='pyAMI',
         "Intended Audience :: Science/Research",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: GNU General Public License (GPL)"
-      ],
-      **kw
-     )
+    ],
+    **kw
+)
 
 os.unlink('version.txt')
