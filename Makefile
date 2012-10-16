@@ -32,6 +32,9 @@ bootstrap:
 buildout:
 	./bin/buildout
 
+deploy: clean-buildout bootstrap
+	./bin/buildout -c deploy.cfg
+
 install:
 	$(PYTHON) setup.py install
 

@@ -6,5 +6,5 @@ include DEVELOPERS
 include README.rst
 include Changelog.rst
 include bootstrap.py
-include buildout.cfg
+include *.cfg
 include Makefile
