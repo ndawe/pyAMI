@@ -70,3 +70,6 @@ docs-update-end: doc
 	# update Noel's mirror of the pyAMI docs
 	rm -rf ~/remote/cern/projects/pyAMI/*
 	cp -r ./docs/_build/html/* ~/remote/cern/projects/pyAMI/
+
+clean-docs:
+	make -C docs/ clean
