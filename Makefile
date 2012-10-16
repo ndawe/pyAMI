@@ -11,6 +11,7 @@ clean-pyc:
 
 clean-build:
 	rm -rf build
+	rm -rf pyAMI.egg-info
 
 clean-ctags:
 	rm -f tags
@@ -32,8 +33,17 @@ bootstrap:
 buildout:
 	./bin/buildout
 
-deploy: clean-buildout bootstrap
+deploy: clean bootstrap
 	./bin/buildout -c deploy.cfg
+
+sdist: clean
+	$(PYTHON) setup.py sdist
+
+upload: clean
+	$(PYTHON) setup.py sdist upload
+
+register:
+	$(PYTHON) setup.py register
 
 install:
 	$(PYTHON) setup.py install
