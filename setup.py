@@ -43,6 +43,7 @@ setup(
     packages=[
       'pyAMI',
       'pyAMI.backports',
+      'pyAMI.tests',
     ],
     entry_points = {
         'console_scripts': [
