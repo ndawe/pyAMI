@@ -13,6 +13,9 @@ clean-build:
 	rm -rf build
 	rm -rf pyAMI.egg-info
 
+clean-dist:
+	rm -rf dist
+
 clean-ctags:
 	rm -f tags
 
@@ -25,7 +28,7 @@ clean-buildout:
 	rm -rf lib
 	rm -f .installed.cfg
 
-clean: clean-build clean-buildout clean-pyc clean-ctags
+clean: clean-build clean-dist clean-buildout clean-pyc clean-ctags
 
 bootstrap:
 	$(PYTHON) bootstrap.py
