@@ -22,11 +22,8 @@ same architecture.
 Releasing a new version of pyAMI
 --------------------------------
 
-Increment the version in pyAMI/info.py::
-
-    VERSION = 'X.Y.Z'
-
-Build the documentation (which also checks for problems with pyAMI)::
+Increment the version in version.txt. Build the documentation (which also checks
+for problems with pyAMI)::
 
     cd docs/
     make clean

@@ -13,8 +13,8 @@
 
 import sys, os
 from os import path
-execfile(path.normpath(path.join(
-    path.dirname(path.abspath(__file__)), '../pyAMI/info.py')))
+VERSION = open((path.normpath(path.join(
+    path.dirname(path.abspath(__file__)), '../version.txt')))).read().strip()
 
 import datetime
 YEAR = datetime.datetime.now().year

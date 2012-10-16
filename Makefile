@@ -3,6 +3,8 @@
 PYTHON ?= python
 NOSETESTS ?= nosetests
 CTAGS ?= ctags
+PREFIX := `pwd`
+VERSION := `grep "VERSION = " pyAMI/info.py | cut -d " " -f 3 | sed "s/'//g"`
 
 all: clean test
 
@@ -37,7 +39,10 @@ buildout:
 	./bin/buildout
 
 deploy: clean bootstrap
-	./bin/buildout -c deploy.cfg
+	./bin/buildout -c buildout-source.cfg
+	bin/buildout-source-release -n pyAMI-$(VERSION) \
+		https://lpsc.in2p3.fr/svn/AMI/trunk/AMIWebServiceClient/pyAMI \
+		buildout-source.cfg
 
 sdist: clean
 	$(PYTHON) setup.py sdist

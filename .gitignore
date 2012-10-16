@@ -21,10 +21,10 @@
 
 # other stuff
 MANIFEST
-version.txt
 *.egg
 *.tar
 *.tar.gz
+*.tgz
 *.d
 *.so
 *~
