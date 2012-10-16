@@ -38,7 +38,7 @@ bootstrap:
 buildout:
 	./bin/buildout
 
-deploy: clean bootstrap buildout
+deploy:
 	bin/buildout-source-release -n pyAMI-$(VERSION) \
 		https://lpsc.in2p3.fr/svn/AMI/trunk/AMIWebServiceClient/pyAMI \
 		buildout-source.cfg
