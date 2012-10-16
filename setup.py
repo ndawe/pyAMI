@@ -40,6 +40,7 @@ setup(
     author_email=AUTHOR_EMAIL,
     url=URL,
     download_url=DOWNLOAD_URL,
+    package_dir={'': '.'},
     packages=[
       'pyAMI',
       'pyAMI.backports',
