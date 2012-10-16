@@ -15,7 +15,16 @@ clean-build:
 clean-ctags:
 	rm -f tags
 
-clean: clean-build clean-pyc clean-ctags
+clean-buildout:
+	rm -rf bin
+	rm -rf eggs
+	rm -rf parts
+	rm -rf develop-eggs 
+	rm -rf downloads
+	rm -rf lib
+	rm -f .installed.cfg
+
+clean: clean-build clean-buildout clean-pyc clean-ctags
 
 bootstrap:
 	$(PYTHON) bootstrap.py
