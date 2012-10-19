@@ -6,6 +6,7 @@
 /.installed.cfg
 /downloads
 /lib
+/pyAMI-*
 
 # Setuptools/Distribute's files
 *.egg-info

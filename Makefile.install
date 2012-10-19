@@ -1,0 +1,5 @@
+PYTHON ?= python
+
+all:
+	$(PYTHON) bootstrap.py
+	./bin/buildout

@@ -4,7 +4,7 @@ PYTHON ?= python
 NOSETESTS ?= nosetests
 CTAGS ?= ctags
 PREFIX := `pwd`
-VERSION := `grep "VERSION = " pyAMI/info.py | cut -d " " -f 3 | sed "s/'//g"`
+VERSION := `cat version.txt`
 
 all: clean test
 
@@ -28,33 +28,45 @@ clean-buildout:
 	rm -rf develop-eggs 
 	rm -rf downloads
 	rm -rf lib
+	rm -rf cache
+	rm -rf pyAMI-*
 	rm -f .installed.cfg
 
 clean: clean-build clean-dist clean-buildout clean-pyc clean-ctags
 
-bootstrap:
+bs: bootstrap # just a shortcut
+bootstrap: clean-buildout
+	mkdir cache
 	$(PYTHON) bootstrap.py
 
-buildout: bootstrap
+bo: buildout # just a shortcut
+buildout:
 	./bin/buildout
+
+bundle: sdist bootstrap
+	./bin/buildout -c release.cfg
+	mkdir pyAMI-$(VERSION)
+	cp bootstrap.py pyAMI-$(VERSION)/
+	cp install.cfg pyAMI-$(VERSION)/buildout.cfg
+	cat versions.cfg >> pyAMI-$(VERSION)/buildout.cfg
+	echo "pyAMI = $(VERSION)" >> pyAMI-$(VERSION)/buildout.cfg
+	cp -r cache pyAMI-$(VERSION)/
+	cp dist/pyAMI-$(VERSION).tar.gz pyAMI-$(VERSION)/cache/dist
+	cp Makefile.install pyAMI-$(VERSION)/Makefile
 
 source-release: buildout
 	./bin/buildout-source-release -n pyAMI-$(VERSION) \
 		https://lpsc.in2p3.fr/svn/AMI/trunk/AMIWebServiceClient/pyAMI \
 		buildout-source.cfg
 
-release:
-	./bin/buildout -c buildout-release.cfg 
-	./bin/bundlemaker
-
 sdist: clean
-	$(PYTHON) setup.py sdist
+	$(PYTHON) setup.py sdist --release
 
 upload: clean
-	$(PYTHON) setup.py sdist upload
+	$(PYTHON) setup.py sdist upload --release
 
 register:
-	$(PYTHON) setup.py register
+	$(PYTHON) setup.py register --release
 
 install:
 	$(PYTHON) setup.py install
