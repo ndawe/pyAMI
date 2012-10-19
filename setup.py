@@ -56,9 +56,9 @@ if release:
             trunk_info.replace('trunk', VERSION))
 
 if afs_install or os.getenv('PYAMI_AFS_INSTALL') in ('1', 'true'):
-    prefix = '/afs/cern.ch/atlas/software/tools/atlasmeta/'
-else:
-    prefix = 'etc/pyAMI'
+    kw['data_files'] = [
+        ('/afs/cern.ch/atlas/software/tools/atlasmeta/',
+            ['version.txt'])]
 
 if 'install' in sys.argv:
     print __doc__
@@ -72,13 +72,12 @@ setup(
     author_email=AUTHOR_EMAIL,
     url=URL,
     download_url=DOWNLOAD_URL,
+    license='GPLv3',
     packages=[
       'pyAMI',
       'pyAMI.backports',
       'pyAMI.tests',
     ],
-    data_files=[(prefix, ['version.txt'])],
-    license='GPLv3',
     classifiers=[
         "Programming Language :: Python",
         "Topic :: Utilities",
