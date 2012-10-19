@@ -21,7 +21,16 @@ else:
     kw['install_requires'] = requires
 
 execfile('pyAMI/info.py')
-open('version.txt', 'w').write(VERSION)
+version_patched = False
+if VERSION == 'trunk' and 'install' not in sys.argv:
+    # write the version to pyAMI/info.py
+    VERSION = open('version.txt', 'r').read().strip()
+    import shutil
+    shutil.move('pyAMI/info.py', 'info.tmp')
+    trunk_info = ''.join(open('info.tmp', 'r').readlines())
+    open('pyAMI/info.py', 'w').write(
+            trunk_info.replace('trunk', VERSION))
+    version_patched = True
 
 if os.getenv('PYAMI_AFS_INSTALL') in ('1', 'true'):
     prefix = '/afs/cern.ch/atlas/software/tools/atlasmeta/'
@@ -40,7 +49,6 @@ setup(
     author_email=AUTHOR_EMAIL,
     url=URL,
     download_url=DOWNLOAD_URL,
-    package_dir={'': '.'},
     packages=[
       'pyAMI',
       'pyAMI.backports',
@@ -65,4 +73,6 @@ setup(
     **kw
 )
 
-os.unlink('version.txt')
+if version_patched:
+    # revert pyAMI/info.py
+    shutil.move('info.tmp', 'pyAMI/info.py')

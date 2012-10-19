@@ -4,3 +4,4 @@ include LICENSE
 include DEVELOPERS
 include README.rst
 include Changelog.rst
+include version.txt
