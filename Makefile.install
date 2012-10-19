@@ -3,3 +3,11 @@ PYTHON ?= python
 all:
 	$(PYTHON) bootstrap.py
 	./bin/buildout
+	rm -f ./bin/buildout
+
+clean:
+	rm -rf ./bin
+	rm -rf ./parts
+	rm -rf ./eggs
+	rm -rf ./develop-eggs
+	rm -f .installed.cfg
