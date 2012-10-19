@@ -53,11 +53,8 @@ bundle: sdist bootstrap
 	cp -r cache pyAMI-$(VERSION)/
 	cp dist/pyAMI-$(VERSION).tar.gz pyAMI-$(VERSION)/cache/dist
 	cp Makefile.install pyAMI-$(VERSION)/Makefile
-
-source-release: buildout
-	./bin/buildout-source-release -n pyAMI-$(VERSION) \
-		https://lpsc.in2p3.fr/svn/AMI/trunk/AMIWebServiceClient/pyAMI \
-		buildout-source.cfg
+	rm -rf pyAMI-4.0.4/cache/dist/setuptools*
+	tar -cvzf pyAMI-$(VERSION)-bundle.tar.gz pyAMI-$(VERSION)/
 
 sdist: clean
 	$(PYTHON) setup.py sdist --release
