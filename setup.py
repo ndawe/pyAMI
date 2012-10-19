@@ -25,11 +25,11 @@ sys.argv = filtered_args
 
 requires = ['ZSI', 'argparse']
 
-if use_lxml:
+if use_lxml and os.getenv('PYAMI_NO_LXML') not in ('1', 'true'):
     requires.append('lxml')
 
 kw = {}
-if use_distribute:
+if use_distribute and os.getenv('PYAMI_NO_DISTRIBUTE') not in ('1', 'true'):
     from distribute_setup import use_setuptools
     use_setuptools()
     from setuptools import setup
@@ -55,7 +55,7 @@ if release:
     open('pyAMI/info.py', 'w').write(
             trunk_info.replace('trunk', VERSION))
 
-if afs_install:
+if afs_install or os.getenv('PYAMI_AFS_INSTALL') in ('1', 'true'):
     prefix = '/afs/cern.ch/atlas/software/tools/atlasmeta/'
 else:
     prefix = 'etc/pyAMI'
