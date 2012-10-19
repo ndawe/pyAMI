@@ -47,11 +47,11 @@ pyAMI is released on the Python Package Index (PyPI)::
 To update the PyPI page of the current version or to post a
 new version (you must be assigned a maintainer role for pyAMI on PyPI first)::
 
-    python setup.py register
+    python setup.py register --release
 
 To upload a new tarball to PyPI::
 
-    python setup.py sdist upload
+    python setup.py sdist upload --release
 
 If you upload a bad tarball you can delete it on PyPI after logging in and then
 run the command above again.
@@ -102,7 +102,7 @@ Create a source distribution
 
 Follow the instructions above regarding the release of a new version and run::
 
-    python setup.py sdist
+    python setup.py sdist --release
 
 The new .tar.gz and .egg can now be found in dist/
 
