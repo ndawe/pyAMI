@@ -3,26 +3,50 @@
 import os
 import sys
 
+# check for custom args
+# we should instead extend distutils...
+use_lxml = True
+use_distribute = True
+afs_install = False
+release = False
+filtered_args = []
+for arg in sys.argv:
+    if arg == '--no-lxml':
+        use_lxml = False
+    elif arg == '--no-distribute':
+        use_distribute = False
+    elif arg == '--release':
+        release = True
+    elif arg == '--afs-install':
+        afs_install = True
+    else:
+        filtered_args.append(arg)
+sys.argv = filtered_args
 
 requires = ['ZSI', 'argparse']
 
-if os.getenv('PYAMI_NO_LXML') not in ('1', 'true'):
+if use_lxml:
     requires.append('lxml')
 
 kw = {}
-if os.getenv('PYAMI_NO_DISTRIBUTE') in ('1', 'true'):
-    from distutils.core import setup
-    if sys.version_info >= (2, 5):
-        kw['requires'] = requires
-else:
+if use_distribute:
     from distribute_setup import use_setuptools
     use_setuptools()
     from setuptools import setup
     kw['install_requires'] = requires
+    kw['entry_points'] = {
+        'console_scripts': [
+            'ami = pyAMI.ami:ami',
+        ],
+    }
+else:
+    from distutils.core import setup
+    if sys.version_info >= (2, 5):
+        kw['requires'] = requires
+    kw['scripts'] = ['scripts/ami']
 
 execfile('pyAMI/info.py')
-version_patched = False
-if VERSION == 'trunk' and 'install' not in sys.argv:
+if release:
     # write the version to pyAMI/info.py
     VERSION = open('version.txt', 'r').read().strip()
     import shutil
@@ -30,9 +54,8 @@ if VERSION == 'trunk' and 'install' not in sys.argv:
     trunk_info = ''.join(open('info.tmp', 'r').readlines())
     open('pyAMI/info.py', 'w').write(
             trunk_info.replace('trunk', VERSION))
-    version_patched = True
 
-if os.getenv('PYAMI_AFS_INSTALL') in ('1', 'true'):
+if afs_install:
     prefix = '/afs/cern.ch/atlas/software/tools/atlasmeta/'
 else:
     prefix = 'etc/pyAMI'
@@ -54,11 +77,6 @@ setup(
       'pyAMI.backports',
       'pyAMI.tests',
     ],
-    entry_points = {
-        'console_scripts': [
-            'ami = pyAMI.ami:ami',
-        ],
-    },
     data_files=[(prefix, ['version.txt'])],
     license='GPLv3',
     classifiers=[
@@ -73,6 +91,6 @@ setup(
     **kw
 )
 
-if version_patched:
+if release:
     # revert pyAMI/info.py
     shutil.move('info.tmp', 'pyAMI/info.py')

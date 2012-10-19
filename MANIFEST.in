@@ -1,4 +1,5 @@
 recursive-include examples *
+recursive-include scripts *
 include distribute_setup.py
 include LICENSE
 include DEVELOPERS
