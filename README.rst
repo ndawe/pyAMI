@@ -62,6 +62,7 @@ Installation
 pyAMI requires at least Python 2.4, `ZSI <http://pypi.python.org/pypi/ZSI/>`_,
 and `argparse <http://pypi.python.org/pypi/argparse>`_.
 `lxml <http://lxml.de/>`_ is optional but required for XSL transformations.
+libxml2 and libxslt (dev packages) must be installed to build lxml.
 
 
 Automatic Installation

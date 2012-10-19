@@ -4,7 +4,3 @@ include LICENSE
 include DEVELOPERS
 include README.rst
 include Changelog.rst
-include version.txt
-include bootstrap.py
-include *.cfg
-include Makefile

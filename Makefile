@@ -43,6 +43,9 @@ deploy:
 		https://lpsc.in2p3.fr/svn/AMI/trunk/AMIWebServiceClient/pyAMI \
 		buildout-source.cfg
 
+release:
+	./bin/buildout -c buildout-release.cfg 
+
 sdist: clean
 	$(PYTHON) setup.py sdist
 
