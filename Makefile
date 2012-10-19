@@ -35,16 +35,17 @@ clean: clean-build clean-dist clean-buildout clean-pyc clean-ctags
 bootstrap:
 	$(PYTHON) bootstrap.py
 
-buildout:
+buildout: bootstrap
 	./bin/buildout
 
-deploy:
-	bin/buildout-source-release -n pyAMI-$(VERSION) \
+source-release: buildout
+	./bin/buildout-source-release -n pyAMI-$(VERSION) \
 		https://lpsc.in2p3.fr/svn/AMI/trunk/AMIWebServiceClient/pyAMI \
 		buildout-source.cfg
 
 release:
 	./bin/buildout -c buildout-release.cfg 
+	./bin/bundlemaker
 
 sdist: clean
 	$(PYTHON) setup.py sdist
