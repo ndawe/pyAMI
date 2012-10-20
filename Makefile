@@ -5,8 +5,9 @@ NOSETESTS ?= nosetests
 CTAGS ?= ctags
 PREFIX := `pwd`
 VERSION := `cat version.txt`
-BUNDLE_BUILD_DEST=./build/bundles/pyAMI-$(VERSION)
-BUNDLE_TAR_DEST=./dist
+BUNDLE_BUILD_DEST := ./build/bundles
+BUNDLE_BUILD_PATH := $(BUNDLE_BUILD_DEST)/pyAMI-$(VERSION)
+BUNDLE_TAR_DEST := ./dist
 
 all: clean test
 
@@ -46,20 +47,21 @@ buildout:
 
 bundle: sdist bootstrap
 	./bin/buildout -c release.cfg
-	build_dest=./build/bundles/pyAMI-$(VERSION)
-	bundle_dest=./dist
-	mkdir -p $(BUNDLE_BUILD_DEST)
+	mkdir -p $(BUNDLE_BUILD_PATH)
 	mkdir -p $(BUNDLE_TAR_DEST)
-	cp bootstrap.py $(BUNDLE_BUILD_DEST)
-	cp install.cfg $(BUNDLE_BUILD_DEST)/buildout.cfg
-	cat versions.cfg >> $(BUNDLE_BUILD_DEST)/buildout.cfg
-	echo "pyAMI = $(VERSION)" >> $(BUNDLE_BUILD_DEST)/buildout.cfg
-	cp -r cache $(BUNDLE_BUILD_DEST)/
-	cp dist/pyAMI-$(VERSION).tar.gz $(BUNDLE_BUILD_DEST)/cache/dist
-	cp Makefile.install $(BUNDLE_BUILD_DEST)/Makefile
-	rm -rf $(BUNDLE_BUILD_DEST)/cache/dist/setuptools*
+	cp bootstrap.py $(BUNDLE_BUILD_PATH)
+	cp install.cfg $(BUNDLE_BUILD_PATH)/buildout.cfg
+	cat versions.cfg >> $(BUNDLE_BUILD_PATH)/buildout.cfg
+	echo "pyAMI = $(VERSION)" >> $(BUNDLE_BUILD_PATH)/buildout.cfg
+	cp -r cache $(BUNDLE_BUILD_PATH)/
+	cp dist/pyAMI-$(VERSION).tar.gz $(BUNDLE_BUILD_PATH)/cache/dist
+	cp Makefile.install $(BUNDLE_BUILD_PATH)/Makefile
+	rm -rf $(BUNDLE_BUILD_PATH)/cache/dist/setuptools*
 	rm -f $(BUNDLE_TAR_DEST)/pyAMI-$(VERSION)-bundle.tar.gz
-	tar -cvzf $(BUNDLE_TAR_DEST)/pyAMI-$(VERSION)-bundle.tar.gz $(BUNDLE_BUILD_DEST)
+	tar -cvzf $(BUNDLE_TAR_DEST)/pyAMI-$(VERSION)-bundle.tar.gz \
+		-C $(BUNDLE_BUILD_DEST) pyAMI-$(VERSION)
+	@echo "Bundle created at $(BUNDLE_BUILD_PATH)"
+	@echo "Bundle packaged at $(BUNDLE_TAR_DEST)/pyAMI-$(VERSION)-bundle.tar.gz"
 
 sdist: clean
 	$(PYTHON) setup.py sdist --release
