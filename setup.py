@@ -61,6 +61,7 @@ if release:
             trunk_info.replace('trunk', VERSION))
 
 if 'sdist' not in sys.argv:
+    import shutil
     # write protected init
     shutil.move('pyAMI/__init__.py', 'init.tmp')
     prot_init = ''.join(open('etc/protected_init.py', 'r').readlines())
@@ -107,4 +108,6 @@ setup(
 if release:
     # revert pyAMI/info.py
     shutil.move('info.tmp', 'pyAMI/info.py')
+if 'sdist' not in sys.argv:
+    # revert pyAMI/__init__.py
     shutil.move('init.tmp', 'pyAMI/__init__.py')
