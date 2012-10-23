@@ -1,6 +1,6 @@
 # This script will work in either bash or zsh.
 
-# deterine path to this script
+# determine path to this script
 # http://stackoverflow.com/questions/59895/can-a-bash-script-tell-what-directory-its-stored-in
 SOURCE_PYAMI_SETUP="${BASH_SOURCE[0]:-$0}"
 
