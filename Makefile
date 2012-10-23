@@ -53,6 +53,8 @@ bundle: sdist bootstrap
 	cp ./etc/install.cfg $(BUNDLE_BUILD_PATH)/buildout.cfg
 	cp ./etc/Makefile.install $(BUNDLE_BUILD_PATH)/Makefile
 	cp ./etc/setup_pyAMI.py $(BUNDLE_BUILD_PATH)/
+	cp ./etc/setup.sh $(BUNDLE_BUILD_PATH)/
+	cp version.txt $(BUNDLE_BUILD_PATH)/
 	cat versions.cfg >> $(BUNDLE_BUILD_PATH)/buildout.cfg
 	echo "pyAMI = $(VERSION)" >> $(BUNDLE_BUILD_PATH)/buildout.cfg
 	cp -r cache $(BUNDLE_BUILD_PATH)/
