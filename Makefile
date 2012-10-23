@@ -50,12 +50,13 @@ bundle: sdist bootstrap
 	mkdir -p $(BUNDLE_BUILD_PATH)
 	mkdir -p $(BUNDLE_TAR_DEST)
 	cp bootstrap.py $(BUNDLE_BUILD_PATH)
-	cp install.cfg $(BUNDLE_BUILD_PATH)/buildout.cfg
+	cp ./etc/install.cfg $(BUNDLE_BUILD_PATH)/buildout.cfg
+	cp ./etc/Makefile.install $(BUNDLE_BUILD_PATH)/Makefile
+	cp ./etc/setup_pyAMI.py $(BUNDLE_BUILD_PATH)/
 	cat versions.cfg >> $(BUNDLE_BUILD_PATH)/buildout.cfg
 	echo "pyAMI = $(VERSION)" >> $(BUNDLE_BUILD_PATH)/buildout.cfg
 	cp -r cache $(BUNDLE_BUILD_PATH)/
 	cp dist/pyAMI-$(VERSION).tar.gz $(BUNDLE_BUILD_PATH)/cache/dist
-	cp Makefile.install $(BUNDLE_BUILD_PATH)/Makefile
 	rm -rf $(BUNDLE_BUILD_PATH)/cache/dist/setuptools*
 	rm -f $(BUNDLE_TAR_DEST)/pyAMI-$(VERSION)-bundle.tar.gz
 	tar -cvzf $(BUNDLE_TAR_DEST)/pyAMI-$(VERSION)-bundle.tar.gz \

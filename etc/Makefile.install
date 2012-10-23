@@ -1,0 +1,15 @@
+PYTHON ?= python
+
+all:
+	$(PYTHON) bootstrap.py
+	./bin/buildout
+	# remove extra buildout files and directories
+	rm -f ./bin/buildout
+	rm -rf ./eggs/zc.*
+	rm -rf ./develop-eggs
+	rm -rf ./parts
+	rm -f .installed.cfg
+
+clean:
+	rm -rf ./bin
+	rm -rf ./eggs
