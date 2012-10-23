@@ -3,6 +3,12 @@
 import os
 import sys
 
+# support calling setup.py from outside of the pyAMI dir
+local_path = os.path.dirname(os.path.abspath(__file__))
+# setup.py can be called from outside the rootpy directory
+os.chdir(local_path)
+sys.path.insert(0, local_path)
+
 # check for custom args
 # we should instead extend distutils...
 use_lxml = True
@@ -45,7 +51,6 @@ else:
         kw['requires'] = requires
     kw['scripts'] = ['scripts/ami']
 
-execfile('pyAMI/info.py')
 if release:
     # write the version to pyAMI/info.py
     VERSION = open('version.txt', 'r').read().strip()
@@ -54,6 +59,13 @@ if release:
     trunk_info = ''.join(open('info.tmp', 'r').readlines())
     open('pyAMI/info.py', 'w').write(
             trunk_info.replace('trunk', VERSION))
+    # write protected init
+    shutil.move('pyAMI/__init__.py', 'init.tmp')
+    prot_init = ''.join(open('etc/protected_init.py', 'r').readlines())
+    open('pyAMI/__init__.py', 'w').write(
+            prot_init.replace('{SYS_VERSION}', str(sys.version_info[:2])))
+
+execfile('pyAMI/info.py')
 
 if afs_install or os.getenv('PYAMI_AFS_INSTALL') in ('1', 'true'):
     kw['data_files'] = [
@@ -93,3 +105,4 @@ setup(
 if release:
     # revert pyAMI/info.py
     shutil.move('info.tmp', 'pyAMI/info.py')
+    shutil.move('init.tmp', 'pyAMI/__init__.py')
