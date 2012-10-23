@@ -63,10 +63,12 @@ if release:
 if 'sdist' not in sys.argv:
     import shutil
     # write protected init
-    shutil.move('pyAMI/__init__.py', 'init.tmp')
-    prot_init = ''.join(open('etc/protected_init.py', 'r').readlines())
+    shutil.copy('pyAMI/__init__.py', 'init.tmp')
+    prot_init = ''.join(open('pyAMI/__init__.py', 'r').readlines())
     open('pyAMI/__init__.py', 'w').write(
-            prot_init.replace('{SYS_VERSION}', str(sys.version_info[:2])))
+            prot_init.replace(
+                '{SYS_VERSION}',
+                str(sys.version_info[:2])).replace('"""', ''))
 
 execfile('pyAMI/info.py')
 
