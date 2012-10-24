@@ -13,3 +13,9 @@ all:
 clean:
 	rm -rf ./bin
 	rm -rf ./eggs
+
+clean-deploy:
+	rm -f bootstrap.py
+	rm -f buildout.cfg
+	rm -rf ./cache
+	rm -f Makefile
