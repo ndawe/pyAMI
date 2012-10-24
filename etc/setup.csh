@@ -14,6 +14,10 @@ endif
 set DIR_PYAMI_SETUP=`(dirname "$SOURCE_PYAMI_SETUP")`
 
 setenv PATH $DIR_PYAMI_SETUP"/bin:$PATH"
-setenv PYTHONPATH $DIR_PYAMI_SETUP":$PYTHONPATH"
+if ( ! ($?PYTHONPATH) ) then
+    setenv PYTHONPATH $DIR_PYAMI_SETUP
+else
+    setenv PYTHONPATH $DIR_PYAMI_SETUP":$PYTHONPATH"
+endif
 setenv PYAMI_VERSION `(cat "$DIR_PYAMI_SETUP"/version.txt)`
 echo "setting up pyAMI $PYAMI_VERSION"
