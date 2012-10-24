@@ -13,7 +13,7 @@ do
 done
 DIR_PYAMI_SETUP="$( cd -P "$( dirname "$SOURCE_PYAMI_SETUP" )" && pwd )"
 
-echo "sourcing ${SOURCE_PYAMI_SETUP}..."
+echo "sourcing ${SOURCE_PYAMI_SETUP}"
 
 export PATH=${DIR_PYAMI_SETUP}/bin${PATH:+:$PATH}
 export PYTHONPATH=${DIR_PYAMI_SETUP}${PYTHONPATH:+:$PYTHONPATH}

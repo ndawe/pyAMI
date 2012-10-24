@@ -1,17 +1,21 @@
-# This script is to be sourced by tcsh.
+# This script is to be sourced by [t]csh.
 
-# determine path to this script
-# http://stackoverflow.com/questions/4617758/problem-getting-full-path-of-a-shell-script-while-using-tcsh
-set SOURCE_PYAMI_SETUP=($_)
-if ("$SOURCE_PYAMI_SETUP" != "") then
-    set SOURCE_PYAMI_SETUP=$PWD/$SOURCE_PYAMI_SETUP[2]
-    echo "sourcing $SOURCE_PYAMI_SETUP..."
+if ( ($?PYAMI_HOME) ) then
+    set DIR_PYAMI_SETUP=$PYAMI_HOME
+    set SOURCE_PYAMI_SETUP=$DIR_PYAMI_SETUP"/setup.csh"
 else
-    echo "this script must be sourced"
-    exit 1
+    # determine path to this script
+    # http://stackoverflow.com/questions/4617758/problem-getting-full-path-of-a-shell-script-while-using-tcsh
+    set SOURCE_PYAMI_SETUP=($_)
+    if ("$SOURCE_PYAMI_SETUP" != "") then
+        set SOURCE_PYAMI_SETUP=$PWD/$SOURCE_PYAMI_SETUP[2]
+    else
+        echo "this script must be sourced"
+        exit 1
+    endif
+    set DIR_PYAMI_SETUP=`(dirname "$SOURCE_PYAMI_SETUP")`
 endif
-
-set DIR_PYAMI_SETUP=`(dirname "$SOURCE_PYAMI_SETUP")`
+echo "sourcing $SOURCE_PYAMI_SETUP"
 
 setenv PATH $DIR_PYAMI_SETUP"/bin:$PATH"
 if ( ! ($?PYTHONPATH) ) then
