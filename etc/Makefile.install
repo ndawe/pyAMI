@@ -1,26 +1,33 @@
 python ?= python
 prefix ?= .
+override prefix := $(shell readlink -f $(prefix))
 
 all:
 	$(python) bootstrap.py
 	./bin/buildout
 	
 install: all
+	rm -f ./bin/buildout
+	rm -rf ./eggs/zc.*
 	test -d $(prefix) || mkdir $(prefix)
 	test -d $(prefix)/bin || mkdir $(prefix)/bin
 	test -d $(prefix)/eggs || mkdir $(prefix)/eggs
-	for prog in ./bin/*; do \
-    	  install -m 0755 $$prog $(prefix)/bin; \
-    	done
 	for egg in ./eggs/*; do \
-    	  install -m 0644 $$egg $(prefix)/eggs; \
+	  if test -d $$egg; then \
+	    (cd ./eggs && tar cf - `basename $$egg`) | (cd $(prefix)/eggs && tar xf -) \
+	  else \
+    	    install -m 0644 $$egg $(prefix)/eggs; \
+	  fi \
     	done
 	install -m 0644 setup.csh $(prefix)
 	install -m 0644 setup_pyAMI.py $(prefix)
 	install -m 0644 setup.sh $(prefix)
 	install -m 0644 version.txt $(prefix)
-	find $(prefix) -type d | xargs chmd 755
-	find $(prefix) -type f | xargs chmd 644
+	find $(prefix) -type d | xargs chmod 755
+	find $(prefix) -type f | xargs chmod 644
+	for prog in ./bin/*; do \
+    	  install -m 0755 $$prog $(prefix)/bin; \
+    	done
 
 clean:
 	# remove extra buildout files and directories
