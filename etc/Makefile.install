@@ -1,26 +1,35 @@
-PYTHON ?= python
+python ?= python
+prefix ?= .
 
 all:
-	$(PYTHON) bootstrap.py
+	$(python) bootstrap.py
 	./bin/buildout
+	
+install: all
+	test -d $(prefix) || mkdir $(prefix)
+	test -d $(prefix)/bin || mkdir $(prefix)/bin
+	test -d $(prefix)/eggs || mkdir $(prefix)/eggs
+	for prog in ./bin/*; do \
+    	  install -m 0755 $$prog $(prefix)/bin; \
+    	done
+	for egg in ./eggs/*; do \
+    	  install -m 0644 $$egg $(prefix)/eggs; \
+    	done
+	install -m 0644 setup.csh $(prefix)
+	install -m 0644 setup_pyAMI.py $(prefix)
+	install -m 0644 setup.sh $(prefix)
+	install -m 0644 version.txt $(prefix)
+	find $(prefix) -type d | xargs chmd 755
+	find $(prefix) -type f | xargs chmd 644
+
+clean:
 	# remove extra buildout files and directories
 	rm -f ./bin/buildout
 	rm -rf ./eggs/zc.*
 	rm -rf ./develop-eggs
 	rm -rf ./parts
 	rm -f .installed.cfg
-
-clean:
 	rm -rf ./bin
 	rm -rf ./eggs
 
-clean-deploy:
-	rm -f bootstrap.py
-	rm -f buildout.cfg
-	rm -rf ./cache
-	# set the permissions
-	find . -type f | xargs chmod 644
-	find . -type d | xargs chmod 755
-	chmod 755 ./bin/*
-	# remove the Makefile
-	rm -f Makefile
+.PHONY: install clean
