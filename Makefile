@@ -1,4 +1,4 @@
-# simple makefile to simplify repetetive build env management tasks under posix
+# simple makefile to simplify repetitive build env management tasks under posix
 
 PYTHON ?= python
 NOSETESTS ?= nosetests
@@ -86,7 +86,8 @@ install-afs:
 	./install_afs.sh
 
 test-code:
-	$(NOSETESTS) -s pyAMI
+	#$(NOSETESTS) -s pyAMI
+	./bin/ami-test
 
 test-doc:
 	$(NOSETESTS) -s --with-doctest --doctest-tests --doctest-extension=rst \
@@ -97,7 +98,7 @@ test-coverage:
 	$(NOSETESTS) -s --with-coverage --cover-html --cover-html-dir=coverage \
 	--cover-package=pyAMI pyAMI
 
-test: test-code test-doc
+test: test-code #test-doc
 
 trailing-spaces:
 	find pyAMI -name "*.py" | xargs perl -pi -e 's/[ \t]*$$//'
@@ -107,8 +108,8 @@ ctags:
 	# Install with: sudo apt-get install exuberant-ctags
 	$(CTAGS) -R *
 
-doc:
-	make -C docs/ html
+docs:
+	./bin/sphinx-build ./docs ./docs/_build/html
 
 docs-update-end: doc
 	# update Noel's mirror of the pyAMI docs
@@ -117,3 +118,5 @@ docs-update-end: doc
 
 clean-docs:
 	make -C docs/ clean
+
+.PHONY: docs

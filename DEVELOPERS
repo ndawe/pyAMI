@@ -1,33 +1,79 @@
-Using zc.buildout to develop and deploy pyAMI in an isolated environment
-------------------------------------------------------------------------
+=================================
+Instructions for pyAMI Developers
+=================================
 
-First run the bootstrap.py with the desired python interpreter::
+See the Makefile for common build/development tasks to make our lives easier.
 
-    python bootstrap.py
+To be sure that you are using the same versions of all pyAMI dependencies as the
+other developers, before developing/testing pyAMI you should run::
 
-Now create the buildout environment::
+    make bootstrap
+    make buildout
 
-    ./bin/buildout
+or::
 
-An isolated installation of pyAMI is now in eggs/ along with all of its
-dependencies. To run the ami script::
+    make bs bo
+
+To build lxml make sure the development packages of libxml2 and libxslt are
+installed on your system (i.e. before running ``make buildout`` above).
+
+You only need to run ``make boostrap`` once and you should only need to run
+``make buildout`` if the version of a dependency changes. ``make buildout``
+creates the development sandbox containing all of pyAMI's dependencies as well
+as sphinx and its dependencies for building the docs.
+
+While running ``make buildout`` you may see::
+
+    SyntaxError: ('invalid syntax', ...
+
+if you are using Python>=2.5 while the PyXML package is building. This is fine.
+Don't be alarmed. This is a known issue with PyXML and fortunately it manages to
+build and run properly for pyAMI.
+
+Also ignore compiler warnings in lxml: src/lxml/lxml.etree.c. This is generated
+C code.
+
+After running ``make buildout`` you should see several new directories (be sure
+to tell Subversion to ignore them!). ./bin contains the ami script as well as
+scripts to generate the docs. ./bin also contains a python wrapper that puts
+the local pyAMI sandbox in the sys.path. ./eggs contains eggs for pyAMI along
+with sphinx and dependencies.
+
+This is an isolated installation of pyAMI. To run the ami script::
 
     ./bin/ami -h
 
 Using buildout allows us to develop pyAMI in a completely reproducible
 environment. This environment can also be deployed to other machines with the
-same architecture. 
+same architecture.
+
+
+Running tests in the development sandbox
+----------------------------------------
+
+To run the pyAMI unit tests::
+
+    make test
+
+Add new tests to ./pyAMI/tests/test_ami.py. Before releasing a new tag all tests
+there should pass.
+
+
+Building the docs
+-----------------
+
+To build the docs::
+
+    make docs
+
+The generated html should now be in ./docs/_build/html/ 
 
 
 Releasing a new version of pyAMI
 --------------------------------
 
-Increment the version in version.txt. Build the documentation (which also checks
-for problems with pyAMI)::
-
-    cd docs/
-    make clean
-    make
+Increment the version in version.txt. Check that all unit tests (see above) pass
+and that the docs build properly.
 
 Be sure that any new non-python files that are not included by MANIFEST.in are
 added there. MANIFEST.in controls what is and is not included in the source
@@ -49,30 +95,45 @@ new version (you must be assigned a maintainer role for pyAMI on PyPI first)::
 
     python setup.py register --release
 
+or::
+    
+    make register 
+
 To upload a new tarball to PyPI::
 
     python setup.py sdist upload --release
+
+or::
+
+    make upload
 
 If you upload a bad tarball you can delete it on PyPI after logging in and then
 run the command above again.
 
 
+Creating a self-contained bundle of pyAMI and its dependencies
+--------------------------------------------------------------
+
+To create a self-contained bundle::
+
+    make bundle
+
+TODO: more instructions to come
+
+
 Updating pyAMI on CVMFS
 -----------------------
 
-Send a new tar.gz to Asoka De Silva <desilva@cern.ch> and request that the
-version provided by CVMFS be updated.
+Send a new bundle (see above) tar.gz to Asoka De Silva <desilva@cern.ch> and
+request that the version provided by CVMFS be updated.
 
 
 Updating pyAMI on AFS
 ---------------------
 
-While on LXPLUS run::
+Build a bundle (see above) and install this on AFS while on LXPLUS.
 
-    ./install_afs.sh
-
-If you have write permissions on /afs/cern.ch/atlas/software/tools/atlasmeta the
-version there will be updated.
+TODO: more instructions to come
 
 
 Releasing a new verion of pyAMI in the ATLAS Subversion repository
@@ -103,6 +164,10 @@ Create a source distribution
 Follow the instructions above regarding the release of a new version and run::
 
     python setup.py sdist --release
+
+or::
+    
+    make sdist
 
 The new .tar.gz and .egg can now be found in dist/
 
