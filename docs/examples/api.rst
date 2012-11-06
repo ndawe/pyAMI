@@ -7,6 +7,7 @@ First create a client and authenticate:
 
 .. testcode::
 
+   import setup_pyAMI # this line needed to ensure correct python environment since pyAMI 4.0.3
    from pyAMI.client import AMIClient
    from pyAMI.auth import AMI_CONFIG, create_auth_config
    import os
@@ -21,6 +22,7 @@ Query the runs contained by multiple data periods:
 
 .. testcode::
 
+   import setup_pyAMI # this line needed to ensure correct python environment since pyAMI 4.0.3
    from pyAMI.query import get_runs
    # This is the equivalent of ami list runs --year 11 B K2
    
@@ -31,6 +33,7 @@ Query the cross section and generator efficiency for a dataset:
 
 .. testcode::
 
+   import setup_pyAMI # this line needed to ensure correct python environment since pyAMI 4.0.3
    from pyAMI.query import get_dataset_xsec_effic
    
    dataset = 'mc11_7TeV.125206.PowHegPythia_VBFH130_tautauhh.evgen.EVNT.e893'
@@ -46,6 +49,7 @@ Here is a complete example:
 
 .. testcode::
 
+   import setup_pyAMI # this line needed to ensure correct python environment since pyAMI 4.0.3
    from pyAMI.client import AMIClient
    from pyAMI.endpoint import get_endpoint,get_XSL_URL
    from pyAMI.auth import AMI_CONFIG, create_auth_config
@@ -57,8 +61,11 @@ Here is a complete example:
    # ami cmd SearchQuery -sql="select logicalDatasetName from dataset where \
    # dataType='AOD' and version like '%r3542' and datasetNumber=146932" \
    # -project=mc12_001 -processingStep=production
+   
    argv=[]
    argv.append("SearchQuery") 
+   
+   # SQL syntax - goes to a specific catalogue
 
    argv.append(
       "-sql=select logicalDatasetName from dataset where "
@@ -71,8 +78,40 @@ Here is a complete example:
 
    try:
       result=amiClient.execute(argv)
+      
       # Change the output format to csv.
+      
       print result.output('csv')
+   except Exception, msg:
+      error = str(msg) 
+      print error
+      
+   argv=[]
+   argv.append("SearchQuery") 
+   #gLite syntax - searches over ALL catalogues  - can be slower
+   argv.append(
+      "-glite=select logicalDatasetName  where "
+      "dataType='AOD' and version like '%r3542' and datasetNumber=146932")
+      
+    # tell AMI what is the main thing you are looking for. Notice that the table name is not included in the query
+    # glite will work this out, and also if you ask for a field which is not in the dataset table, but is related to this table,
+    # glite will construct the correct relational query.
+    
+   argv.append('entity=dataset')
+    
+   # Tells AMI to look in all dataset catalogues. 
+   
+   argv.append('project=Atlas_Production')
+   argv.append('processingStep=Atlas_Production')
+
+   amiClient = AMIClient()
+
+   try:
+      result=amiClient.execute(argv)
+      
+      # Change the output format to xml.
+      
+      print result.output('xml')
    except Exception, msg:
       error = str(msg) 
       print error
@@ -87,6 +126,7 @@ with the replica end point, and a command known to fail.
 
 .. testcode::
 
+   import setup_pyAMI # this line needed to ensure correct python environment since pyAMI 4.0.3
    from pyAMI import endpoint
    from pyAMI.client import AMIClient
    from pyAMI.endpoint import get_endpoint,get_XSL_URL
