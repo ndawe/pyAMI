@@ -148,7 +148,8 @@ Installation on Windows
 
 6. Install lxml to enable XSLT. If you don't install lxml, pyAMI will still work,
    but you will only be able to obtain XML output on the command line.
-   However if you only want to use the API of pyAMI you may skip this step.::
+   However if you only want to use the API of pyAMI you may skip this step.
+   (lxml 3.0.1 seems to install with pip automatically)::
 
       easy_install --allow-hosts=lxml.de,*.python.org lxml==2.2.8
 
@@ -189,3 +190,7 @@ You will only need to do this once since your credentials are stored in
 run ``ami auth`` again. If you would like to keep your pyAMI configuration
 in a directory other than ``~/.pyami`` then set the environment
 variable ``PYAMI_CONFIG_DIR``.
+
+.. note:: Once you make an ami configuration file it will override your voms proxy.
+   You should destroy it if you want to use a proxy. We implemented it this way because 
+   the most common user error seemed to be trying to run pyAMI with an expired proxy!
