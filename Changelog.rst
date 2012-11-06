@@ -1,5 +1,12 @@
 .. -*- mode: rst -*-
 
+Version 4.0.4 (11/06/2012)
+--------------------------
+
+(or 06/11/2012 !)
+* Fix globbing issue. Only surround pattern with % if the pattern didn't have %
+  on both ends originally. (it needed more fixing!)
+  
 Version 4.0.3 (10/11/2012)
 --------------------------
 
