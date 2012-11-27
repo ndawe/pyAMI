@@ -2,6 +2,16 @@
 Instructions for pyAMI Developers
 =================================
 
+.. Note::
+    
+    Use python 2.5 or later to build and develop pyAMI
+    With CVMFS (on LXPLUS):
+
+    export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase
+    source ${ATLAS_LOCAL_ROOT_BASE}/user/atlasLocalSetup.sh
+    source ${ATLAS_LOCAL_ROOT_BASE}/packageSetups/atlasLocalPythonSetup.sh --pythonVersion=2.6.5-x86_64-slc5-gcc43
+
+
 See the Makefile for common build/development tasks to make our lives easier.
 
 To be sure that you are using the same versions of all pyAMI dependencies as the
