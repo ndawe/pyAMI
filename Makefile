@@ -1,6 +1,7 @@
 # simple makefile to simplify repetitive build env management tasks under posix
 
 PYTHON ?= python
+PYTHON_LINK := $(shell echo ${PWD}/.local/python | sed 's/\//\\\//g')
 NOSETESTS ?= nosetests
 CTAGS ?= ctags
 PREFIX := `pwd`
@@ -44,8 +45,7 @@ bootstrap: clean-buildout
 	@rm -rf .local
 	@mkdir .local
 	@ln -s `which python` .local/python
-	@PYTHON_LINK=$(shell echo ${PWD}/.local/python | sed 's/\//\\\//g')	
-	@sed -i '1s/^.*\$$/#!'$(PYTHON_LINK)' -S/g' ./bin/buildout
+	@sed -i '1s/^.*$$/#!$(PYTHON_LINK) -S/g' ./bin/buildout
 
 bo: buildout # just a shortcut
 buildout:
