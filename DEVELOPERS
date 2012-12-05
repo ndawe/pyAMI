@@ -4,12 +4,19 @@ Instructions for pyAMI Developers
 
 .. Note::
     
-    Use python 2.5 or later to build and develop pyAMI
+    Use python 2.6 or later to build and develop pyAMI
     With CVMFS (on LXPLUS):
 
     export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase
     source ${ATLAS_LOCAL_ROOT_BASE}/user/atlasLocalSetup.sh
     source ${ATLAS_LOCAL_ROOT_BASE}/packageSetups/atlasLocalPythonSetup.sh --pythonVersion=2.6.5-x86_64-slc5-gcc43
+
+    The reason for this is that the sphinxcontrib-programoutput Sphinx extension
+    requires at least Python 2.6:
+    http://packages.python.org/sphinxcontrib-programoutput/
+
+    pyAMI can still be deployed for Python 2.4, but developers will need at
+    least Python 2.6
 
 
 See the Makefile for common build/development tasks to make our lives easier.
