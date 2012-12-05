@@ -7,6 +7,7 @@
 /downloads
 /lib
 /pyAMI-*
+/.local
 
 # Setuptools/Distribute's files
 *.egg-info

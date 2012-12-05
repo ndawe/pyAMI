@@ -40,6 +40,12 @@ bs: bootstrap # just a shortcut
 bootstrap: clean-buildout
 	mkdir cache
 	$(PYTHON) bootstrap.py
+	# patch shebang in buildout script
+	@rm -rf .local
+	@mkdir .local
+	@ln -s `which python` .local/python
+	@PYTHON_LINK=$(shell echo ${PWD}/.local/python | sed 's/\//\\\//g')	
+	@sed -i '1s/^.*\$$/#!'$(PYTHON_LINK)' -S/g' ./bin/buildout
 
 bo: buildout # just a shortcut
 buildout:
