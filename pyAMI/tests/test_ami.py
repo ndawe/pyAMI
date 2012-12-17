@@ -1,25 +1,34 @@
 #!/usr/bin/env python
 
+import os
 from pyAMI.client import AMIClient
+from pyAMI.query import *
+from unittest import TestCase
+from nose.tools import assert_raises
 
 
-def client_test():
+class TestAMI(TestCase):
 
-    amiclient = AMIClient()
-    #amiclient.auth(user, password)
+    client = None
 
-    argv = ['FormUserValidation']
+    @classmethod
+    def setup_class(cls):
 
-    #argv.append("GetUserInfo")
-    #argv.append("output=xml")
-    #argv.append("amiLogin=atlas")
+        cls.client = AMIClient()
 
-    # execute the command
-    result = amiclient.execute(argv)
+    def test_get_runs(self):
 
-    # print the default output of the command result
-    print 'Test xml/xsl -> txt'
-    print result.output('text')
+        runs = get_runs(self.client, periods=['B', 'K2'], year=11)
+
+    def test_get_periods_for_run(self):
+
+        periods = get_periods_for_run(self.client, 201351)
+
+    def test_get_dataset_xsec_effic(self):
+
+        dataset = 'mc11_7TeV.125206.PowHegPythia_VBFH130_tautauhh.evgen.EVNT.e893'
+        xsec, effic = get_dataset_xsec_effic(self.client, dataset)
+
 
 if __name__ == '__main__':
     import nose
