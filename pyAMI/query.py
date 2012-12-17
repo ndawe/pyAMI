@@ -10,7 +10,10 @@ from pyAMI.schema import *
 from pyAMI.defaults import YEAR, STREAM, TYPE, PROJECT, PRODSTEP
 
 
-DATA_PATTERN = re.compile('^(?P<project>\w+).(?P<run>[0-9]+).(?P<stream>[a-zA-Z_\-0-9]+).(recon|merge).(?P<type>[a-zA-Z_\-0-9]+).(?P<version>\w+)$')
+DATA_PATTERN = re.compile(
+    '^(?P<project>\w+).(?P<run>[0-9]+).'
+    '(?P<stream>[a-zA-Z_\-0-9]+).(recon|merge).'
+    '(?P<type>[a-zA-Z_\-0-9]+).(?P<version>\w+)$')
 
 ESD_VERSION_PATTERN = '(?P<la>f|r)(?P<lb>[0-9]+)'
 AOD_VERSION_PATTERN = ESD_VERSION_PATTERN + '_(?P<ma>m|p)(?P<mb>[0-9]+)'
@@ -44,7 +47,9 @@ def flatten_results(things, fields):
     *fields*: [ tuple | list ]
         keys of each dict to include in tuples
     """
-    return [[thing[field.split('.')[-1]] for field in fields] for thing in things]
+    return [[thing[field.split('.')[-1]]
+        for field in fields]
+            for thing in things]
 
 
 def parse_fields(fields, table):
@@ -76,15 +81,17 @@ def validate_field(field, table):
             try:
                 foreign_entity = table.foreign[foreign_name]
             except KeyError, AttributeError:
-                raise ValueError('%s is not associated with %s' % (table.__name__, foreign_name))
+                raise ValueError('%s is not associated with %s' % (
+                    table.__name__, foreign_name))
             if foreign_field not in foreign_entity.fields.values():
                 foreign_field = foreign_entity.fields[foreign_field]
             name = '%s.%s' % (foreign_name, foreign_field)
         else:
             name = table.fields[name]
     except KeyError:
-        raise ValueError(('field %s does not exist\n' % name) + \
-                         'valid fields are:\n\t' + '\n\t'.join(table.fields.keys()))
+        raise ValueError(
+                ('field %s does not exist\n' % name) +
+                 'valid fields are:\n\t' + '\n\t'.join(table.fields.keys()))
     return name
 
 
@@ -165,7 +172,7 @@ def search_query(client,
     if primary_field not in query_fields:
         query_fields.append(primary_field)
     query_fields_str = ', '.join(query_fields)
-    
+
     if cmd_args is None:
         cmd_args = {}
     #print "1 pattern is "+ pattern
@@ -183,7 +190,7 @@ def search_query(client,
             #print "4 pattern is "+ pattern
         '''
         if not pattern.startswith('%'):
-               
+
             print("startswith"+ str(pattern.startswith('%')))
             pattern = '%' + pattern
             print "3 pattern is "+ pattern
@@ -237,7 +244,7 @@ def search_query(client,
         args.append('showArchived=true')
 
     result = client.execute(args)
-    
+
     things = [thing for thing in result.rows()]
     if flatten:
         things = flatten_results(things, query_fields)
@@ -258,9 +265,10 @@ def get_types(client,
     """
     if 'write_status' not in kwargs:
         kwargs['write_status'] = 'valid'
-    query_fields, types = search_query(client=client, entity='data_type', pattern=pattern,
-                                       processing_step_name='*',
-                                       order=order, limit=limit, fields=fields, show_archived=show_archived, **kwargs)
+    query_fields, types = search_query(
+            client=client, entity='data_type', pattern=pattern,
+            processing_step_name='*',
+            order=order, limit=limit, fields=fields, show_archived=show_archived, **kwargs)
     if flatten:
         types = flatten_results(types, query_fields)
     return types
@@ -280,9 +288,10 @@ def get_subtypes(client,
     """
     if 'write_status' not in kwargs:
         kwargs['write_status'] = 'valid'
-    query_fields, types = search_query(client=client, entity='subData_type', pattern=pattern,
-                                       processing_step_name='*',
-                                       order=order, limit=limit, fields=fields, show_archived=show_archived, **kwargs)
+    query_fields, types = search_query(
+            client=client, entity='subData_type', pattern=pattern,
+            processing_step_name='*',
+            order=order, limit=limit, fields=fields, show_archived=show_archived, **kwargs)
     if flatten:
         types = flatten_results(types, query_fields)
     return types
@@ -309,9 +318,10 @@ def get_nomenclatures(client,
     """
     if 'write_status' not in kwargs:
         kwargs['write_status'] = 'valid'
-    query_fields, nomens = search_query(client=client, entity='nomenclature', pattern=pattern,
-                                        processing_step_name='*',
-                                        order=order, limit=limit, fields=fields, show_archived=show_archived, **kwargs)
+    query_fields, nomens = search_query(
+            client=client, entity='nomenclature', pattern=pattern,
+            processing_step_name='*',
+            order=order, limit=limit, fields=fields, show_archived=show_archived, **kwargs)
     if flatten:
         nomens = flatten_results(nomens, query_fields)
     return nomens
@@ -327,9 +337,10 @@ def get_projects(client,
                  **kwargs):
     if 'write_status' not in kwargs:
         kwargs['write_status'] = 'valid'
-    query_fields, projects = search_query(client=client, entity='projects', pattern=pattern,
-                                          processing_step_name='*',
-                                          order=order, limit=limit, fields=fields, show_archived=show_archived, **kwargs)
+    query_fields, projects = search_query(
+            client=client, entity='projects', pattern=pattern,
+            processing_step_name='*',
+            order=order, limit=limit, fields=fields, show_archived=show_archived, **kwargs)
     if flatten:
         projects = flatten_results(projects, query_fields)
     return projects
@@ -345,9 +356,10 @@ def get_subprojects(client,
                     **kwargs):
     if 'write_status' not in kwargs:
         kwargs['write_status'] = 'valid'
-    query_fields, projects = search_query(client=client, entity='subProjects', pattern=pattern,
-                                          processing_step_name='*',
-                                          order=order, limit=limit, fields=fields, show_archived=show_archived, **kwargs)
+    query_fields, projects = search_query(
+            client=client, entity='subProjects', pattern=pattern,
+            processing_step_name='*',
+            order=order, limit=limit, fields=fields, show_archived=show_archived, **kwargs)
     if flatten:
         projects = flatten_results(projects, query_fields)
     return projects
@@ -363,9 +375,10 @@ def get_prodsteps(client,
                   **kwargs):
     if 'write_status' not in kwargs:
         kwargs['write_status'] = 'valid'
-    query_fields, steps = search_query(client=client, entity='productionStep', pattern=pattern,
-                                       processing_step_name='*',
-                                       order=order, limit=limit, fields=fields, show_archived=show_archived, **kwargs)
+    query_fields, steps = search_query(
+            client=client, entity='productionStep', pattern=pattern,
+            processing_step_name='*',
+            order=order, limit=limit, fields=fields, show_archived=show_archived, **kwargs)
     if flatten:
         steps = flatten_results(steps, query_fields)
     return steps
@@ -389,14 +402,15 @@ def get_datasets(client,
     if parent_type is not None and 'parent_type' not in kwargs:
         cmd_args['parentType'] = parent_type
     pattern = __clean_dataset(pattern)
-    query_fields, datasets = search_query(client=client,
-                                          cmd='DatasetSearchQuery',
-                                          cmd_args=cmd_args,
-                                          entity='dataset',
-                                          pattern=pattern,
-                                          order=order, limit=limit,
-                                          fields=fields,
-                                          show_archived=show_archived, **kwargs)
+    query_fields, datasets = search_query(
+            client=client,
+            cmd='DatasetSearchQuery',
+            cmd_args=cmd_args,
+            entity='dataset',
+            pattern=pattern,
+            order=order, limit=limit,
+            fields=fields,
+            show_archived=show_archived, **kwargs)
     if flatten:
         datasets = flatten_results(datasets, query_fields)
     return datasets
@@ -407,8 +421,14 @@ def get_periods_for_run(client, run):
     Return data periods which contain this run
     """
     result = client.execute(['GetDataPeriodsForRun', '-runNumber=%i' % run])
-    periods = sorted([RunPeriod(level=int(e['periodLevel']), name=str(e['period']), project=str(e['project'])) \
-                      for e in result.to_dict()['Element_Info'].values() ])
+    periods = sorted([
+        RunPeriod(
+            level=int(e['periodLevel']),
+            name=str(e['period']),
+            project=str(e['project']),
+            status=str(e['status']),
+            description=str(e['description']))
+        for e in result.to_dict()['Element_Info'].values()])
     return periods
 
 
@@ -483,7 +503,6 @@ def get_runs(client, periods=None, year=YEAR):
     """
     Return all runs contained in the given periods in the specified year
     """
-    
     if year > 2000:
         year %= 1000
     if not periods:
