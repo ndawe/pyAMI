@@ -1,13 +1,22 @@
 .. -*- mode: rst -*-
 
-Version 4.0.4 (11/06/2012)
+
+Version 4.1.0 (XX/XX/2013)
 --------------------------
 
-(or 06/11/2012 !)
+* A patched version of ZSI is now included in pyAMI.extern that removes
+  dependency on PyXML.
+* argparse is now included in pyAMI.extern.
+* A minimal pyAMI installation (no lxml) now does not depend on any external
+  non-standard library packages.
+
+Version 4.0.4 (6/11/2012)
+--------------------------
+
 * Fix globbing issue. Only surround pattern with % if the pattern didn't have %
   on both ends originally. (it needed more fixing!)
   
-Version 4.0.3 (10/11/2012)
+Version 4.0.3 (11/10/2012)
 --------------------------
 
 * Skip version 4.0.2 to sync with ATLAS SVN tag version
@@ -16,7 +25,7 @@ Version 4.0.3 (10/11/2012)
 * Fix globbing issue. Only surround pattern with % if the pattern didn't have %
   on both ends originally.
 
-Version 4.0.1 (9/20/2012)
+Version 4.0.1 (20/9/2012)
 -------------------------
 
 * This is pyAMI-04-00-01 in the ATLAS release
@@ -24,20 +33,20 @@ Version 4.0.1 (9/20/2012)
 * Added Windows installation to the doc
 * Expanded doc section on API
 
-Version 4.0.0a3 (4/17/2012)
+Version 4.0.0a3 (17/4/2012)
 ---------------------------
 
 * Make distribute the default install method
 * Include patched urllib2 module in pyAMI.backports
 
-Version 4.0.0a2 (4/10/2012)
+Version 4.0.0a2 (10/4/2012)
 ---------------------------
 
 * Second prerelease of the new pyAMI
 * Support for connection through a proxy (BNL)
 * Other minor improvements 
 
-Version 4.0.0a1 (3/28/2012)
+Version 4.0.0a1 (28/3/2012)
 ---------------------------
 
 * Prerelease of the new pyAMI
@@ -50,7 +59,7 @@ Version 4.0.0a1 (3/28/2012)
 
 atlasmeta versions below:
 
-Version 0.4.0 (2/4/2012)
+Version 0.4.0 (4/2/2012)
 ------------------------
 
 * Now compatible with Python 2.4
@@ -61,12 +70,12 @@ Version 0.4.0 (2/4/2012)
 * Installed on LXPLUS at CERN
 * XSL transformations reimplemented
 
-Version 0.3.1 (1/10/2012)
+Version 0.3.1 (10/1/2012)
 -------------------------
 	
 * Fix bug in file listing where size/events is NULL in database
 
-Version 0.3 (12/20/2011)
+Version 0.3 (20/12/2011)
 ------------------------
 	
 * Add ability to query datasets by parent type with --parent-type option
@@ -76,12 +85,12 @@ Version 0.3 (12/20/2011)
 * query files, projects, subprojects, datatypes, subdatatypes, tags, nomenclatures,
   production steps
 
-Version 0.2 (12/17/2011)
+Version 0.2 (17/12/2011)
 ------------------------
 
 * Query and display additional dataset fields (i.e. datatype, number of events)
 
-Version 0.1 (12/1/2011)
+Version 0.1 (1/12/2011)
 -----------------------
 
 * Forked pyAMI
