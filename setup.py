@@ -3,6 +3,13 @@
 import os
 import sys
 
+def find_packages(path='.'):
+    packages = []
+    for dirpath, dirnames, filenames in os.walk(path):
+        if '__init__.py' in filenames:
+            packages.append(os.path.normpath(dirpath).replace('/', '.'))
+    return packages
+
 # support calling setup.py from outside of the pyAMI dir
 local_path = os.path.dirname(os.path.abspath(__file__))
 # setup.py can be called from outside the rootpy directory
@@ -29,7 +36,7 @@ for arg in sys.argv:
         filtered_args.append(arg)
 sys.argv = filtered_args
 
-requires = ['ZSI', 'argparse']
+requires = []
 
 if use_lxml and os.getenv('PYAMI_NO_LXML') not in ('1', 'true'):
     requires.append('lxml')
@@ -90,16 +97,12 @@ setup(
     url=URL,
     download_url=DOWNLOAD_URL,
     license='GPLv3',
-    packages=[
-      'pyAMI',
-      'pyAMI.backports',
-      'pyAMI.tests',
-    ],
+    packages=find_packages('pyAMI'),
     classifiers=[
         "Programming Language :: Python",
         "Topic :: Utilities",
         "Operating System :: POSIX :: Linux",
-        "Development Status :: 3 - Alpha",
+        "Development Status :: 5 - Production/Stable",
         "Intended Audience :: Science/Research",
         "Intended Audience :: Developers",
         "License :: OSI Approved :: GNU General Public License (GPL)"

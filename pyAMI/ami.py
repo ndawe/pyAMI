@@ -8,8 +8,7 @@ import sys
 if 'PYAMI_LIBRARY_PATH' in os.environ:
     sys.path.insert(0, os.environ['PYAMI_LIBRARY_PATH'])
 
-
-import argparse
+from pyAMI.extern import argparse
 import pyAMI
 from pyAMI.info import VERSION, AUTHOR_EMAIL, URL
 from pyAMI.query import *
@@ -32,7 +31,7 @@ class CreditsAction(argparse.Action):
                  dest=argparse.SUPPRESS,
                  default=argparse.SUPPRESS,
                  help=None):
-        
+
         super(CreditsAction, self).__init__(
             option_strings=option_strings,
             dest=dest,
@@ -42,7 +41,7 @@ class CreditsAction(argparse.Action):
         self.version = version
 
     def __call__(self, parser, namespace, values, option_string=None):
-        
+
         parser.exit(message=pyAMI.info.__doc__)
 
 
@@ -82,7 +81,7 @@ parser_list = subparsers.add_parser('list')
 subparsers_list = parser_list.add_subparsers()
 
 def search_query_args(parser, entity, include_pattern=True):
-    
+
     for field in entity.fields.keys():
         option = '--%s' % field.replace('_','-')
         if not parser._get_option_tuples(option):
@@ -190,9 +189,9 @@ parser_list_runs.set_defaults(pr=str)
 
 
 class HelpAction(argparse.Action):
-    
+
     def __call__(self, parser, namespace, values, option_string=None):
-        
+
         parser.print_help()
 
 
@@ -333,7 +332,7 @@ def ami():
                 del cmd_args['amiCommand']
             result = args.op(amiclient, **cmd_args)
             if args.op == get_periods:
-                print_periods(result)    
+                print_periods(result)
             elif isinstance(result, AMIResult):
                 print result.output(xslt=args.output)
             elif args.pr and result:

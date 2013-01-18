@@ -4,13 +4,13 @@
 # but cleaned up a bit by a human...
 ##################################################
 
-import ZSI
-import ZSI.TCcompound
-from ZSI.schema import LocalElementDeclaration, ElementDeclaration, \
+from pyAMI.extern import ZSI
+#from pyAMI.extern.ZSI import TCcompound
+from pyAMI.extern.ZSI.schema import LocalElementDeclaration, ElementDeclaration, \
         TypeDefinition, GTD, GED
-from ZSI.generate.pyclass import pyclass_type
-from ZSI.TCcompound import ComplexType, Struct
-from ZSI import client
+from pyAMI.extern.ZSI.generate.pyclass import pyclass_type
+from pyAMI.extern.ZSI.TCcompound import ComplexType, Struct
+from pyAMI.extern.ZSI import client
 import urlparse, types
 from pyAMI import endpoint
 from pyAMI.httpconnection import AMIHTTPConnection, AMIHTTPSConnection
