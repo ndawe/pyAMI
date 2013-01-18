@@ -78,6 +78,7 @@ class DATASET_TABLE(Table):
         'period': 'period',
         'beam': 'beamType',
         'conditions_tag': 'conditionsTag',
+        'total_size': 'totalSize',
     }
 
     defaults = {
