@@ -113,6 +113,10 @@ parser_list_datasets = subparsers_list.add_parser('datasets',
     description="List datasets matching a given pattern")
 search_query_args(parser_list_datasets, DATASET_TABLE)
 parser_list_datasets.add_argument('--parent-type', default=None)
+parser_list_datasets.add_argument('-L', '--literal-match',
+    action='store_true', default=False,
+    help="perform a literal match where all "
+         "results must be identical to the query string")
 parser_list_datasets.add_argument('-F', '--from-file',
     action='store_true', default=False,
     help="read patterns from file "

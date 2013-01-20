@@ -66,6 +66,7 @@ def search_query(client,
                  project_name='Atlas_Production',
                  processing_step_name='Atlas_Production',
                  show_archived=False,
+                 literal_match=False,
                  **kwargs):
     try:
         table = TABLES[entity]
@@ -94,14 +95,23 @@ def search_query(client,
         # If we do not do this it is impossible to search for strings which
         # start with a given character sequence
         if pattern is None:
+            if literal_match:
+                raise ValueError(
+                    'pattern must not be None for literal matches')
             pattern = '%'
-        elif '%' not in pattern:
+
+        elif '%' not in pattern and not literal_match:
             pattern = '%' + pattern + '%'
-        else:
+
+        elif not literal_match:
             # replace repeated % with a single %
             pattern = re.sub('%+', '%', pattern)
 
-        constraints.append("%s like '%s'" % (primary_field, pattern))
+        if literal_match:
+            constraints.append("%s='%s'" % (primary_field, pattern))
+
+        else:
+            constraints.append("%s like '%s'" % (primary_field, pattern))
 
     constraints = ' OR '.join(constraints)
     constraints = '(%s)' % constraints

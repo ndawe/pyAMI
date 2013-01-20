@@ -9,6 +9,17 @@ Version 4.1.0 (XX/XX/2013)
 * argparse is now included in pyAMI.extern.
 * A minimal pyAMI installation (no lxml) now does not depend on any external
   non-standard library packages.
+* Added the -F and --from-file to the "ami list datasets" command where the
+  pattern is interpreted as a file name which will be read for patterns (one per
+  line, ignoring blank lines or lines beginning with #).
+* Added the option to perform literal matches with "ami list datasets"
+  using the new optional flags -L or --literal-match. In this case the pattern
+  is interpreted as a literal string and the results must match exactly.
+  A literal match query is much faster than a patterned match and can greatly
+  speed up commands where you want to query information for known elements.
+  This option pairs nicely with the new --from-file feature mentioned above for
+  files listing many complete dataset names that should be interpreted literally
+  and not as patterns.
 
 Version 4.0.4 (6/11/2012)
 --------------------------
