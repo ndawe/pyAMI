@@ -81,9 +81,7 @@ def search_query(client,
     if cmd_args is None:
         cmd_args = {}
 
-    if pattern is None:
-        patterns = ['%']
-    elif not isinstance(pattern, list):
+    if not isinstance(pattern, list):
         patterns = [pattern]
     else:
         patterns = pattern
@@ -95,7 +93,9 @@ def search_query(client,
         # otherwise assume the user knows what he/she is doing.
         # If we do not do this it is impossible to search for strings which
         # start with a given character sequence
-        if '%' not in pattern:
+        if pattern is None:
+            pattern = '%'
+        elif '%' not in pattern:
             pattern = '%' + pattern + '%'
         else:
             # replace repeated % with a single %
