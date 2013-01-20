@@ -113,6 +113,10 @@ parser_list_datasets = subparsers_list.add_parser('datasets',
     description="List datasets matching a given pattern")
 search_query_args(parser_list_datasets, DATASET_TABLE)
 parser_list_datasets.add_argument('--parent-type', default=None)
+parser_list_datasets.add_argument('-F', '--from-file',
+    action='store_true', default=False,
+    help="read patterns from file "
+         "(ignore empty lines and lines beginning with #)")
 parser_list_datasets.set_defaults(op=get_datasets)
 
 parser_list_types = subparsers_list.add_parser('types',

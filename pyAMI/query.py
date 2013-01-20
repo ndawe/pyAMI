@@ -80,22 +80,32 @@ def search_query(client,
 
     if cmd_args is None:
         cmd_args = {}
-    #print "1 pattern is "+ pattern
+
     if pattern is None:
-        pattern = '%'
+        patterns = ['%']
+    elif not isinstance(pattern, list):
+        patterns = [pattern]
     else:
+        patterns = pattern
+
+    constraints = []
+    for pattern in patterns:
         # If the user has not put any '%' characters
         # then we add them to the beginning and the end of the pattern
         # otherwise assume the user knows what he/she is doing.
-        # If we do not do this it is impossible to search for strings which start with
-        # a given character sequence
+        # If we do not do this it is impossible to search for strings which
+        # start with a given character sequence
         if '%' not in pattern:
             pattern = '%' + pattern + '%'
         else:
             # replace repeated % with a single %
             pattern = re.sub('%+', '%', pattern)
 
-    constraints = "%s like '%s'" % (primary_field, pattern)
+        constraints.append("%s like '%s'" % (primary_field, pattern))
+
+    constraints = ' OR '.join(constraints)
+    constraints = '(%s)' % constraints
+
     if kwargs:
         for name, value in kwargs.items():
             if value is not None:
@@ -288,6 +298,7 @@ def get_datasets(client,
                  fields=None,
                  flatten=False,
                  show_archived=False,
+                 from_file=False,
                  **kwargs):
     """
     Return list of datasets matching pattern
@@ -297,18 +308,27 @@ def get_datasets(client,
     cmd_args = {}
     if parent_type is not None and 'parent_type' not in kwargs:
         cmd_args['parentType'] = parent_type
-    pattern = _clean_dataset(pattern)
+
+    if from_file:
+        patterns = read_patterns_from(pattern)
+    else:
+        patterns = [pattern]
+
+    patterns = [_clean_dataset(p) for p in patterns]
+
     query_fields, datasets = search_query(
             client=client,
             cmd='DatasetSearchQuery',
             cmd_args=cmd_args,
             entity='dataset',
-            pattern=pattern,
+            pattern=patterns,
             order=order, limit=limit,
             fields=fields,
             show_archived=show_archived, **kwargs)
+
     if flatten:
         datasets = flatten_results(datasets, query_fields)
+
     return datasets
 
 
@@ -624,8 +644,7 @@ def get_data_datasets(client,
                       fields=None,
                       latest=False,
                       flatten=False,
-                      **kwargs
-                     ):
+                      **kwargs):
     """
     *client*: AMIClient
 

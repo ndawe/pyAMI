@@ -3,6 +3,19 @@ import sys
 import textwrap
 
 
+def read_patterns_from(stream):
+
+    own_file = False
+    if isinstance(stream, basestring):
+        stream = open(stream, 'r')
+        own_file = True
+    patterns = [p.strip() for p in stream.readlines()]
+    patterns = [p for p in patterns if p and not p.startswith('#')]
+    if own_file:
+        stream.close()
+    return patterns
+
+
 def flatten_results(things, fields):
     """
     Convert list of dicts to list of tuples
