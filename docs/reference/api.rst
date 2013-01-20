@@ -64,3 +64,11 @@ pyAMI API
     :members:
     :undoc-members:
     :show-inheritance:
+
+:mod:`utils` Module
+-------------------
+
+.. automodule:: pyAMI.utils
+    :members:
+    :undoc-members:
+    :show-inheritance:
