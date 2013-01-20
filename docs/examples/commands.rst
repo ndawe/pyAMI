@@ -23,7 +23,7 @@ For example, to list all NTUP_TAUMEDIUM datasets under the project mc11_7TeV:
 
 Also print out the number of events in each dataset:
 
-.. command-output:: ami list datasets --fields events data11_7TeV
+.. command-output:: ami list datasets --fields events data11_7TeV%NTUP_TAU%
    :shell:
    :ellipsis: 20
 
