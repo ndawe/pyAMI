@@ -184,21 +184,12 @@ def search_query(client,
         # otherwise assume the user knows what he/she is doing.
         # If we do not do this it is impossible to search for strings which start with
         # a given character sequence
-        pattern = re.sub('%+', '%', pattern)
-        if  (pattern.find('%')<0):
-            pattern = '%'+pattern+'%'
-            #print "4 pattern is "+ pattern
-        '''
-        if not pattern.startswith('%'):
+        if '%' not in pattern:
+            pattern = '%' + pattern + '%'
+        else:
+            # replace repeated % with a single %
+            pattern = re.sub('%+', '%', pattern)
 
-            print("startswith"+ str(pattern.startswith('%')))
-            pattern = '%' + pattern
-            print "3 pattern is "+ pattern
-        if not pattern.endswith('%'):
-            print("endswith"+ str(pattern.endswith('%')))
-            pattern += '%'
-        print "4 pattern is "+ pattern
-        '''
     constraints = "%s like '%s'" % (primary_field, pattern)
     if kwargs:
         for name, value in kwargs.items():
