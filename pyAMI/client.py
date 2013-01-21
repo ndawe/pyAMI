@@ -366,19 +366,19 @@ class AMIClient(object):
                 reply = self.ami_service.execAMICommand_array(request)
             except Exception, msg:
                 error = str(msg)
+                if '<?' not in error:
+                    raise AMI_Error(error)
                 try:
-                    if 'alert certificate expired' in error:
-                        error = ('No password or config file found, '
-                                 'expecting VOMS proxy...\n'
-                                 'Cannot find a valid VOMS proxy, please renew '
-                                 'it with voms-proxy-init.')
-                    if '<?' not in error:
-                        error = ('<?xml version="1.0" ?><AMIMessage><error>'
-                                 '%s</error></AMIMessage>') % error
+                    #if 'alert certificate expired' in error:
+                    #    error = ('No password or config file found, '
+                    #             'expecting VOMS proxy...\n'
+                    #             'Cannot find a valid VOMS proxy, please renew '
+                    #             'it with voms-proxy-init.')
                     f = StringIO(error[error.find('<?'): error.find('</AMIMessage>') + 13])
                     doc = minidom.parse(f)
                     result = AMIResult(doc)
-                    outputmsg = str(result.output())
+                    outputmsg = '\n'.join([
+                        e.firstChild.nodeValue for e in result.errors])
                 except Exception:
                     raise AMI_Error("cannot parse error : " + error)
                 raise AMI_Error(outputmsg)

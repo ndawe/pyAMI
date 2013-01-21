@@ -9,7 +9,3 @@ class AMI_Info(AMI_Error_Base):
 
 class AMI_Error(AMI_Error_Base):
     pass
-
-
-class AMI_Info(AMI_Error_Base):
-    pass

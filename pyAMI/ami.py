@@ -314,6 +314,7 @@ def ami():
 
     from pyAMI.auth import AMI_CONFIG, create_auth_config
     from pyAMI.client import AMIClient, AMIResult
+    from pyAMI.exceptions import AMI_Error
 
     if args.op == 'exec':
         args.op = AMIClient.execute
@@ -360,6 +361,8 @@ def ami():
             # If in debug mode show full stack trace
             import traceback
             traceback.print_exception(*sys.exc_info())
+        elif isinstance(e, AMI_Error):
+            sys.exit(str(e))
         else:
             sys.exit("%s: %s" % (e.__class__.__name__, e))
 
