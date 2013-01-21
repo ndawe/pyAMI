@@ -135,7 +135,8 @@ To create a self-contained bundle::
 
     make bundle
 
-TODO: more instructions to come
+This will create a tarball at ./dist/pyAMI-X.Y.Z-bundle.tar.gz containing pyAMI
+and lxml (all other dependencies are already in pyAMI.extern).
 
 
 Updating pyAMI on CVMFS
