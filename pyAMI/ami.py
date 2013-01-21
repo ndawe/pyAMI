@@ -356,6 +356,10 @@ def ami():
                     rep = args.pr(result)
                     if rep is not None:
                         print rep
+
+    except KeyboardInterrupt:
+        sys.exit('\n')
+
     except Exception, e:
         if args.debug:
             # If in debug mode show full stack trace
