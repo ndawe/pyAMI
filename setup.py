@@ -67,16 +67,6 @@ if release:
     open('pyAMI/info.py', 'w').write(
             trunk_info.replace('trunk', VERSION))
 
-if 'sdist' not in sys.argv:
-    import shutil
-    # write protected init
-    shutil.copy('pyAMI/__init__.py', 'init.tmp')
-    prot_init = ''.join(open('pyAMI/__init__.py', 'r').readlines())
-    open('pyAMI/__init__.py', 'w').write(
-            prot_init.replace(
-                '{SYS_VERSION}',
-                str(sys.version_info[:2])).replace('"""', ''))
-
 execfile('pyAMI/info.py')
 
 if afs_install or os.getenv('PYAMI_AFS_INSTALL') in ('1', 'true'):
@@ -113,6 +103,3 @@ setup(
 if release:
     # revert pyAMI/info.py
     shutil.move('info.tmp', 'pyAMI/info.py')
-if 'sdist' not in sys.argv:
-    # revert pyAMI/__init__.py
-    shutil.move('init.tmp', 'pyAMI/__init__.py')
