@@ -199,3 +199,8 @@ To clone the repository with git-svn::
     --trunk=trunk/AMIWebServiceClient/pyAMI/ \
     --branches=branches/AMIWebServiceClient/pyAMI/branches/ \
     --tags=tags/AMIWebServiceClient/pyAMI/tags/ --prefix=svn/ pyAMI
+
+To create a tag with git-svn::
+
+    git svn tag -m "See Changelog" pyAMI-XX-YY-ZZ
+
