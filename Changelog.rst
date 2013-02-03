@@ -1,7 +1,7 @@
 .. -*- mode: rst -*-
 
 
-Version 4.1.0 (XX/XX/2013)
+Version 4.1.0 (4/2/2013)
 --------------------------
 
 * A patched version of ZSI is now included in pyAMI.extern that removes
@@ -20,6 +20,7 @@ Version 4.1.0 (XX/XX/2013)
   This option pairs nicely with the new --from-file feature mentioned above for
   files listing many complete dataset names that should be interpreted literally
   and not as patterns.
+* AMI errors are now printed correctly.
 
 Version 4.0.4 (6/11/2012)
 --------------------------
