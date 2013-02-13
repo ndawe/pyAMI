@@ -19,9 +19,9 @@ echo "sourcing $SOURCE_PYAMI_SETUP"
 
 setenv PATH $DIR_PYAMI_SETUP"/bin:$PATH"
 if ( ! ($?PYTHONPATH) ) then
-    setenv PYTHONPATH $DIR_PYAMI_SETUP
+    setenv PYTHONPATH $DIR_PYAMI_SETUP/lib
 else
-    setenv PYTHONPATH $DIR_PYAMI_SETUP":$PYTHONPATH"
+    setenv PYTHONPATH $DIR_PYAMI_SETUP/lib":$PYTHONPATH"
 endif
 setenv PYAMI_VERSION `(cat "$DIR_PYAMI_SETUP"/version.txt)`
 echo "setting up pyAMI $PYAMI_VERSION"

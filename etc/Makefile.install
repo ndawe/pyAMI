@@ -3,24 +3,23 @@ prefix ?= .
 override prefix := $(shell readlink -f $(prefix))
 
 all:
-	$(python) bootstrap.py
+	$(PYTHON) bootstrap.py --version 2.0.0 --find-links http://pypi.python.org/packages/source/z/zc.buildout/zc.buildout-2.0.0.tar.gz
 	./bin/buildout
 	
 install: all
-	rm -f ./bin/buildout
 	rm -rf ./eggs/zc.*
+	rm -rf ./eggs/distribute*
 	test -d $(prefix) || mkdir $(prefix)
 	test -d $(prefix)/bin || mkdir $(prefix)/bin
-	test -d $(prefix)/eggs || mkdir $(prefix)/eggs
-	for egg in ./eggs/*; do \
-	  if test -d $$egg; then \
-	    (cd ./eggs && tar cf - `basename $$egg`) | (cd $(prefix)/eggs && tar xf -) \
-	  else \
-    	    install -m 0644 $$egg $(prefix)/eggs; \
-	  fi \
+	test -d $(prefix)/lib || mkdir $(prefix)/lib
+	for dir in ./eggs/*/*; do \
+	  lib=`basename $$dir`; \
+	  libdir=`dirname $$dir`; \
+	  [ $$lib = EGG-INFO ] && continue; \
+	  [ ! -d $$libdir ] && continue; \
+	  (cd $$libdir && tar cf - $$lib) | (cd $(prefix)/lib && tar xf -) \
     	done
 	install -m 0644 setup.csh $(prefix)
-	install -m 0644 setup_pyAMI.py $(prefix)
 	install -m 0644 setup.sh $(prefix)
 	install -m 0644 version.txt $(prefix)
 	find $(prefix) -type d | xargs chmod 755
@@ -31,12 +30,10 @@ install: all
 
 clean:
 	# remove extra buildout files and directories
-	rm -f ./bin/buildout
-	rm -rf ./eggs/zc.*
 	rm -rf ./develop-eggs
 	rm -rf ./parts
-	rm -f .installed.cfg
 	rm -rf ./bin
 	rm -rf ./eggs
+	rm -f .installed.cfg
 
 .PHONY: install clean
