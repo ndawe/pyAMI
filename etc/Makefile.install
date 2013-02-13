@@ -7,17 +7,25 @@ all:
 	./bin/buildout
 	
 install: all
+	rm -f ./bin/buildout
 	rm -rf ./eggs/zc.*
 	rm -rf ./eggs/distribute*
 	test -d $(PREFIX) || mkdir $(PREFIX)
 	test -d $(PREFIX)/bin || mkdir $(PREFIX)/bin
 	test -d $(PREFIX)/lib || mkdir $(PREFIX)/lib
-	for dir in ./eggs/*/*; do \
+	test -d $(PREFIX)/eggs || mkdir $(PREFIX)/eggs
+	# install eggs
+	for egg in ./eggs/*; do \
+	  [ ! -d $$egg ] && continue; \
+	  (cd ./eggs && tar cf - `basename $$egg`) | (cd $(PREFIX)/eggs && tar xf -) \
+    	done
+	# create symlinks for package libs
+	for dir in $(PREFIX)/eggs/*/*; do \
 	  lib=`basename $$dir`; \
 	  libdir=`dirname $$dir`; \
 	  [ $$lib = EGG-INFO ] && continue; \
 	  [ ! -d $$libdir ] && continue; \
-	  (cd $$libdir && tar cf - $$lib) | (cd $(PREFIX)/lib && tar xf -) \
+	  ln -s $$dir $(PREFIX)/lib/$$lib; \
     	done
 	install -m 0644 setup.csh $(PREFIX)
 	install -m 0644 setup.sh $(PREFIX)
