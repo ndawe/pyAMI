@@ -1,6 +1,6 @@
-python ?= python
-prefix ?= .
-override prefix := $(shell readlink -f $(prefix))
+PYTHON ?= python
+PREFIX ?= .
+override PREFIX := $(shell readlink -f $(PREFIX))
 
 all:
 	$(PYTHON) bootstrap.py --version 2.0.0 --find-links http://pypi.python.org/packages/source/z/zc.buildout/zc.buildout-2.0.0.tar.gz
@@ -9,23 +9,23 @@ all:
 install: all
 	rm -rf ./eggs/zc.*
 	rm -rf ./eggs/distribute*
-	test -d $(prefix) || mkdir $(prefix)
-	test -d $(prefix)/bin || mkdir $(prefix)/bin
-	test -d $(prefix)/lib || mkdir $(prefix)/lib
+	test -d $(PREFIX) || mkdir $(PREFIX)
+	test -d $(PREFIX)/bin || mkdir $(PREFIX)/bin
+	test -d $(PREFIX)/lib || mkdir $(PREFIX)/lib
 	for dir in ./eggs/*/*; do \
 	  lib=`basename $$dir`; \
 	  libdir=`dirname $$dir`; \
 	  [ $$lib = EGG-INFO ] && continue; \
 	  [ ! -d $$libdir ] && continue; \
-	  (cd $$libdir && tar cf - $$lib) | (cd $(prefix)/lib && tar xf -) \
+	  (cd $$libdir && tar cf - $$lib) | (cd $(PREFIX)/lib && tar xf -) \
     	done
-	install -m 0644 setup.csh $(prefix)
-	install -m 0644 setup.sh $(prefix)
-	install -m 0644 version.txt $(prefix)
-	find $(prefix) -type d | xargs chmod 755
-	find $(prefix) -type f | xargs chmod 644
+	install -m 0644 setup.csh $(PREFIX)
+	install -m 0644 setup.sh $(PREFIX)
+	install -m 0644 version.txt $(PREFIX)
+	find $(PREFIX) -type d | xargs chmod 755
+	find $(PREFIX) -type f | xargs chmod 644
 	for prog in ./bin/*; do \
-    	  install -m 0755 $$prog $(prefix)/bin; \
+    	  install -m 0755 $$prog $(PREFIX)/bin; \
     	done
 
 clean:
