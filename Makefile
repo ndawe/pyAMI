@@ -40,7 +40,8 @@ clean: clean-build clean-dist clean-buildout clean-pyc clean-ctags
 bs: bootstrap # just a shortcut
 bootstrap: clean-buildout
 	mkdir cache
-	$(PYTHON) bootstrap.py
+	# http://downloads.buildout.org/2/bootstrap.py
+	$(PYTHON) bootstrap.py --version 2.0.0 --find-links http://pypi.python.org/packages/source/z/zc.buildout/zc.buildout-2.0.0.tar.gz
 	# patch shebang in buildout script
 	@rm -rf .local
 	@mkdir .local
