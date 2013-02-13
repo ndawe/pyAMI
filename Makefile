@@ -10,7 +10,7 @@ BUNDLE_BUILD_DEST := ./build/bundles
 BUNDLE_BUILD_PATH := $(BUNDLE_BUILD_DEST)/pyAMI-$(VERSION)
 BUNDLE_TAR_DEST := ./dist
 
-all: clean test
+all: clean bs bo test
 
 clean-pyc:
 	find pyAMI -name "*.pyc" | xargs rm -f
