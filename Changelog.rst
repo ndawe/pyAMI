@@ -1,8 +1,13 @@
 .. -*- mode: rst -*-
 
+Version 4.1.1 (XX/YY/ZZZZ)
+--------------------------
+
+* Upgrade to buildout 2.0.0
+* Fix a few import issues in pyAMI.extern.ZSI
 
 Version 4.1.0 (4/2/2013)
---------------------------
+------------------------
 
 * A patched version of ZSI is now included in pyAMI.extern that removes
   dependency on PyXML.
@@ -23,7 +28,7 @@ Version 4.1.0 (4/2/2013)
 * AMI errors are now printed correctly.
 
 Version 4.0.4 (6/11/2012)
---------------------------
+-------------------------
 
 * Fix globbing issue. Only surround pattern with % if the pattern didn't have %
   on both ends originally. (it needed more fixing!)
