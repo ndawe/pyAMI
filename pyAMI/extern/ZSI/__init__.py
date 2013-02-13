@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 # $Header$
 '''ZSI:  Zolera Soap Infrastructure.
 
@@ -376,11 +375,6 @@ class WSActionException(ZSIException):
     '''
     pass
 
-##
-##  Importing the rest of ZSI.
-import version
-def Version():
-    return version.Version
 
 from writer import SoapWriter
 from parse import ParsedSoap
