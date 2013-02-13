@@ -1,4 +1,3 @@
-#! /usr/bin/env python
 '''Simple Service Container
    -- use with wsdl2py generated modules.
 '''
@@ -101,9 +100,9 @@ def _Dispatch(ps, server, SendResponse, SendFault, post, action, nsdict={}, **kw
         return SendFault(FaultFromException(e, 0, sys.exc_info()[2]), **kw)
 
     try:
-        if isWSResource is True: 
+        if isWSResource is True:
             result = method(ps, address)
-        else: 
+        else:
             result = method(ps)
     except Exception, e:
         return SendFault(FaultFromException(e, 0, sys.exc_info()[2]), **kw)
@@ -157,12 +156,12 @@ class ServiceInterface:
 
     class variables:
         soapAction -- dictionary of soapAction keys, and operation name values.
-           These are specified in the WSDL soap bindings. There must be a 
+           These are specified in the WSDL soap bindings. There must be a
            class method matching the operation name value.  If WS-Action is
            used the keys are WS-Action request values, according to the spec
            if soapAction and WS-Action is specified they must be equal.
-           
-        wsAction -- dictionary of operation name keys and WS-Action 
+
+        wsAction -- dictionary of operation name keys and WS-Action
            response values.  These values are specified by the portType.
 
         root -- dictionary of root element keys, and operation name values.
@@ -225,7 +224,7 @@ class SimpleWSResource(ServiceSOAPBinding):
     on WS-Action values rather than SOAP Action.
 
     class variables:
-        encoding  
+        encoding
         wsAction -- Must override to set output Action values.
         soapAction -- Must override to set input Action values.
     '''
@@ -250,7 +249,7 @@ class SimpleWSResource(ServiceSOAPBinding):
 
     def getOperation(self, ps, address):
         '''Returns a method of class.
-        address -- ws-address 
+        address -- ws-address
         '''
         action = address.getAction()
         opName = self.getOperationName(ps, action)
@@ -347,7 +346,7 @@ class SOAPRequestHandler(BaseSOAPRequestHandler):
                                                self.headers, soapAction)
 
             try:
-                _Dispatch(ps, self.server, self.send_xml, self.send_fault, 
+                _Dispatch(ps, self.server, self.send_xml, self.send_fault,
                     post=post, action=soapAction)
             except Exception, e:
                 self.send_fault(FaultFromException(e, 0, sys.exc_info()[2]))
@@ -384,7 +383,7 @@ class SOAPRequestHandler(BaseSOAPRequestHandler):
             self.send_error(404, "Service not found [%s]." % self.path)
 
 class ServiceContainer(HTTPServer):
-    '''HTTPServer that stores service instances according 
+    '''HTTPServer that stores service instances according
     to POST values.  An action value is instance specific,
     and specifies an operation (function) of an instance.
     '''
@@ -433,10 +432,10 @@ class ServiceContainer(HTTPServer):
                 return node
             else:
                 raise NoSuchService, 'No service(%s) in ServiceContainer' %path
-            
+
     def __init__(self, server_address, services=[], RequestHandlerClass=SOAPRequestHandler):
-        '''server_address -- 
-           RequestHandlerClass -- 
+        '''server_address --
+           RequestHandlerClass --
         '''
         HTTPServer.__init__(self, server_address, RequestHandlerClass)
         self._nodes = self.NodeTree()
@@ -449,7 +448,7 @@ class ServiceContainer(HTTPServer):
         '''ps -- ParsedSoap representing the request
            post -- HTTP POST --> instance
            action -- Soap Action header --> method
-           address -- Address instance representing WS-Address 
+           address -- Address instance representing WS-Address
         '''
         method = self.getCallBack(ps, post, action)
         if isinstance(method.im_self, SimpleWSResource):
@@ -458,7 +457,7 @@ class ServiceContainer(HTTPServer):
 
 
     def setNode(self, service, url=None):
-        if url is None: 
+        if url is None:
             url = service.getPost()
         self._nodes.setNode(service, url)
 
@@ -493,6 +492,3 @@ class SimpleWSResource(ServiceSOAPBinding):
             return node.getOperation(ps, action)
         else:
             raise NotAuthorized, "Authorization failed for method %s" % action
-
-
-if __name__ == '__main__': print _copyright

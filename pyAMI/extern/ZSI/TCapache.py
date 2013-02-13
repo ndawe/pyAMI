@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-# $Header$
 '''Apache typecodes.
 '''
 
@@ -71,5 +69,3 @@ class _Map(TypeCode):
 
 
 Apache.Map = _Map
-
-if __name__ == '__main__': print _copyright

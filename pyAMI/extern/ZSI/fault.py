@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-# $Header$
 '''Faults.
 '''
 
@@ -257,6 +255,3 @@ def FaultFromFaultMessage(ps):
 
     return Fault(pyobj.faultcode, pyobj.faultstring,
                 pyobj.faultactor, detailany)
-
-
-if __name__ == '__main__': print _copyright

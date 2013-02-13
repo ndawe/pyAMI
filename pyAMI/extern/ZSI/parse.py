@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-# $Header$
 '''SOAP messaging parsing.
 '''
 
@@ -382,6 +380,3 @@ class ParsedSoap:
                 else: v = v[0]
             d[(what.nspname,what.pname)] = v
         return d
-
-
-if __name__ == '__main__': print _copyright

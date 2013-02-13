@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-# $Id: writer.py 1270 2006-10-19 22:31:07Z boverhof $
 '''SOAP message serialization.
 '''
 
@@ -185,6 +183,3 @@ class SoapWriter:
 
     def __del__(self):
         if not self.closed: self.close()
-
-
-if __name__ == '__main__': print _copyright

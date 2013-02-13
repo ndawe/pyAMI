@@ -326,6 +326,3 @@ class MessageContainer:
         else:
             raise TypeError, 'Primitive type'
 """
-
-
-if __name__ == '__main__': print _copyright

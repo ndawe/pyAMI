@@ -6,7 +6,7 @@
 import ZSI
 from ZSI import TC, TCtimes, TCcompound
 from ZSI.TC import TypeCode
-from ZSI import _copyright, EvaluateException 
+from ZSI import _copyright, EvaluateException
 from ZSI.wstools.Utility import SplitQName
 from ZSI.wstools.Namespaces import SOAP, SCHEMA
 
@@ -17,7 +17,7 @@ from ZSI.wstools.Namespaces import SOAP, SCHEMA
 class NamespaceException(Exception): pass
 class BaseTypeInterpreter:
     """Example mapping of xsd/soapenc types to zsi python types.
-    Checks against all available classes in ZSI.TC.  Used in 
+    Checks against all available classes in ZSI.TC.  Used in
     wsdl2python, wsdlInterpreter, and ServiceProxy.
     """
 
@@ -44,13 +44,13 @@ class BaseTypeInterpreter:
             ZSI.TC.Integer,
             ZSI.TCnumbers.IpositiveInteger,
             ZSI.TCnumbers.Ishort]
-  
+
         self._tc_to_float = [
             ZSI.TC.Decimal,
             ZSI.TCnumbers.FPEnumeration,
             ZSI.TCnumbers.FPdouble,
             ZSI.TCnumbers.FPfloat]
-        
+
         self._tc_to_string = [
             ZSI.TC.Base64String,
             ZSI.TC.Enumeration,
@@ -76,12 +76,12 @@ class BaseTypeInterpreter:
             ZSI.TCtimes.gYear,
             ZSI.TCtimes.gMonth,
             ZSI.TCtimes.gYearMonth]
-        
+
         return
-    
+
     def _get_xsd_typecode(self, msg_type):
-        untaged_xsd_types = {'boolean':TC.Boolean, 
-            'decimal':TC.Decimal, 
+        untaged_xsd_types = {'boolean':TC.Boolean,
+            'decimal':TC.Decimal,
             'base64Binary':TC.Base64String}
         if untaged_xsd_types.has_key(msg_type):
             return untaged_xsd_types[msg_type]
@@ -129,5 +129,3 @@ class BaseTypeInterpreter:
             raise EvaluateException,\
                'failed to map zsi typecode to a python type'
         return None
-
-

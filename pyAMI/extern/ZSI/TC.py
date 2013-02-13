@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-# $Header$
 '''General typecodes.
 '''
 
@@ -1801,7 +1799,4 @@ _get_type_definition, _get_global_element_declaration, Wrap  = GTD, GED, WrapImm
 
 f = lambda x: type(x) == types.ClassType and issubclass(x, TypeCode) and getattr(x, 'type', None) is not None
 TYPES = filter(f, map(lambda y:eval(y),dir()))
-
-
-if __name__ == '__main__': print _copyright
 

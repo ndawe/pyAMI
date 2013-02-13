@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-# $Header$
 '''Typecodes for numbers.
 '''
 import types
@@ -179,6 +177,3 @@ class FPEnumeration(FPfloat):
             raise EvaluateException('Value not in int enumeration list',
                     ps.Backtrace(elt))
         Decimal.serialize(self, elt, sw, pyobj, name=name, orig=orig, **kw)
-
-
-if __name__ == '__main__': print _copyright

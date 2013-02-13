@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-# $Header$
 '''XML Schema support
 '''
 
@@ -322,6 +320,3 @@ class _GetPyobjWrapper:
 
 
 from TC import Any, RegisterType
-
-if __name__ == '__main__': print _copyright
-

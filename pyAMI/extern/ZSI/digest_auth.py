@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-# $Header$
 '''Utilities for HTTP Digest Authentication
 '''
 
@@ -41,7 +39,7 @@ def generate_response(chaldict,uri,username,passwd,method='GET',cnonce=None):
   Note. Use build_authorization_arg() to turn an authdict into the final Authorization
   header value.
   """
-  authdict = {} 
+  authdict = {}
   qop = dict_fetch(chaldict,'qop')
   domain = dict_fetch(chaldict,'domain')
   nonce = dict_fetch(chaldict,'nonce')
@@ -70,7 +68,7 @@ def generate_response(chaldict,uri,username,passwd,method='GET',cnonce=None):
   authdict['qop'] = '"%s"' % qop
   authdict['nc'] = nc
   authdict['cnonce'] = '"%s"' % cnonce
-  
+
   return authdict
 
 
@@ -101,5 +99,3 @@ def build_authorization_arg(authdict):
   for k in authdict.keys():
     vallist += ['%s=%s' % (k,authdict[k])]
   return 'Digest '+', '.join(vallist)
-
-if __name__ == '__main__': print _copyright

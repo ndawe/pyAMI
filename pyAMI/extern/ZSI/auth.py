@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-# $Header$
 '''Simple CGI dispatching.
 '''
 
@@ -61,5 +59,3 @@ class ClientBinding:
         '''Return the ParsedSoap request.
         '''
         return self.ps
-
-if __name__ == '__main__': print _copyright

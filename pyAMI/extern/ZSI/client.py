@@ -1,6 +1,3 @@
-#! /usr/bin/env python
-# $Header$
-#
 # Copyright (c) 2001 Zolera Systems.  All rights reserved.
 
 from pyAMI.extern.ZSI import _copyright, _seqtypes, ParsedSoap, SoapWriter, TC, ZSI_SCHEMA_URI,\
@@ -536,6 +533,3 @@ class NamedParamBinding(Binding):
             if hasattr(self, name): return getattr(self, name)
             return getattr(self.__class__, name)
         return _NamedParamCaller(self, name)
-
-
-if __name__ == '__main__': print _copyright

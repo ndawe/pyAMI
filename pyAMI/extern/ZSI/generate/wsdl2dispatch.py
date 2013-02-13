@@ -114,14 +114,14 @@ class ServiceModuleWriter:
 
         wsm = WriteServiceModule(self.wsdl, do_extended=self.do_extended)
         return wsm.getMessagesModuleName()
-    
+
     def getServiceModuleName(self):
         '''return module name.
         '''
         name = GetModuleBaseNameFromWSDL(self.wsdl)
         if not name:
             raise WsdlGeneratorError, 'could not determine a service name'
-        
+
         if self.server_module_suffix is None:
             return name
         return '%s%s' %(name, self.server_module_suffix)
@@ -176,7 +176,7 @@ class ServiceModuleWriter:
         assert isinstance(service, WSDLTools.Service), 'expecting WSDLTools.Service instance.'
         sd = self._services[service.name]
         d = sd.initdef
- 
+
         if sd.location is not None:
             scheme,netloc,path,params,query,fragment = urlparse.urlparse(sd.location)
             print >>d, '%sdef __init__(self, post=\'%s\', **kw):' %(self.getIndent(level=1), path)
@@ -259,11 +259,11 @@ class ServiceModuleWriter:
                         if len(argSubNames) > 1:
                             subNamesStr = "(" + subNamesStr + ")"
                         print >>m, "%s%s = %s" % (self.getIndent(level=2), iargs[i], subNamesStr)
-                        
+
                 print >>m, "\n%s# If we have an implementation object use it" % (self.getIndent(level=2))
                 print >>m, "%sif hasattr(self,'impl'):" % (self.getIndent(level=2))
 
-                iargsStrList = []  
+                iargsStrList = []
                 for arg in iargs:
                     argSubNames = iSubNames[i]
                     if len(argSubNames) > 0:
@@ -273,11 +273,11 @@ class ServiceModuleWriter:
                         else:
                             iargsStrList.append( arg  )
                 iargsStr =  ",".join(iargsStrList)
-                oargsStr = ", ".join(oargs) 
+                oargsStr = ", ".join(oargs)
                 if len(oargsStr) > 0:
                     oargsStr += " = "
                 print >>m, "%s%sself.impl.%s(%s)" % (self.getIndent(level=3), oargsStr, op.name, iargsStr)
-        
+
             if msgout is not None:
                 msgout_name = TextProtect(msgout.name)
                 if self.do_extended:
@@ -321,7 +321,7 @@ class ServiceModuleWriter:
         print >>self.header, '##################################################'
 
     def write(self, fd=sys.stdout):
-        '''write out to file descriptor, 
+        '''write out to file descriptor,
         should not need to override.
         '''
         print >>fd, self.header.getvalue()
@@ -340,8 +340,8 @@ class ServiceModuleWriter:
 
         if len(wsdl.services) == 0:
             raise WsdlGeneratorError, 'No service defined'
-      
-        self.reset() 
+
+        self.reset()
         self.wsdl = wsdl
 	self.raw_wsdl = wsdl.document.toxml().replace("\"", "\\\"")
         self.setUpHeader()
@@ -380,12 +380,12 @@ class WSAServiceModuleWriter(ServiceModuleWriter):
         body = []
         if msgInName is not None:
             body.append('self.request = ps.Parse(%s.typecode)' %msgInName)
-            
+
         if msgOutName is not None:
             body.append('return %s()' %msgOutName)
-        else: 
+        else:
             body.append('return None')
-            
+
         return tuple(body)
     createMethodBody = staticmethod(createMethodBody)
 
@@ -446,14 +446,14 @@ class WSAServiceModuleWriter(ServiceModuleWriter):
 
             m = s.newMethod()
             print >>m, '%sdef %s(self, ps, address):' %(self.getIndent(level=1), method_name)
-            
+
             msgin_name = msgout_name = None
             msgin,msgout = op.getInputMessage(),op.getOutputMessage()
-            if msgin is not None: 
+            if msgin is not None:
                 msgin_name = TextProtect(msgin.name)
-            if msgout is not None: 
+            if msgout is not None:
                 msgout_name = TextProtect(msgout.name)
-        
+
             indent = self.getIndent(level=2)
             for l in self.createMethodBody(msgin_name, msgout_name):
                 print >>m, indent + l
@@ -463,7 +463,7 @@ class WSAServiceModuleWriter(ServiceModuleWriter):
             print >>m, '%swsAction[\'%s\'] = \'%s\'' %(self.getIndent(level=1), method_name, wsaction_out)
             print >>m, '%sroot[(%s.typecode.nspname,%s.typecode.pname)] = \'%s\'' \
                      %(self.getIndent(level=1), msgin_name, msgin_name, method_name)
- 
+
 
 class DelAuthServiceModuleWriter(ServiceModuleWriter):
     ''' Includes the generation of lines to call an authorization method on the server side

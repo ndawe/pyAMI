@@ -1,4 +1,3 @@
-# $Header$
 '''ZSI:  Zolera Soap Infrastructure.
 
 Copyright 2001, Zolera Systems, Inc.  All Rights Reserved.
@@ -423,5 +422,3 @@ schema.RegisterAnyElement()
 #    from ServiceProxy import *
 #except:
 #    pass
-
-if __name__ == '__main__': print _copyright

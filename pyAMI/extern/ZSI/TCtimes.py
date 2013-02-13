@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-# $Header$
 '''Typecodes for dates and times.
 '''
 
@@ -310,5 +308,3 @@ class gTime(Gregorian):
     tag, format = 'time', '%(h)02d:%(m)02d:%(s)02dZ'
     format_ms = format[:-1] + '.%(ms)03dZ'
     type = (SCHEMA.XSD3, 'time')
-
-if __name__ == '__main__': print _copyright

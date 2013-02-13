@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-# $Header$
 '''SOAP messaging parsing.
 '''
 
@@ -143,5 +141,3 @@ class MIMEResolver:
         head, body = self.id_dict[cid]
         newio = StringIO.StringIO(body.getvalue())
         return newio
-
-if __name__ == '__main__': print _copyright

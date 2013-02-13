@@ -1,5 +1,3 @@
-#! /usr/bin/env python
-# $Header$
 '''Compound typecodes.
 '''
 
@@ -669,6 +667,3 @@ class Array(TypeCode):
 
                 self.ofwhat.serialize(el, sw, v, **d)
                 position += 1
-
-
-if __name__ == '__main__': print _copyright
