@@ -1,7 +1,7 @@
 .. -*- mode: rst -*-
 
-Version 4.1.1 (XX/YY/ZZZZ)
---------------------------
+Version 4.1.1 (13/2/2013)
+-------------------------
 
 * Upgrade to buildout 2.0.0
 * Fix a few import issues in pyAMI.extern.ZSI
