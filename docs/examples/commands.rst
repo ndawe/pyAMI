@@ -107,7 +107,7 @@ Use the ``ami dataset info`` subcommands to display a dataset's metadata:
 For example:
 
 .. command-output::  ami dataset info mc11_7TeV.125367.PythiaWH125_tautauhh.merge.NTUP_TAUMEDIUM.e825_s1310_s1300_r2730_r2700_p787
-:
+
 
 Use the ``ami dataset evtinfo`` subcommands to display a dataset's event generator metadata:
 
