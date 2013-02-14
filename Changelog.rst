@@ -1,5 +1,12 @@
 .. -*- mode: rst -*-
 
+Version 4.1.2 (XX/2/2013)
+-------------------------
+
+* Upgrade to distribute 0.6.34
+* Fix installation on Windows
+* Docs now build properly with buildout
+
 Version 4.1.1 (13/2/2013)
 -------------------------
 
