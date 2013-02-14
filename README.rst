@@ -45,16 +45,20 @@ LXPLUS and CVMFS
 
 pyAMI is installed centrally on LXPLUS at CERN. To begin using pyAMI simply::
 
-    source /afs/cern.ch/atlas/software/tools/atlasmeta/setup.sh
+    source /afs/cern.ch/atlas/software/tools/pyAMI/setup.sh
 
 then authenticate yourself if you haven't already (see below).
 
 
 pyAMI is also available through CVMFS::
 
-   source /cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase/user/atlasLocalSetup.sh
+   export ATLAS_LOCAL_ROOT_BASE=/cvmfs/atlas.cern.ch/repo/ATLASLocalRootBase 
+   source $ATLAS_LOCAL_ROOT_BASE/user/atlasLocalSetup.sh
    localSetupPyAMI
 
+Note : You may need to get a particular version of pyAMI - SLC6 requires::
+
+   source /afs/cern.ch/atlas/software/tools/pyAMI/python2.6/setup.sh
 
 Installation
 ============
@@ -132,7 +136,7 @@ Installation on Windows
    (for easy installation of dependences). For 64 bit machines there may be problems,
    see `bugs.python.org/issue6792 <http://bugs.python.org/issue6792>`__.
 
-3. Download `pip-1.1.tar.gz <http://pypi.python.org/packages/source/p/pip/pip-1.1.tar.gz>`__.
+3. Download pip. For example  `pip-1.1.tar.gz <http://pypi.python.org/packages/source/p/pip/pip-1.1.tar.gz>`__.
 
 4. Install pip. Open a "cmd" terminal in windows. Assuming that you installed pip
    below Python::
@@ -145,10 +149,9 @@ Installation on Windows
       cd C:\Python27\Scripts
       pip install pyAMI
 
-6. Install lxml to enable XSLT. If you don't install lxml, pyAMI will still work,
+6. You might need to install lxml to enable XSLT in a different step - sometimes pip seems to prefer a version which will not build. If you don't install lxml, pyAMI will still work,
    but you will only be able to obtain XML output on the command line.
-   However if you only want to use the API of pyAMI you may skip this step.
-   (lxml 3.0.1 seems to install with pip automatically)::
+   However if you only want to use the API of pyAMI you may skip this step.::
 
       easy_install --allow-hosts=lxml.de,*.python.org lxml==2.2.8
 
@@ -179,13 +182,13 @@ VOMS authentication is supported::
    voms-proxy-init -voms atlas
 
 The alternative option (if gLite is not available)
-is to send your username and password along with each AMI command::
+is to send your username and password along with each AMI command. You can do this explicitly, or you can set up an encrypted configuration file by running::
 
    ami auth
 
 This will prompt you for your AMI username and password.
 You will only need to do this once since your credentials are stored in
-``~/.pyami/ami.conf`` for later use. If your credentials change just
+``~/.pyami/ami.cfg`` for later use. If your credentials change just
 run ``ami auth`` again. If you would like to keep your pyAMI configuration
 in a directory other than ``~/.pyami`` then set the environment
 variable ``PYAMI_CONFIG_DIR``.
@@ -193,3 +196,4 @@ variable ``PYAMI_CONFIG_DIR``.
 .. note:: Once you make an ami configuration file it will override your voms proxy.
    You should destroy it if you want to use a proxy. We implemented it this way because 
    the most common user error seemed to be trying to run pyAMI with an expired proxy!
+   Explicitly giving a username and password will override the configuration file.
