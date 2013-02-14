@@ -13,8 +13,14 @@
 
 import sys, os
 from os import path
-VERSION = open((path.normpath(path.join(
-    path.dirname(path.abspath(__file__)), '../version.txt')))).read().strip()
+
+pyAMI_root = path.abspath(
+        path.join(path.dirname(path.abspath(__file__)),
+        path.pardir))
+VERSION = open(path.join(pyAMI_root, 'version.txt')).read().strip()
+
+# put pyAMI at the front of sys.path
+sys.path.insert(0, pyAMI_root)
 
 import datetime
 YEAR = datetime.datetime.now().year
