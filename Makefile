@@ -95,7 +95,7 @@ test-code:
 	#$(NOSETESTS) -s pyAMI
 	./bin/ami-test
 
-test-doc:
+test-docs:
 	$(NOSETESTS) -s --with-doctest --doctest-tests --doctest-extension=rst \
 	--doctest-extension=inc --doctest-fixtures=_fixture docs/
 
@@ -104,7 +104,7 @@ test-coverage:
 	$(NOSETESTS) -s --with-coverage --cover-html --cover-html-dir=coverage \
 	--cover-package=pyAMI pyAMI
 
-test: test-code #test-doc
+test: test-code #test-docs
 
 trailing-spaces:
 	find pyAMI -name "*.py" | xargs perl -pi -e 's/[ \t]*$$//'
@@ -115,9 +115,10 @@ ctags:
 	$(CTAGS) -R *
 
 docs:
+	# run "make bs bo" first
 	./bin/sphinx-build ./docs ./docs/_build/html
 
-docs-update-end: doc
+docs-update-end: docs
 	# update Noel's mirror of the pyAMI docs
 	rm -rf ~/remote/cern/projects/pyAMI/*
 	cp -r ./docs/_build/html/* ~/remote/cern/projects/pyAMI/
