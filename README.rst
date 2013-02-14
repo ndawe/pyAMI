@@ -149,9 +149,11 @@ Installation on Windows
       cd C:\Python27\Scripts
       pip install pyAMI
 
-6. You might need to install lxml to enable XSLT in a different step - sometimes pip seems to prefer a version which will not build. If you don't install lxml, pyAMI will still work,
-   but you will only be able to obtain XML output on the command line.
-   However if you only want to use the API of pyAMI you may skip this step.::
+6. You might need to install lxml to enable XSLT in a different step - sometimes
+   pip seems to prefer a version which will not build. If you don't install
+   lxml, pyAMI will still work, but you will only be able to obtain XML output
+   on the command line. However if you only want to use the API of pyAMI you may
+   skip this step.::
 
       easy_install --allow-hosts=lxml.de,*.python.org lxml==2.2.8
 
@@ -182,7 +184,8 @@ VOMS authentication is supported::
    voms-proxy-init -voms atlas
 
 The alternative option (if gLite is not available)
-is to send your username and password along with each AMI command. You can do this explicitly, or you can set up an encrypted configuration file by running::
+is to send your username and password along with each AMI command. You can do
+this explicitly, or you can set up an encrypted configuration file by running::
 
    ami auth
 
