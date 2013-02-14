@@ -3,7 +3,8 @@
 import os
 # prevent distutils from trying to create hard links
 # which are not allowed on AFS between directories.
-delattr(os, 'link')
+if(hasattr(os, 'link')):
+    delattr(os, 'link')
 import sys
 
 def find_packages(path='.'):
