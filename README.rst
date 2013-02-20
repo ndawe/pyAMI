@@ -125,6 +125,15 @@ transformations) then you may disable this dependency before installation with::
 
    export PYAMI_NO_LXML=1
 
+Installation on MAC
+-------------------
+
+Tested with System: OXS 10.7.4, Python 2.7.1, GCC 4.2.1
+
+Just follow the instructions for Manual Installation, except that to change the PATH you should do::
+
+	export PATH=/Users/yourName/Library/Python/2.7/bin${PATH:+:$PATH}
+
 
 Installation on Windows
 -----------------------
