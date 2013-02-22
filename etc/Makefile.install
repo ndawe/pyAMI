@@ -14,6 +14,8 @@ install: all
 	test -d $(PREFIX)/bin || mkdir $(PREFIX)/bin
 	test -d $(PREFIX)/lib || mkdir $(PREFIX)/lib
 	test -d $(PREFIX)/eggs || mkdir $(PREFIX)/eggs
+	# install setup_pyAMI (still here for backward compatibility)
+	install -m 0644 setup_pyAMI.py $(PREFIX)/lib
 	# install eggs
 	for egg in ./eggs/*; do \
 	  [ ! -d $$egg ] && continue; \
