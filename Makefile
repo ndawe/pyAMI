@@ -59,6 +59,7 @@ bundle: sdist bootstrap
 	cp bootstrap.py $(BUNDLE_BUILD_PATH)
 	cp ./etc/install.cfg $(BUNDLE_BUILD_PATH)/buildout.cfg
 	cp ./etc/Makefile.install $(BUNDLE_BUILD_PATH)/Makefile
+	cp ./etc/install_afs.sh $(BUNDLE_BUILD_PATH)/
 	cp ./etc/setup.sh $(BUNDLE_BUILD_PATH)/
 	cp ./etc/setup.csh $(BUNDLE_BUILD_PATH)/
 	cp ./etc/setup_pyAMI.py $(BUNDLE_BUILD_PATH)/
