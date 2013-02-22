@@ -17,7 +17,7 @@ Fabian Lambert
 
 VERSION = 'trunk'
 AUTHOR_EMAIL = 'atlas-bookkeeping@cern.ch'
-URL = 'https://end.web.cern.ch/end/projects/pyAMI/'
+URL = 'https://atlas-ami.cern.ch/AMI/pyAMI/'
 DOWNLOAD_URL = 'http://pypi.python.org/packages/source/p/pyAMI/pyAMI-%s.tar.gz' % VERSION
 
 __doc__ %= VERSION
