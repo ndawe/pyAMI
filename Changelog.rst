@@ -1,6 +1,6 @@
 .. -*- mode: rst -*-
 
-Version 4.1.2 (XX/2/2013)
+Version 4.1.2 (26/2/2013)
 -------------------------
 
 * Upgrade to distribute 0.6.34
