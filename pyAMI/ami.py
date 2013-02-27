@@ -196,16 +196,9 @@ parser_list_runs.set_defaults(op=get_runs)
 parser_list_runs.set_defaults(pr=str)
 
 
-class HelpAction(argparse.Action):
-
-    def __call__(self, parser, namespace, values, option_string=None):
-
-        parser.print_help()
-
-
 parser_list_files = subparsers_list.add_parser('files', add_help=False,
     description="List files in dataset or container")
-parser_list_files.add_argument('--help', action=HelpAction)
+parser_list_files.add_argument('--help', action='help')
 parser_list_files.add_argument('--limit', type=int, default=None, help="limit number of results")
 parser_list_files.add_argument('-c', '--total',
                                action='store_true', default=False,
