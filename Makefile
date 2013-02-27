@@ -13,7 +13,7 @@ BUNDLE_TAR_DEST := ./dist
 all: clean bs bo test
 
 clean-pyc:
-	find pyAMI -name "*.pyc" | xargs rm -f
+	find . -name "*.pyc" | xargs rm -f
 
 clean-build:
 	rm -rf build
@@ -33,6 +33,7 @@ clean-buildout:
 	rm -rf downloads
 	rm -rf lib
 	rm -rf cache
+	rm -rf .local
 	rm -f .installed.cfg
 
 clean: clean-build clean-dist clean-buildout clean-pyc clean-ctags
@@ -43,9 +44,8 @@ bootstrap: clean-buildout
 	# http://downloads.buildout.org/2/bootstrap.py
 	$(PYTHON) bootstrap.py --version 2.0.0 --find-links http://pypi.python.org/packages/source/z/zc.buildout/zc.buildout-2.0.0.tar.gz
 	# patch shebang in buildout script
-	@rm -rf .local
 	@mkdir .local
-	@ln -s `which python` .local/python
+	@ln -s `which $(PYTHON)` .local/python
 	@sed -i '1s/^.*$$/#!$(PYTHON_LINK) -S/g' ./bin/buildout
 
 bo: buildout # just a shortcut

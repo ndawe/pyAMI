@@ -95,12 +95,13 @@ cmd = [sys.executable, '-c',
        'from setuptools.command.easy_install import main; main()',
        '-mZqNxd', tmpeggs]
 
+if options.accept_buildout_test_releases:
+    find_links_default = 'http://downloads.buildout.org/'
+else:
+    find_links_default = None
 find_links = os.environ.get(
     'bootstrap-testing-find-links',
-    options.find_links or
-    ('http://downloads.buildout.org/'
-     if options.accept_buildout_test_releases else None)
-    )
+    options.find_links or find_links_default)
 if find_links:
     cmd.extend(['-f', find_links])
 
