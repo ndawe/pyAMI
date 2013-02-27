@@ -1,5 +1,6 @@
 # simple makefile to simplify repetitive build env management tasks under posix
 
+SHELL := /bin/bash
 PYTHON ?= python
 PYTHON_LINK := $(shell echo ${PWD}/.local/python | sed 's/\//\\\//g')
 NOSETESTS ?= nosetests
