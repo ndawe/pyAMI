@@ -1,10 +1,15 @@
 SHELL := /bin/bash
 PYTHON ?= python
+PYTHON_LINK := $(shell echo ${PWD}/.local/python | sed 's/\//\\\//g')
 PREFIX ?= .
 override PREFIX := $(shell readlink -f $(PREFIX))
 
-all:
+all: clean
 	$(PYTHON) bootstrap.py --version 2.0.0 --find-links http://pypi.python.org/packages/source/z/zc.buildout/zc.buildout-2.0.0.tar.gz
+	# patch shebang in buildout script
+	@mkdir .local
+	@ln -s `which $(PYTHON)` .local/python
+	@sed -i '1s/^.*$$/#!$(PYTHON_LINK) -S/g' ./bin/buildout
 	./bin/buildout
 	
 install: all
@@ -45,6 +50,7 @@ clean:
 	rm -rf ./parts
 	rm -rf ./bin
 	rm -rf ./eggs
+	rm -rf .local
 	rm -f .installed.cfg
 
 .PHONY: install clean
