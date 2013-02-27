@@ -25,6 +25,10 @@ clean-dist:
 clean-ctags:
 	rm -f tags
 
+clean-distribute:
+	rm -f distribute-*.egg
+	rm -f distribute-*.tar.gz
+
 clean-buildout:
 	rm -rf bin
 	rm -rf eggs
@@ -36,7 +40,7 @@ clean-buildout:
 	rm -rf .local
 	rm -f .installed.cfg
 
-clean: clean-build clean-dist clean-buildout clean-pyc clean-ctags
+clean: clean-build clean-dist clean-buildout clean-pyc clean-ctags clean-distribute
 
 bs: bootstrap # just a shortcut
 bootstrap: clean-buildout
@@ -57,6 +61,7 @@ bundle: sdist bootstrap
 	mkdir -p $(BUNDLE_BUILD_PATH)
 	mkdir -p $(BUNDLE_TAR_DEST)
 	cp bootstrap.py $(BUNDLE_BUILD_PATH)
+	cp distribute_setup.py $(BUNDLE_BUILD_PATH)
 	cp ./etc/install.cfg $(BUNDLE_BUILD_PATH)/buildout.cfg
 	cp ./etc/Makefile.install $(BUNDLE_BUILD_PATH)/Makefile
 	cp ./etc/install_afs.sh $(BUNDLE_BUILD_PATH)/
