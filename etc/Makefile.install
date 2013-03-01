@@ -33,7 +33,8 @@ install: all
 	  libdir=`dirname $$dir`; \
 	  [ $$lib = EGG-INFO ] && continue; \
 	  [ ! -d $$libdir ] && continue; \
-	  ln -s $$dir $(PREFIX)/lib/$$lib; \
+	  egg=`basename $$libdir`; \
+	  ln -s ../eggs/$$egg/$$lib $(PREFIX)/lib/$$lib; \
     	done
 	install -m 0644 setup.csh $(PREFIX)
 	install -m 0644 setup.sh $(PREFIX)
