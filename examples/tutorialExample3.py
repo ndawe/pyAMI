@@ -1,5 +1,5 @@
 import sys
-import setup_pyAMI
+#import setup_pyAMI
  # the above line needed to ensure correct python environment since pyAMI 4.0.3
 from pyAMI.client import AMIClient
 class test3:
