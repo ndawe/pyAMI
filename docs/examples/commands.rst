@@ -1,7 +1,7 @@
 Command Examples
 ================
 
-pyAMI provides the command ``ami`` under which various subcommands may be issued:
+pyAMI provides the command ``ami`` under which various subcommands may be issued. Some of the commands are wrapped inside the client; others are passed directly to the server. :
 
 
 .. command-output:: ami --help
@@ -17,7 +17,7 @@ Use the subcommands ``ami list datasets`` to list datasets matching certain crit
 
 For example, to list all NTUP_TAUMEDIUM datasets under the project mc11_7TeV:
 
-.. command-output:: ami list datasets --project mc12_8TeV --type NTUP_TAUMEDIUM %
+.. command-output:: ami list datasets --project mc11_7TeV --type NTUP_TAUMEDIUM %
    :ellipsis: 20
 
 Also print out the number of events in each dataset:
@@ -119,11 +119,12 @@ For example:
 .. command-output:: ami dataset evtinfo mc11_7TeV.125367.PythiaWH125_tautauhh.merge.NTUP_TAUMEDIUM.e825_s1310_s1300_r2730_r2700_p787
 
 
-Sending an Arbitrary Command to the AMI Server
-----------------------------------------------
+`Sending an Arbitrary Command to the AMI Server - A Tag Collector Example`_
+------------------------------------------------------------------------
 
 You might want to send a command directly to the server. For example a *Tag Collector* command.
-Use ``ami cmd commandName arguments``.
+Use ``ami cmd commandName arguments``. This syntax will cause the command "commandName" to be executed on the server.
+
 
 For example:
 

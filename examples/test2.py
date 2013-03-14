@@ -1,8 +1,4 @@
 
-try:
-   import setup_pyAMI # this line needed to ensure correct python environment since pyAMI 4.0.3
-except Exception :
-   print("Exception")
 from pyAMI.query import get_dataset_xsec_effic
 from pyAMI.client import AMIClient
 client = AMIClient()
