@@ -50,7 +50,7 @@ if use_distribute and os.getenv('PYAMI_NO_DISTRIBUTE') not in ('1', 'true'):
     from distribute_setup import use_setuptools
     use_setuptools()
     from setuptools import setup
-    kw['install_requires'] = requires
+    kw['requires'] = requires
     kw['entry_points'] = {
         'console_scripts': [
             'ami = pyAMI.ami:ami',
